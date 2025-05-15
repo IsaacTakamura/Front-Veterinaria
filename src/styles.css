@@ -1,1 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --primary: #3B82F6;       /* Color primario */
+  --primary-dark: #1D4ED8;  /* Color primario oscuro */
+  --primary-rgb: 59, 130, 246; /* RGB para efectos con transparencia */
+  --dark: #1F2937;          /* Color de texto oscuro */
+}
