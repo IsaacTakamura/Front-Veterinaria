@@ -1,24 +1,28 @@
 <!-- Header -->
-<header>
+<header class="sticky-header">
   <div class="header-container container">
     <div class="logo">
-      <img src="assets/logo.png" alt="Logo Clínica Veterinaria Santa Anita" />
+      <img src="assets/logo.png" alt="Logo" />
       <h1>Clínica Veterinaria Santa Anita</h1>
     </div>
 
-    <button class="mobile-menu-btn" (click)="toggleMenu()">
+    <button
+      class="mobile-menu-btn"
+      (click)="toggleMenu()"
+      aria-label="Abrir menú"
+    >
       <i class="fas fa-bars"></i>
     </button>
 
-    <nav [class.open]="isMenuOpen">
+    <nav [class.open]="isMenuOpen" class="navigation">
       <ul>
-        <li><a href="#inicio">Inicio</a></li>
-        <li><a href="#caracteristicas">Características</a></li>
-        <li><a href="#nosotros">Nosotros</a></li>
-        <li><a href="#contacto">Contacto</a></li>
+        <li><a href="#inicio" class="nav-link">Inicio</a></li>
+        <li><a href="#caracteristicas" class="nav-link">Características</a></li>
+        <li><a href="#nosotros" class="nav-link">Nosotros</a></li>
+        <li><a href="#contacto" class="nav-link">Contacto</a></li>
       </ul>
     </nav>
 
-    <button class="login-btn">Iniciar Sesión</button>
+    <button class="login-btn primary-button">Iniciar Sesión</button>
   </div>
 </header>
