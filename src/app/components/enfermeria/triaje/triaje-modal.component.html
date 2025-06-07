@@ -1,0 +1,47 @@
+<ng-container *ngIf="isOpen()">
+  <div class="fixed inset-0 bg-black/50 z-40"></div>
+  <div class="fixed inset-0 z-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg w-full max-w-xl p-6 shadow-lg">
+      <h2 class="text-lg font-bold mb-1">Triaje para {{ cita?.paciente }}</h2>
+      <p class="text-sm text-gray-600 mb-4">
+        Registra los signos vitales y observaciones iniciales del paciente.
+      </p>
+
+      <form [formGroup]="triajeForm" (ngSubmit)="onSubmit()" class="grid gap-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium">Temperatura (°C)</label>
+            <input type="number" step="0.1" formControlName="temperatura" class="input" required />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium">Peso (kg)</label>
+            <input type="number" step="0.1" formControlName="peso" class="input" required />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium">Frecuencia Cardíaca (lpm)</label>
+            <input type="number" formControlName="frecuenciaCardiaca" class="input" required />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium">Frecuencia Respiratoria (rpm)</label>
+            <input type="number" formControlName="frecuenciaRespiratoria" class="input" required />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium">Observaciones</label>
+          <textarea formControlName="observaciones" rows="3" class="input resize-none"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 mt-4">
+          <button type="button" (click)="onCancel()" class="btn-outline">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar y enviar a veterinario</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-container>

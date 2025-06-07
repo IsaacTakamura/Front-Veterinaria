@@ -1,0 +1,107 @@
+<!-- Tabs para navegación -->
+<div class="tabs">
+  <button class="tab" [class.active]="true">Pendientes</button>
+  <button class="tab">Programados</button>
+</div>
+
+<!-- Tarjetas resumen -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-4">
+  <div class="card bg-red-100 text-red-800 p-4 rounded">
+    <div class="text-sm">Urgentes</div>
+    <div class="text-2xl font-bold">{{ urgentes() }}</div>
+  </div>
+  <div class="card bg-yellow-100 text-yellow-800 p-4 rounded">
+    <div class="text-sm">Próximos a vencer</div>
+    <div class="text-2xl font-bold">{{ proximosVencer() }}</div>
+  </div>
+  <div class="card bg-green-100 text-green-800 p-4 rounded">
+    <div class="text-sm">Enviados</div>
+    <div class="text-2xl font-bold">{{ enviados() }}</div>
+  </div>
+  <div class="card bg-blue-100 text-blue-800 p-4 rounded">
+    <div class="text-sm">Total Pendientes</div>
+    <div class="text-2xl font-bold">{{ totalPendientes() }}</div>
+  </div>
+</div>
+
+<!-- Buscador -->
+<input
+  type="text"
+  placeholder="Buscar por nombre del paciente o propietario"
+  class="input w-full mb-4"
+  (input)="searchTerm.set($any($event.target).value)"
+/>
+
+<!-- Tabla de recordatorios pendientes -->
+<table class="table w-full text-sm">
+  <thead>
+    <tr class="text-left border-b">
+      <th>Paciente</th>
+      <th>Dueño</th>
+      <th>Teléfono</th>
+      <th>Tipo</th>
+      <th>Descripción</th>
+      <th>Vence</th>
+      <th>Días</th>
+      <th>Prioridad</th>
+      <th>Estado</th>
+      <th>Último envío</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let r of recordatoriosFiltrados()" class="border-b hover:bg-gray-50">
+      <td>{{ r.paciente }}</td>
+      <td>{{ r.propietario }}</td>
+      <td>{{ r.telefono }}</td>
+      <td>{{ getTipoIcon(r.tipo) }}</td>
+      <td>{{ r.descripcion }}</td>
+      <td>{{ r.fechaVencimiento }}</td>
+      <td>{{ r.diasRestantes }}</td>
+      <td>
+        <span class="px-2 py-1 text-white text-xs rounded"
+              [ngClass]="getPrioridadColor(r.prioridad)">
+          {{ r.prioridad }}
+        </span>
+      </td>
+      <td>
+        <span [ngClass]="{
+          'text-green-600': r.estado === 'enviado',
+          'text-yellow-600': r.estado === 'pendiente'
+        }">
+          {{ r.estado }}
+        </span>
+      </td>
+      <td>{{ r.ultimoEnvio || 'N/A' }}</td>
+      <td>
+        <button class="btn btn-blue btn-sm mr-2"
+                (click)="abrirModal(r)">
+          Enviar
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Modal para enviar recordatorio -->
+<div class="modal" *ngIf="modalAbierto()">
+  <div class="modal-content p-6 bg-white rounded shadow-lg max-w-md mx-auto mt-10">
+    <h2 class="text-xl font-bold mb-4">Enviar recordatorio</h2>
+
+    <div *ngIf="recordatorioSeleccionado()">
+      <p><strong>Paciente:</strong> {{ recordatorioSeleccionado()?.paciente }}</p>
+      <p><strong>Dueño:</strong> {{ recordatorioSeleccionado()?.propietario }}</p>
+      <p><strong>Descripción:</strong> {{ recordatorioSeleccionado()?.descripcion }}</p>
+    </div>
+
+    <div class="mt-4 space-x-2">
+      <button class="btn btn-green" (click)="enviarRecordatorio(recordatorioSeleccionado()?.id!, 'whatsapp')">
+        Enviar por WhatsApp
+      </button>
+      <button class="btn btn-blue" (click)="enviarRecordatorio(recordatorioSeleccionado()?.id!, 'sms')">
+        Enviar por SMS
+      </button>
+      <button class="btn btn-gray" (click)="cerrarModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
