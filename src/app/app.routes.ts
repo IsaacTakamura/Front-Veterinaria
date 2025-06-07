@@ -7,12 +7,9 @@ import { Veterinaria2PageComponent } from './pages/veterinaria2/veterinaria2-pag
 
 export const routes: Routes = [
 
+
 {
   path: '',
-  component: AppComponent,
-},
-{
-  path: 'index',
   component: IndexPageComponent,
 },
 {
