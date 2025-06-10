@@ -1,54 +1,67 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Receta Médica</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 40px; }
-    .receta-container { max-width: 600px; margin: auto; border: 1px solid #ccc; padding: 32px; border-radius: 8px; }
-    h1 { text-align: center; }
-    .section { margin-bottom: 24px; }
-    label { font-weight: bold; }
-    .firma { margin-top: 40px; text-align: right; }
-    .linea-firma { border-top: 1px solid #000; width: 200px; margin-left: auto; }
-  </style>
-</head>
-<body>
-  <div class="receta-container">
-    <h1>Receta Médica</h1>
-    <div class="section">
-      <label>Nombre del paciente:</label>
-      <span>__________________________________</span>
-    </div>
-    <div class="section">
-      <label>Edad:</label>
-      <span>__________</span>
-    </div>
-    <div class="section">
-      <label>Fecha:</label>
-      <span>____ / ____ / ______</span>
-    </div>
-    <div class="section">
-      <label>Medicamentos y dosis:</label>
-      <br>
-      <span>
-        1. ___________________________________________<br>
-        2. ___________________________________________<br>
-        3. ___________________________________________
-      </span>
-    </div>
-    <div class="section">
-      <label>Indicaciones:</label>
-      <br>
-      <span>
-        ___________________________________________________________<br>
-        ___________________________________________________________
-      </span>
-    </div>
-    <div class="firma">
-      <div class="linea-firma"></div>
-      <span>Médico/a</span>
-    </div>
+<div style="display: flex; gap: 2rem; align-items: flex-start;">
+
+  <!-- Formulario de ingreso de datos -->
+  <div style="flex: 1; max-width: 400px;">
+    <h2>Generar Receta Médica</h2>
+    <form #recetaForm="ngForm">
+      <div style="margin-bottom: 1rem;">
+        <label for="nombreMascota">Nombre de la Mascota:</label>
+        <input id="nombreMascota" name="nombreMascota" type="text" [(ngModel)]="nombreMascota" class="form-control" required>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <label for="fecha">Fecha:</label>
+        <input id="fecha" name="fecha" type="date" [(ngModel)]="fecha" class="form-control" required>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <label for="diagnostico">Diagnóstico:</label>
+        <textarea id="diagnostico" name="diagnostico" rows="3" [(ngModel)]="diagnostico" class="form-control" required></textarea>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <label>Doctor a cargo:</label>
+        <div>
+          <button type="button" [class.selected]="doctor === 'nicolas serrucho arias'" (click)="doctor = 'nicolas serrucho arias'">
+            nicolas serrucho arias
+          </button>
+          <button type="button" [class.selected]="doctor === 'juanca'" (click)="doctor = 'juanca'">
+            juanca
+          </button>
+        </div>
+      </div>
+    </form>
   </div>
-</body>
-</html>
+
+  <!-- Vista previa de la receta médica -->
+  <div style="flex: 1; border: 1px solid #ccc; padding: 1.5rem; border-radius: 8px; background: #f9f9f9; min-width: 320px;">
+    <h2 style="text-align: center;">Receta Médica</h2>
+    <p><strong>Mascota:</strong> {{ nombreMascota || '---' }}</p>
+    <p><strong>Fecha:</strong> {{ fecha || '---' }}</p>
+    <p><strong>Diagnóstico:</strong></p>
+    <p style="min-height: 60px;">{{ diagnostico || '---' }}</p>
+    <p><strong>Doctor a cargo:</strong> {{ doctor || '---' }}</p>
+  </div>
+
+</div>
+
+<style>
+  button {
+    margin-right: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid #007bff;
+    background: #fff;
+    color: #007bff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button.selected, button:hover {
+    background: #007bff;
+    color: #fff;
+  }
+  .form-control {
+    width: 100%;
+    padding: 0.4rem;
+    margin-top: 0.2rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+</style>
