@@ -1,74 +1,72 @@
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-col">
-        <h4 class="footer-heading">Clínica Veterinaria Santa Anita</h4>
-        <p class="footer-description">
-          Sistema informático para la atención veterinaria integral y eficiente.
-        </p>
-        <div class="footer-logo">
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
-            alt="Veterinario icono"
-            width="48"
-            height="48"
-          />
+<footer class="bg-gray-900 text-white py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-4 gap-8">
+      <!-- Logo y descripción -->
+      <div class="space-y-4">
+        <div class="flex items-center space-x-2">
+          <div class="bg-gradient-to-r from-green-600 to-blue-600 p-2 rounded-lg">
+            <!-- Heart SVG icon -->
+            <svg class="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </div>
+          <span class="text-xl font-bold">Veterinaria Santa Anita</span>
+        </div>
+        <p class="text-gray-400">Cuidando a tu mejor amigo con tecnología avanzada y amor profesional.</p>
+        <div class="flex space-x-4">
+          <div class="bg-gray-800 p-2 rounded-lg hover:bg-gray-700 cursor-pointer">
+            <!-- Phone SVG icon -->
+            <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h2.28a2 2 0 011.94 1.52l.3 1.2a2 2 0 01-.45 1.95l-1.27 1.27a16.06 16.06 0 006.6 6.6l1.27-1.27a2 2 0 011.95-.45l1.2.3A2 2 0 0121 18.72V21a2 2 0 01-2 2h-1C7.82 23 1 16.18 1 8V7a2 2 0 012-2z"/>
+            </svg>
+          </div>
+          <div class="bg-gray-800 p-2 rounded-lg hover:bg-gray-700 cursor-pointer">
+            <!-- Heart SVG icon -->
+            <svg class="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </div>
         </div>
       </div>
 
-      <div class="footer-col">
-        <h4 class="footer-heading">Enlaces Rápidos</h4>
-        <ul class="footer-links">
-          <li *ngFor="let link of quickLinks">
-            <a [routerLink]="link.route" class="footer-link">
-              <span class="link-icon">›</span>
-              {{ link.label }}
-            </a>
-          </li>
+      <!-- Servicios -->
+      <div>
+        <h3 class="font-semibold mb-4">Servicios</h3>
+        <ul class="space-y-2 text-gray-400">
+          <li>Consulta General</li>
+          <li>Vacunación</li>
+          <li>Cirugías</li>
+          <li>Emergencias 24/7</li>
+          <li>Servicio a Domicilio</li>
+          <li>Estética Canina</li>
         </ul>
       </div>
 
-      <div class="footer-col">
-        <h4 class="footer-heading">Contacto</h4>
-        <ul class="contact-list">
-          <li class="contact-item" *ngFor="let contact of contactInfo">
-            <span class="contact-icon" aria-hidden="true">
-              <i [class]="contact.icon"></i>
-            </span>
-            <span>{{ contact.text }}</span>
-          </li>
+      <!-- Horarios -->
+      <div>
+        <h3 class="font-semibold mb-4">Horarios</h3>
+        <ul class="space-y-2 text-gray-400">
+          <li>Lunes - Viernes: 8:00 AM - 8:00 PM</li>
+          <li>Sábados: 8:00 AM - 6:00 PM</li>
+          <li>Domingos: 9:00 AM - 5:00 PM</li>
+          <li class="text-green-400 font-semibold">Emergencias: 24/7</li>
         </ul>
       </div>
 
-      <div class="footer-col">
-        <h4 class="footer-heading">Síguenos</h4>
-        <div class="social-links">
-          <a
-            *ngFor="let social of socialLinks"
-            [href]="social.url"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="social-link"
-            [attr.aria-label]="'Visita nuestro perfil de ' + social.name"
-          >
-            <i [class]="social.icon"></i>
-          </a>
-        </div>
+      <!-- Contacto -->
+      <div>
+        <h3 class="font-semibold mb-4">Contacto</h3>
+        <ul class="space-y-2 text-gray-400">
+          <li>📍 Santa Anita, Lima</li>
+          <li>📞 (01) 123-4567</li>
+          <li>📱 WhatsApp: 987-654-321</li>
+          <li>✉️ info-veterinariasantaanita.com</li>
+        </ul>
       </div>
     </div>
 
-    <div class="footer-bottom">
-      <p class="copyright">
-        &copy; {{ currentYear }} Clínica Veterinaria Santa Anita. Todos los
-        derechos reservados.
-      </p>
-      <div class="footer-legal">
-        <a routerLink="/privacidad" class="legal-link"
-          >Política de Privacidad</a
-        >
-        <span class="separator">|</span>
-        <a routerLink="/terminos" class="legal-link">Términos de Servicio</a>
-      </div>
+    <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+      <p>&copy; 2024 Veterinaria Santa Anita. Todos los derechos reservados.</p>
     </div>
   </div>
 </footer>
