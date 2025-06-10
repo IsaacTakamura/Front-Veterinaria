@@ -8,7 +8,7 @@ import { CommonModule } from "@angular/common";
   templateUrl: "./receta-page.component.html",
   styleUrls: ["./receta-page.component.css"],
 })
-export class IndexPageComponent {
+export class RecetaPageComponent {
   title = "Sistema de Atención Veterinaria";
 
   isMenuOpen = false;

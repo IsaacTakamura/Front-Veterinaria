@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { IndexPageComponent } from './pages/index/index-page.component';
-import { Veterinaria2PageComponent } from './pages/veterinaria2/veterinaria2-page.component';
+import { RecetaPageComponent } from './pages/receta/receta-page.component';
 
 
 
@@ -13,8 +13,8 @@ export const routes: Routes = [
   component: IndexPageComponent,
 },
 {
-  path: 'veterinaria2',
-  component: Veterinaria2PageComponent,
+  path: 'receta',
+  component: RecetaPageComponent,
 }
 
 
