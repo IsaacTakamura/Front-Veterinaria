@@ -9,7 +9,13 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, ReactiveFormsModule] // <-- Agrega esto
 })
 export class TriajeModalComponent {
-  @Input() isOpen: boolean = false;
+  // Cambiar nombre de la señal (isOpen => isOpenSignal)
+  isOpenSignal = signal(false); // ✅ Nombre único
+
+  // Mantener input con su nombre original
+  @Input() set isOpen(value: boolean) {
+    this.isOpenSignal.set(value); // ✅ Usar la señal renombrada
+  }
   @Input() cita: any = null;
   @Output() closeModal = new EventEmitter<void>();
 

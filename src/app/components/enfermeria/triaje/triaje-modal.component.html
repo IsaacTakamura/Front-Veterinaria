@@ -1,4 +1,4 @@
-<ng-container *ngIf="isOpen">
+<ng-container *ngIf="isOpenSignal()"> <!-- ✅ Usar la señal como función -->
   <div class="fixed inset-0 bg-black/50 z-40"></div>
   <div class="fixed inset-0 z-50 flex items-center justify-center">
     <div class="bg-white rounded-lg w-full max-w-xl p-6 shadow-lg">

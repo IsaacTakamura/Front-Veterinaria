@@ -9,7 +9,7 @@ import { CitasProgramadasComponent } from '../../components/enfermeria/citas-pro
   imports: [
     CommonModule,
     CitasHoyComponent,
-    CitasProgramadasComponent
+    CitasProgramadasComponent,
   ],
   templateUrl: './enfermera-page.component.html',
   styleUrls: ['./enfermera-page.component.css'],
