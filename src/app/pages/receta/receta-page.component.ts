@@ -2,14 +2,14 @@ import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: "app-veterinaria2-page",
+  selector: "app-receta-page",
   standalone: true,
   imports: [CommonModule],
-  templateUrl: "./veterinaria2-page.component.html",
-  styleUrls: ["./veterinaria2-page.component.css"],
+  templateUrl: "./receta-page.component.html",
+  styleUrls: ["./receta-page.component.css"],
 })
-export class Veterinaria2PageComponent {
-  title = "veterinaria ejemplo";
+export class IndexPageComponent {
+  title = "Sistema de Atención Veterinaria";
 
   isMenuOpen = false;
   toggleMenu() {
