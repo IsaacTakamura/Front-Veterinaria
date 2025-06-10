@@ -1,13 +1,15 @@
 import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-tabla-citas',
   templateUrl: './tabla-citas.component.html',
-  styleUrls: ['./tabla-citas.component.css'], // si usás Tailwind, podés quitar esto
+  styleUrls: ['./tabla-citas.component.css'],
+  imports: [CommonModule],
   standalone: true
 })
 export class TablaCitasComponent {
-  @Input() citas = signal<any[]>([]);
+  @Input() citas: any[] = [];
   @Output() onTriaje = new EventEmitter<any>();
   @Output() onHistorial = new EventEmitter<any>();
   @Output() onDetalles = new EventEmitter<any>();

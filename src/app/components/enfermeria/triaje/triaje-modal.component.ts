@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, ReactiveFormsModule] // <-- Agrega esto
 })
 export class TriajeModalComponent {
-  @Input() isOpen = signal(false);
+  @Input() isOpen: boolean = false;
   @Input() cita: any = null;
   @Output() closeModal = new EventEmitter<void>();
 

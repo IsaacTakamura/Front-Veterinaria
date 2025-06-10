@@ -1,0 +1,111 @@
+<div *ngIf="isOpen()" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" (click)="closeModal($event)">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden" (click)="$event.stopPropagation()">
+      <!-- Header -->
+      <div class="border-b p-4">
+        <h2 class="text-lg font-semibold">Historial Clínico: {{ cita()?.paciente }}</h2>
+        <p class="text-sm text-gray-500">
+          {{ cita()?.especie }} - {{ cita()?.raza }} - {{ cita()?.edad }}
+        </p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="border-b">
+        <div class="flex">
+          <button
+            class="py-3 px-4 font-medium text-sm relative"
+            [class.text-primary border-b-2 border-primary]="activeTab() === 'consultas'"
+            (click)="activeTab.set('consultas')"
+          >
+            Consultas
+          </button>
+          <button
+            class="py-3 px-4 font-medium text-sm relative"
+            [class.text-primary border-b-2 border-primary]="activeTab() === 'vacunas'"
+            (click)="activeTab.set('vacunas')"
+          >
+            Vacunas
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="overflow-auto" [style.max-height]="'calc(90vh - 150px)'">
+        <!-- Consultas Tab -->
+        @if (activeTab() === 'consultas') {
+          <div class="p-4 space-y-4">
+            @for (consulta of historialEjemplo; track $index) {
+              <div class="border rounded-lg overflow-hidden">
+                <div class="bg-gray-50 px-4 py-2 border-b">
+                  <h3 class="font-semibold">{{ consulta.fecha }} - {{ consulta.motivo }}</h3>
+                  <p class="text-sm text-gray-500">{{ consulta.veterinario }}</p>
+                </div>
+                <div class="p-4 text-sm">
+                  <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div>
+                      <span class="font-medium">Temperatura:</span> {{ consulta.signos.temperatura }}
+                    </div>
+                    <div>
+                      <span class="font-medium">Peso:</span> {{ consulta.signos.peso }}
+                    </div>
+                    <div>
+                      <span class="font-medium">Frec. Cardíaca:</span> {{ consulta.signos.frecuenciaCardiaca }}
+                    </div>
+                    <div>
+                      <span class="font-medium">Frec. Respiratoria:</span> {{ consulta.signos.frecuenciaRespiratoria }}
+                    </div>
+                  </div>
+                  <div class="mb-2">
+                    <span class="font-medium">Diagnóstico:</span> {{ consulta.diagnostico }}
+                  </div>
+                  <div class="mb-2">
+                    <span class="font-medium">Tratamiento:</span> {{ consulta.tratamiento }}
+                  </div>
+                  <div>
+                    <span class="font-medium">Observaciones:</span> {{ consulta.observaciones }}
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Vacunas Tab -->
+        @if (activeTab() === 'vacunas') {
+          <div class="p-4">
+            <div class="border rounded-md overflow-hidden">
+              <table class="w-full">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="text-left p-3 font-semibold text-sm">Fecha</th>
+                    <th class="text-left p-3 font-semibold text-sm">Tipo</th>
+                    <th class="text-left p-3 font-semibold text-sm">Lote</th>
+                    <th class="text-left p-3 font-semibold text-sm">Próxima</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (vacuna of vacunasEjemplo; track $index) {
+                    <tr class="border-b hover:bg-gray-50">
+                      <td class="p-3">{{ vacuna.fecha }}</td>
+                      <td class="p-3">{{ vacuna.tipo }}</td>
+                      <td class="p-3">{{ vacuna.lote }}</td>
+                      <td class="p-3">{{ vacuna.proxima }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Footer -->
+      <div class="border-t p-4 flex justify-end">
+        <button
+          (click)="onClose.emit()"
+          class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>

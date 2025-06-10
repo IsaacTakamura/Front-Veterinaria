@@ -1,0 +1,89 @@
+<div
+    *ngIf="isOpen()"
+    class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+    (click)="closeModal($event)"
+  >
+    <div
+      class="bg-white rounded-lg shadow-xl w-full max-w-md"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Header -->
+      <div class="border-b p-4">
+        <h2 class="text-lg font-semibold">Detalles de la Cita</h2>
+        <p class="text-sm text-gray-500">Información completa de la cita agendada.</p>
+      </div>
+
+      <!-- Content -->
+      <div class="p-4 space-y-4">
+        @if (cita()) {
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold">{{ cita().paciente }}</h3>
+            <span
+              class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {{ getBadgeColor(cita().estado) }}"
+            >
+              {{ getEstadoTexto(cita().estado) }}
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <p class="text-sm font-medium text-gray-500">Especie</p>
+              <p>{{ cita().especie }}</p>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-500">Raza</p>
+              <p>{{ cita().raza }}</p>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-500">Edad</p>
+              <p>{{ cita().edad }}</p>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-500">Hora de Cita</p>
+              <p>{{ cita().hora }}</p>
+            </div>
+          </div>
+
+          <div class="border-t pt-4">
+            <h4 class="font-medium mb-2">Información del Propietario</h4>
+            <div class="grid grid-cols-1 gap-3">
+              <div>
+                <p class="text-sm font-medium text-gray-500">Nombre</p>
+                <p>{{ cita().propietario }}</p>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Teléfono</p>
+                <div class="flex items-center gap-2">
+                  <p>{{ cita().telefono }}</p>
+                  <button
+                    class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 w-8"
+                    title="Llamar"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                    <span class="sr-only">Llamar</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t pt-4">
+            <h4 class="font-medium mb-2">Motivo de la Consulta</h4>
+            <p>{{ cita().motivo }}</p>
+          </div>
+        }
+      </div>
+
+      <!-- Footer -->
+      <div class="border-t p-4 flex justify-end">
+        <button
+          (click)="onClose.emit()"
+          class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
