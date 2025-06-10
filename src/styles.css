@@ -5,3 +5,6 @@
   --primary-rgb: 59, 130, 246; /* RGB para efectos con transparencia */
   --dark: #1F2937;          /* Color de texto oscuro */
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
