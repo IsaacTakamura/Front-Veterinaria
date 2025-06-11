@@ -6,11 +6,12 @@ import { FooterComponent } from './components/shared/footer/footer.component';
 import { RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
+import { ChatBotComponent } from './components/shared/chat-bot/chat-bot.component'; // Importa el componente del chatbot si lo necesitas
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, NavbarPublicComponent, NavbarPrivateComponent, FooterComponent],
+  imports: [CommonModule, RouterOutlet, NavbarPublicComponent, NavbarPrivateComponent, FooterComponent, ChatBotComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
