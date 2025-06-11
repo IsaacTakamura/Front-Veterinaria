@@ -14,7 +14,7 @@ interface User {
 }
 
 @Component({
-  selector: 'app-navbar',
+  selector: 'app-navbar-private',
   standalone: true,
   imports: [
     CommonModule,
