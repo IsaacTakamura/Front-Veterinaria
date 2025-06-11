@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgIf } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 type RolEnum = 'ADMIN' | 'VET' | 'ASISTENTE';
 
@@ -19,7 +20,7 @@ export class RegisterFormComponent {
   isLoading = signal(false);
   message = signal<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private authService: AuthService) {
     this.form = this.fb.group({
       username: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -55,11 +56,10 @@ export class RegisterFormComponent {
     this.isLoading.set(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log('Datos de registro:', this.form.value);
+      const result = await this.authService.register(this.form.value).toPromise();
       this.message.set({ type: 'success', text: 'Usuario registrado exitosamente' });
       this.form.reset();
-    } catch {
+    } catch (error) {
       this.message.set({ type: 'error', text: 'Error al registrar usuario. Intente nuevamente.' });
     } finally {
       this.isLoading.set(false);
