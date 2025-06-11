@@ -3,7 +3,7 @@ import { IndexPageComponent } from './pages/index/index-page.component';
 import { RecetaPageComponent } from './pages/receta/receta-page.component';
 import { EnfermeraPageComponent } from './pages/enfermera/enfermera-page.component';
 import { LoginPageComponent } from './pages/login/login-page.component';
-
+import { RegisterPageComponent } from './pages/register/register-page.component';
 
 
 export const routes: Routes = [
@@ -25,4 +25,8 @@ export const routes: Routes = [
   path: 'enfermera',
   component: EnfermeraPageComponent,
 },
+{
+  path: 'register',
+  component: RegisterPageComponent,
+}
 ];

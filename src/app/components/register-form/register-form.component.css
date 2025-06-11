@@ -1,0 +1,309 @@
+/* Fondo general con gradiente */
+:host {
+  display: block;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ecfdf5 0%, #cffafe 100%);
+  padding: 1rem;
+}
+
+/* Centrado del formulario */
+.center-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tarjeta del formulario */
+.form-card {
+  width: 100%;
+  max-width: 28rem;
+  background: #fff;
+  box-shadow: 0 4px 24px 0 rgba(16, 185, 129, 0.08);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+/* Encabezado */
+.form-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.form-header .icon-bg {
+  padding: 0.75rem;
+  background: #d1fae5;
+  border-radius: 9999px;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+.form-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0.5rem 0 0.25rem 0;
+}
+.form-header p {
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+/* Inputs y labels */
+label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.25rem;
+}
+input,
+select {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s;
+  background: #fff;
+}
+input:focus,
+select:focus {
+  border-color: #34d399;
+}
+input[disabled],
+select[disabled] {
+  background: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Botón mostrar/ocultar contraseña */
+.password-toggle-btn {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0;
+}
+
+/* Mensaje de ayuda */
+.helper-text {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+/* Mensaje de rol */
+.role-desc {
+  font-size: 0.85rem;
+  color: #059669;
+  background: #ecfdf5;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+/* Alertas */
+.alert {
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.97rem;
+}
+.alert-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+.alert-success {
+  background: #ecfdf5;
+  border: 1px solid #bbf7d0;
+  color: #047857;
+}
+
+/* Botón submit */
+.submit-btn {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  color: #fff;
+  background: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
+  font-weight: 600;
+  font-size: 1.1rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Spinner */
+.spinner {
+  height: 1rem;
+  width: 1rem;
+  border-radius: 9999px;
+  border: 2px solid #fff;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Pie de formulario */
+.form-footer {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+  font-size: 0.97rem;
+  color: #6b7280;
+}
+.form-footer button {
+  color: #059669;
+  background: none;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s;
+  margin-left: 0.25rem;
+}
+.form-footer button:hover {
+  color: #047857;
+}
+
+/* Espaciados entre campos */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+.space-y-2 > * + * {
+  margin-top: 0.5rem;
+}
+.space-y-6 > * + * {
+  margin-top: 1.5rem;
+}
+
+/* Utilidades para gap y flex */
+.flex {
+  display: flex;
+}
+.items-center {
+  align-items: center;
+}
+.gap-2 {
+  gap: 0.5rem;
+}
+.relative {
+  position: relative;
+}
+.text-center {
+  text-align: center;
+}
+.mb-4 {
+  margin-bottom: 1rem;
+}
+.mt-6 {
+  margin-top: 1.5rem;
+}
+.pt-6 {
+  padding-top: 1.5rem;
+}
+.rounded-full {
+  border-radius: 9999px;
+}
+.inline-block {
+  display: inline-block;
+}
+.text-emerald-600 {
+  color: #059669;
+}
+.bg-emerald-100 {
+  background: #d1fae5;
+}
+.bg-emerald-50 {
+  background: #ecfdf5;
+}
+.text-gray-900 {
+  color: #111827;
+}
+.text-gray-600 {
+  color: #6b7280;
+}
+.text-gray-700 {
+  color: #374151;
+}
+.text-xs {
+  font-size: 0.75rem;
+}
+.font-bold {
+  font-weight: 700;
+}
+.font-medium {
+  font-weight: 500;
+}
+.shadow {
+  box-shadow: 0 4px 24px 0 rgba(16, 185, 129, 0.08);
+}
+.bg-white {
+  background: #fff;
+}
+.p-3 {
+  padding: 0.75rem;
+}
+.p-4 {
+  padding: 1rem;
+}
+.p-6 {
+  padding: 1.5rem;
+}
+.w-full {
+  width: 100%;
+}
+.max-w-md {
+  max-width: 28rem;
+}
+.rounded-xl {
+  border-radius: 1rem;
+}
+.border {
+  border: 1px solid #d1d5db;
+}
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.pr-10 {
+  padding-right: 2.5rem;
+}
+.absolute {
+  position: absolute;
+}
+.right-2 {
+  right: 0.5rem;
+}
+.top-2 {
+  top: 0.5rem;
+}
+.bg-gradient-to-r {
+  background: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
+}
+.bg-gradient-to-br {
+  background: linear-gradient(135deg, #ecfdf5 0%, #cffafe 100%);
+}
+.border-t {
+  border-top: 1px solid #e5e7eb;
+}

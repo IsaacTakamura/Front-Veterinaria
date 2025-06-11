@@ -1,0 +1,81 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-cyan-50 p-4">
+  <div class="w-full max-w-md bg-white shadow rounded-xl p-6">
+    <div class="text-center mb-4">
+      <div class="p-3 bg-emerald-100 rounded-full inline-block">
+        <!-- Aquí puedes usar un ícono SVG de stethoscope si tienes alguno -->
+        <svg class="h-8 w-8 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2"
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M6 18V9a4 4 0 118 0v9a4 4 0 01-8 0zM18 8v2a6 6 0 01-6 6"></path>
+        </svg>
+      </div>
+      <h2 class="text-2xl font-bold text-gray-900">Registro de Usuario</h2>
+      <p class="text-gray-600">Sistema de Gestión Veterinaria</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Username -->
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700" for="username">Nombre de Usuario</label>
+        <input id="username" formControlName="username" type="text"
+          class="w-full border rounded px-3 py-2" [disabled]="isLoading()" placeholder="Ingrese su nombre de usuario" />
+      </div>
+
+      <!-- Password -->
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700" for="password">Contraseña</label>
+        <div class="relative">
+          <input [type]="showPassword() ? 'text' : 'password'" id="password" formControlName="password"
+            class="w-full border rounded px-3 py-2 pr-10" placeholder="Ingrese su contraseña"
+            [disabled]="isLoading()" />
+          <button type="button" class="absolute right-2 top-2" (click)="togglePasswordVisibility()">
+            {{ showPassword() ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        <p class="text-xs text-gray-500">Mínimo 6 caracteres</p>
+      </div>
+
+      <!-- Rol -->
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700" for="rol">Rol en el Sistema</label>
+        <select id="rol" formControlName="rol" class="w-full border rounded px-3 py-2"
+          [disabled]="isLoading()">
+          <option value="" disabled selected>Seleccione su rol</option>
+          <option value="ADMIN">Administrador</option>
+          <option value="VET">Veterinario</option>
+          <option value="ASISTENTE">Asistente</option>
+        </select>
+        <p *ngIf="form.value.rol" class="text-xs text-emerald-600 bg-emerald-50 p-2 rounded">
+          {{ roleDescription }}
+        </p>
+      </div>
+
+      <!-- Alertas -->
+      <div *ngIf="message()" class="border px-4 py-3 rounded"
+        [ngClass]="message()?.type === 'error' ? 'bg-red-50 border-red-200 text-red-700' : 'bg-emerald-50 border-emerald-200 text-emerald-700'">
+        {{ message()?.text }}
+      </div>
+
+      <!-- Botón submit -->
+      <button type="submit" class="w-full py-2 px-4 rounded text-white bg-gradient-to-r from-emerald-500 to-cyan-500"
+        [disabled]="isLoading()">
+        <ng-container *ngIf="isLoading(); else notLoading">
+          <div class="flex items-center gap-2">
+            <div class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+            Registrando...
+          </div>
+        </ng-container>
+        <ng-template #notLoading>
+          <div class="flex items-center gap-2">
+            ➕ Registrar Usuario
+          </div>
+        </ng-template>
+      </button>
+    </form>
+
+    <div class="mt-6 pt-6 border-t text-center text-sm text-gray-600">
+      ¿Ya tienes una cuenta?
+      <button class="text-emerald-600 hover:text-emerald-700 font-medium">Iniciar Sesión</button>
+    </div>
+  </div>
+</div>
