@@ -1,67 +1,184 @@
-<div style="display: flex; gap: 2rem; align-items: flex-start;">
-
+<div class="receta-container">
   <!-- Formulario de ingreso de datos -->
-  <div style="flex: 1; max-width: 400px;">
+  <div class="formulario">
     <h2>Generar Receta Médica</h2>
     <form #recetaForm="ngForm">
-      <div style="margin-bottom: 1rem;">
+      <div class="form-group">
         <label for="nombreMascota">Nombre de la Mascota:</label>
-        <input id="nombreMascota" name="nombreMascota" type="text" [(ngModel)]="nombreMascota" class="form-control" required>
+        <input id="nombreMascota" name="nombreMascota" type="text" [(ngModel)]="nombreMascota" class="form-control"
+          required>
       </div>
-      <div style="margin-bottom: 1rem;">
+      <div class="form-group">
         <label for="fecha">Fecha:</label>
         <input id="fecha" name="fecha" type="date" [(ngModel)]="fecha" class="form-control" required>
       </div>
-      <div style="margin-bottom: 1rem;">
+      <div class="form-group">
         <label for="diagnostico">Diagnóstico:</label>
-        <textarea id="diagnostico" name="diagnostico" rows="3" [(ngModel)]="diagnostico" class="form-control" required></textarea>
+        <textarea id="diagnostico" name="diagnostico" rows="3" [(ngModel)]="diagnostico" class="form-control"
+          required></textarea>
       </div>
-      <div style="margin-bottom: 1rem;">
-        <label>Doctor a cargo:</label>
-        <div>
-          <button type="button" [class.selected]="doctor === 'nicolas serrucho arias'" (click)="doctor = 'nicolas serrucho arias'">
-            nicolas serrucho arias
-          </button>
-          <button type="button" [class.selected]="doctor === 'juanca'" (click)="doctor = 'juanca'">
-            juanca
-          </button>
-        </div>
+      <div class="form-group">
+        <label for="doctor">Doctor a cargo:</label>
+        <select id="doctor" name="doctor" [(ngModel)]="doctor" class="form-control">
+          <option value="" disabled selected>Selecciona un doctor</option>
+          <option value="Jose Alberto Hurtado Rivas ">Jose Alberto Hurtado Rivas</option>
+          <option value="Juan Carlos Chavez Perez">Juan Carlos Chavez Perez</option>
+          <option value="Isaac Ivanov Takamura">Isaac Ivanov Takamura</option>
+          <option value="Victor Sevillano Vega">Victor Sevillano Vega</option>
+        </select>
       </div>
     </form>
   </div>
 
   <!-- Vista previa de la receta médica -->
-  <div style="flex: 1; border: 1px solid #ccc; padding: 1.5rem; border-radius: 8px; background: #f9f9f9; min-width: 320px;">
-    <h2 style="text-align: center;">Receta Médica</h2>
+  <div class="vista-previa">
+    <h2>Receta Médica</h2>
     <p><strong>Mascota:</strong> {{ nombreMascota || '---' }}</p>
     <p><strong>Fecha:</strong> {{ fecha || '---' }}</p>
     <p><strong>Diagnóstico:</strong></p>
-    <p style="min-height: 60px;">{{ diagnostico || '---' }}</p>
+    <p class="diagnostico-preview">{{ diagnostico || '---' }}</p>
     <p><strong>Doctor a cargo:</strong> {{ doctor || '---' }}</p>
+
+    <!-- Botón para registrar receta -->
+    <div class="boton-registrar-container">
+      <button type="button" (click)="registrarReceta()">Registrar receta médica</button>
+    </div>
+
   </div>
 
-</div>
 
-<style>
-  button {
-    margin-right: 0.5rem;
-    padding: 0.5rem 1rem;
-    border: 1px solid #007bff;
-    background: #fff;
-    color: #007bff;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  button.selected, button:hover {
-    background: #007bff;
-    color: #fff;
-  }
-  .form-control {
-    width: 100%;
-    padding: 0.4rem;
-    margin-top: 0.2rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background-color: #f8f8f8;
+      color: #1c1c1e;
+      margin: 0;
+      padding: 1.5rem;
+    }
+
+    .receta-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    .formulario {
+      flex: 1;
+      max-width: 400px;
+      background-color: #e6f0fa;
+      /* celeste pastel suave que no sea vistoso xd*/
+      padding: 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .vista-previa {
+      flex: 1;
+      min-width: 320px;
+      background-color: #ffffff;
+      padding: 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .diagnostico-preview {
+      min-height: 60px;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="date"] {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-color: #fff;
+      padding: 0.75rem 1rem;
+      border: 1px solid #d1d1d6;
+      border-radius: 12px;
+      font-size: 16px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: #1c1c1e;
+      width: 100%;
+      box-sizing: border-box;
+      cursor: pointer;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.3);
+      /* reduce contraste de ícono del calendario */
+      cursor: pointer;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #d1d1d6;
+      border-radius: 12px;
+      background-color: #ffffff;
+      font-size: 16px;
+      font-weight: 500;
+      color: #1c1c1e;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      box-sizing: border-box;
+    }
+
+    .form-control:focus {
+      border-color: #007aff;
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2);
+    }
+
+    .botonera {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
+    button {
+      background-color: #007aff;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    button.selected,
+    button:hover {
+      background-color: #005fdb;
+    }
+  </style>
