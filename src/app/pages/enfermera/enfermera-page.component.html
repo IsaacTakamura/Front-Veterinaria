@@ -1,8 +1,6 @@
-<div class="flex min-h-screen flex-col bg-gray-50">
-
+<div class="min-h-screen flex flex-col bg-gray-50">
   <main class="flex-1 container py-6 mx-auto px-4">
     <h1 class="text-2xl font-bold mb-6">Panel de Enfermería</h1>
-
     <div class="w-full">
       <!-- Tabs Navigation -->
       <div class="flex mb-4 border-b">
@@ -25,16 +23,16 @@
           Citas Programadas
         </button>
       </div>
-
       <!-- Tab Content -->
       <div class="py-4">
         @if (activeTab() === 'hoy') {
-        <app-citas-hoy />
+          <app-citas-hoy />
         }
         @if (activeTab() === 'programadas') {
-        <app-citas-programadas />
+          <app-citas-programadas />
         }
       </div>
     </div>
   </main>
+  <!-- El footer debe ir fuera del main y del container -->
 </div>
