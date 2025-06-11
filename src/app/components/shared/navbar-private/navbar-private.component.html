@@ -1,0 +1,82 @@
+<header class="bg-white border-b border-gray-200 shadow-sm">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3.172 5.172a4 4 0 015.656 0L12 8.343l3.172-3.171a4 4 0 115.656 5.656L12 21.343 3.172 10.828a4 4 0 010-5.656z" />
+          </svg>
+          class="h-6 w-6 text-white" />
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-gray-900">VetCare Pro</h1>
+          <p class="text-xs text-gray-500">Sistema de Gestión Veterinaria</p>
+        </div>
+      </div>
+
+      <!-- Usuario + Acciones -->
+      <div class="flex items-center gap-4">
+        <!-- Notificaciones -->
+        <app-button variant="ghost" size="sm" class="relative">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11c0-3.314-2.686-6-6-6S6 7.686 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+          class="h-5 w-5" />
+          <app-badge *ngIf="notifications() > 0" variant="destructive"
+            class="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
+            {{ notifications() }}
+          </app-badge>
+        </app-button>
+
+        <!-- Nombre y Rol -->
+        <div class="hidden md:flex items-center gap-3">
+          <div class="text-right">
+            <p class="text-sm font-medium text-gray-900">{{ user.name }}</p>
+            <app-badge variant="secondary" [ngClass]="getRoleColor(user.role)">
+              {{ user.role }}
+            </app-badge>
+          </div>
+        </div>
+
+        <!-- Dropdown -->
+        <app-dropdown-menu [avatar]="user.avatar" [initials]="getInitials(user.name)">
+          <ng-container dropdown-label>
+            <div class="flex flex-col space-y-2">
+              <p class="text-sm font-medium leading-none">{{ user.name }}</p>
+              <app-badge variant="secondary" [ngClass]="getRoleColor(user.role)" class="w-fit">
+                {{ user.role }}
+              </app-badge>
+            </div>
+          </ng-container>
+          <ng-container dropdown-content>
+            <button class="flex items-center w-full px-2 py-2 hover:bg-gray-100 text-gray-700">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9.75 3a1.5 1.5 0 012.5 0L13.25 5.5h2.5a1.5 1.5 0 011.5 1.5v2.5l2.5 1.25a1.5 1.5 0 010 2.5L17.75 13v2.5a1.5 1.5 0 01-1.5 1.5h-2.5l-1.25 2.5a1.5 1.5 0 01-2.5 0L10.75 17H8.25a1.5 1.5 0 01-1.5-1.5V13l-2.5-1.25a1.5 1.5 0 010-2.5L6.75 8.5V6a1.5 1.5 0 011.5-1.5h2.5L9.75 3z" />
+              </svg>
+              class="mr-2 h-4 w-4" />
+              Configuración
+            </button>
+            <hr />
+            <button (click)="logout()" class="flex items-center w-full px-2 py-2 text-red-600 hover:bg-red-50">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+              </svg>
+              class="mr-2 h-4 w-4" />
+              Cerrar Sesión
+            </button>
+          </ng-container>
+        </app-dropdown-menu>
+      </div>
+    </div>
+  </div>
+</header>
