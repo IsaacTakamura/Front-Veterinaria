@@ -19,7 +19,6 @@ export class HistorialModalComponent {
   @Input() set isOpenValue(value: boolean) {
     this.isOpen.set(value);
   }
-
   @Input() set citaData(value: any) {
     this.cita.set(value);
   }
