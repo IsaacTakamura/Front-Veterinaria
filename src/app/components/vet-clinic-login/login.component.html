@@ -6,7 +6,8 @@
 
   <div class="bg-white/10 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] text-white rounded-xl p-6">
     <div class="text-center space-y-2 mb-4">
-      <div class="w-16 h-16 rounded-full bg-gradient-to-r from-cyan-400 to-emerald-300 flex items-center justify-center mx-auto">
+      <div
+        class="w-16 h-16 rounded-full bg-gradient-to-r from-cyan-400 to-emerald-300 flex items-center justify-center mx-auto">
         <svg class="h-8 w-8 text-white"><!-- ícono Paw --></svg>
       </div>
       <h2 class="text-2xl font-bold">Bienvenido</h2>
@@ -15,30 +16,21 @@
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
       <div>
-        <label for="email" class="text-cyan-100 block mb-1">Email</label>
+        <label for="username" class="text-cyan-100 block mb-1">Username</label>
         <div class="relative">
-          <input
-            formControlName="email"
-            id="email"
-            type="email"
-            placeholder="doctor@vetfuture.com"
+          <input formControlName="username" id="username" type="text" placeholder="doctor123"
             class="pl-10 w-full bg-white/5 border border-cyan-300/30 focus:border-cyan-400 text-white placeholder:text-cyan-200/50 rounded px-3 py-2"
-            required
-          />
-          <svg class="absolute left-3 top-2.5 h-5 w-5 text-cyan-300"><!-- ícono Mail --></svg>
+            required />
+          <svg class="absolute left-3 top-2.5 h-5 w-5 text-cyan-300"><!-- ícono User --></svg>
         </div>
       </div>
 
       <div>
         <label for="password" class="text-cyan-100 block mb-1">Contraseña</label>
         <div class="relative">
-          <input
-            formControlName="password"
-            id="password"
-            [type]="showPassword() ? 'text' : 'password'"
+          <input formControlName="password" id="password" [type]="showPassword() ? 'text' : 'password'"
             class="pl-10 w-full bg-white/5 border border-cyan-300/30 focus:border-cyan-400 text-white rounded px-3 py-2"
-            required
-          />
+            required />
           <button type="button"
             class="absolute right-1 top-1 h-8 w-8 text-cyan-300 hover:text-white hover:bg-cyan-500/20 rounded"
             (click)="togglePassword()">
@@ -51,8 +43,7 @@
       </div>
 
       <div class="flex items-center space-x-2">
-        <input type="checkbox" id="remember" formControlName="remember"
-          class="accent-cyan-500 border-cyan-300" />
+        <input type="checkbox" id="remember" formControlName="remember" class="accent-cyan-500 border-cyan-300" />
         <label for="remember" class="text-sm text-cyan-100">Recordar mis datos</label>
       </div>
 
