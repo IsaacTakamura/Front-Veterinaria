@@ -1,0 +1,7 @@
+:host {
+  font-family: 'Roboto', sans-serif;
+}
+
+#chat {
+  scroll-behavior: smooth;
+}
