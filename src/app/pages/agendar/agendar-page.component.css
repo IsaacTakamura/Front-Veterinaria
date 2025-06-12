@@ -15,6 +15,60 @@
   justify-content: space-between;
 }
 
+.ios-switch-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.ios-switch {
+  position: relative;
+  display: flex;
+  width: 280px;
+  height: 40px;
+  background-color: #e5e7eb; /* gris claro */
+  border-radius: 9999px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+.ios-switch .option {
+  flex: 1;
+  text-align: center;
+  line-height: 40px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  z-index: 2;
+  color: #ffffff; /* texto gris */
+  transition: color 0.3s ease;
+}
+
+.ios-switch .slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 136px;
+  height: 36px;
+  background: linear-gradient(to right, #45c353, #58e5c2); /* verde claro */
+  border-radius: 9999px;
+  transition: left 0.3s ease;
+  z-index: 1;
+}
+
+.ios-switch.registrada .slider {
+  left: 142px;
+  background: linear-gradient(to right, #45c353, #58e5c2); /* verde claro */
+}
+
+.ios-switch.registrada .option.nueva {
+  color: #ababad; /* texto más apagado */
+}
+
+.ios-switch:not(.registrada) .option.registrada {
+  color: #ababad;
+}
+
 .columna {
   flex: 1;
   background-color: #ffffff;
@@ -32,11 +86,14 @@
 }
 
 /* Reglas comunes */
-h3 {
-  margin-top: 0;
-  font-size: 16px; /* antes 20px */
-  color: #333;
-  font-weight: 600;
+.titulo-seccion {
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(to right, #46c355, #5f88e0); /* celeste a azul */
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.6rem;
 }
 
 .form-group {
@@ -68,11 +125,12 @@ textarea {
 
 .boton-container {
   text-align: center;
+
   margin-top: 1.5rem;
 }
 
 button {
-  background-color: #10b981;
+  background: linear-gradient(to right, #45c353, #2de1b4);
   color: white;
   border: none;
   padding: 0.5rem 1rem;

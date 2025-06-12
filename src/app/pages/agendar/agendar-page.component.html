@@ -1,75 +1,102 @@
-<div class="contenedor-cita">
-  <!-- Parte superior: Cliente y Mascota -->
-  <div class="datos-superiores">
-    <!-- Cliente -->
-    <div class="columna">
-      <h3>Datos del Propietario</h3>
-      <div class="form-group">
-        <label>Nombre del Cliente:</label>
-        <input type="text" [(ngModel)]="nombreCliente" class="form-control">
-      </div>
-      <div class="form-group">
-        <label>Teléfono:</label>
-        <input type="tel" [(ngModel)]="telefono" class="form-control">
-      </div>
-      <div class="form-group">
-        <label>Correo Electrónico:</label>
-        <input type="email" [(ngModel)]="correo" class="form-control">
-      </div>
-    </div>
+<div class="cita-container">
 
-    <!-- Mascota -->
-    <div class="columna">
-      <h3>Datos de la Mascota</h3>
-      <div class="form-group">
-        <label>Nombre de la Mascota:</label>
-        <input type="text" [(ngModel)]="nombreMascota" class="form-control">
-      </div>
-      <div class="form-group">
-        <label>Especie:</label>
-        <input type="text" [(ngModel)]="especie" class="form-control">
-      </div>
-      <div class="form-group">
-        <label>Raza:</label>
-        <input type="text" [(ngModel)]="raza" class="form-control">
-      </div>
-      <div class="form-group">
-        <label>Edad de la Mascota:</label>
-        <input type="number" [(ngModel)]="edadMascota" class="form-control">
-      </div>
-    </div>
+  <!-- 🔁 Switch estilo iOS para elegir mascota nueva o registrada -->
+<div class="ios-switch-container">
+  <div class="ios-switch" [class.registrada]="usarMascotaRegistrada" (click)="toggleSwitch()">
+    <div class="option nueva">Nueva Mascota</div>
+    <div class="option registrada">Mascota Registrada</div>
+    <div class="slider"></div>
   </div>
+</div>
 
-  <!-- Parte inferior: Detalles de la cita -->
-  <div class="detalles-cita">
-    <h3>Detalles de la Cita</h3>
-    <div class="form-group">
-      <label>Fecha:</label>
-      <input type="date" [(ngModel)]="fecha" class="form-control">
+  <!-- 📄 Formulario general -->
+  <form>
+    <div class="contenedor-cita">
+      <!-- Parte superior: Cliente y Mascota -->
+      <div class="datos-superiores">
+        <!-- Cliente -->
+        <div class="columna">
+          <h3 class="titulo-seccion gradiante">Datos del Propietario</h3>
+          <div class="form-group">
+            <label>Nombre del Cliente:</label>
+            <input type="text" [(ngModel)]="nombreCliente" name="nombreCliente" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Teléfono:</label>
+            <input type="tel" [(ngModel)]="telefono" name="telefono" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Correo Electrónico:</label>
+            <input type="email" [(ngModel)]="correo" name="correo" class="form-control">
+          </div>
+        </div>
+
+        <!-- Mascota -->
+        <div class="columna">
+          <h3 class="titulo-seccion gradiante">Datos de la Mascota</h3>
+
+          <ng-container *ngIf="!usarMascotaRegistrada">
+            <div class="form-group">
+              <label>Nombre de la Mascota:</label>
+              <input type="text" [(ngModel)]="nombreMascota" name="nombreMascota" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Especie:</label>
+              <input type="text" [(ngModel)]="especie" name="especie" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Raza:</label>
+              <input type="text" [(ngModel)]="raza" name="raza" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Edad de la Mascota:</label>
+              <input type="number" [(ngModel)]="edadMascota" name="edadMascota" class="form-control">
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="usarMascotaRegistrada">
+            <div class="form-group">
+              <label>Seleccionar Mascota Registrada:</label>
+              <select [(ngModel)]="mascotaSeleccionada" name="mascotaSeleccionada" class="form-control">
+                <option *ngFor="let mascota of mascotasRegistradas" [value]="mascota">{{ mascota }}</option>
+              </select>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- Parte inferior: Detalles de la cita -->
+      <div class="detalles-cita">
+        <h3 class="titulo-seccion gradiante">Detalles de la Cita</h3>
+        <div class="form-group">
+          <label>Fecha:</label>
+          <input type="date" [(ngModel)]="fecha" name="fecha" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Tipo de Servicio:</label>
+          <select [(ngModel)]="tipoServicio" name="tipoServicio" class="form-control">
+            <option>Consulta</option>
+            <option>Vacunación</option>
+            <option>Desparasitación</option>
+            <option>Control</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Horario:</label>
+          <input type="time" [(ngModel)]="horario" name="horario" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Veterinario (opcional):</label>
+          <input type="text" [(ngModel)]="veterinario" name="veterinario" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Motivo de la Consulta:</label>
+          <textarea [(ngModel)]="motivoConsulta" name="motivoConsulta" class="form-control"></textarea>
+        </div>
+        <div class="boton-container">
+          <button type="button" (click)="agendarCita()">Agendar Cita</button>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label>Tipo de Servicio:</label>
-      <select [(ngModel)]="tipoServicio" class="form-control">
-        <option>Consulta</option>
-        <option>Vacunación</option>
-        <option>Desparasitación</option>
-        <option>Control</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Horario:</label>
-      <input type="time" [(ngModel)]="horario" class="form-control">
-    </div>
-    <div class="form-group">
-      <label>Veterinario (opcional):</label>
-      <input type="text" [(ngModel)]="veterinario" class="form-control">
-    </div>
-    <div class="form-group">
-      <label>Motivo de la Consulta:</label>
-      <textarea [(ngModel)]="motivoConsulta" class="form-control"></textarea>
-    </div>
-    <div class="boton-container">
-      <button (click)="agendarCita()">Agendar Cita</button>
-    </div>
-  </div>
+  </form>
 </div>

@@ -9,6 +9,8 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./agendar-page.component.css'],
   imports: [CommonModule, FormsModule]
 })
+
+
 export class AgendarPageComponent {
   // Datos del propietario
   nombreCliente = '';
@@ -46,4 +48,21 @@ export class AgendarPageComponent {
     });
     alert('✅ Cita agendada correctamente');
   }
+
+  usarMascotaRegistrada = false;
+
+  toggleSwitch() {
+    this.usarMascotaRegistrada = !this.usarMascotaRegistrada;
+  }
+
+  mascota = {
+    nombre: '',
+    especie: '',
+    raza: '',
+    edad: 0
+  };
+
+  mascotasRegistradas: string[] = ['Luna', 'Max', 'Firulais', 'Michi'];
+  mascotaSeleccionada: string = '';
+
 }
