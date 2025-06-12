@@ -6,6 +6,7 @@ import { LoginPageComponent } from './pages/login/login-page.component';
 import { RegisterPageComponent } from './pages/register/register-page.component';
 import { VeterinarioPageComponent } from './pages/veterinario/veterinario-page.component';
 import { AdminIndexPageComponent } from './pages/admin-index/admin-index-page.component';
+import { AgendarPageComponent } from './pages/agendar/agendar-page.component';
 
 export const routes: Routes = [
 
@@ -38,4 +39,8 @@ export const routes: Routes = [
   path: 'admin',
   component: AdminIndexPageComponent,
 },
+{
+  path: 'agendar',
+  component: AgendarPageComponent,
+}
 ];
