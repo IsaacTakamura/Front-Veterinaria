@@ -10,14 +10,17 @@
       con amor
     </h1>
     <p class="text-xl text-gray-600 leading-relaxed">
-      Brindamos atención veterinaria integral con tecnología avanzada, historial clínico digital y un equipo de profesionales comprometidos.
+      Brindamos atención veterinaria integral con tecnología avanzada, historial clínico digital y un equipo de
+      profesionales comprometidos.
     </p>
     <div class="flex flex-col sm:flex-row gap-4">
-      <button class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
-       🗓️ Agendar Consulta
+      <button
+        class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition transform hover:scale-105">
+        🗓️ Agendar Consulta
       </button>
-      <button class="border border-green-600 text-green-600 px-6 py-3 rounded-xl hover:bg-green-50 transition transform hover:scale-105">
-      📞 Emergencias
+      <button
+        class="border border-green-600 text-green-600 px-6 py-3 rounded-xl hover:bg-green-50 transition transform hover:scale-105">
+        📞 Emergencias
       </button>
     </div>
     <div class="grid grid-cols-3 gap-6 pt-8">
@@ -40,8 +43,9 @@
 
   <div class="relative">
     <div class="bg-gradient-to-br from-green-400 to-blue-500 rounded-3xl p-8 transform rotate-3">
-      <img src="https://blog.uvm.mx/hubfs/Blog_Contenido/UG/estudiar_para_veterinario_en_uvm.jpg" alt="Veterinario atendiendo mascota"
-           class="rounded-2xl shadow-2xl transform -rotate-3 w-full h-auto object-cover" />
+      <img src="https://blog.uvm.mx/hubfs/Blog_Contenido/UG/estudiar_para_veterinario_en_uvm.jpg"
+        alt="Veterinario atendiendo mascota"
+        class="rounded-2xl shadow-2xl transform -rotate-3 w-full h-auto object-cover" />
     </div>
     <div class="absolute -bottom-6 -left-6 bg-white rounded-2xl p-4 shadow-xl flex items-center space-x-3">
       <div class="bg-green-100 p-2 rounded-full">
@@ -62,12 +66,14 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
     <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Nuestros Servicios Especializados</h2>
     <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-16">
-      Ofrecemos atención integral con procesos optimizados, desde el triaje inicial hasta el seguimiento completo del tratamiento.
+      Ofrecemos atención integral con procesos optimizados, desde el triaje inicial hasta el seguimiento completo del
+      tratamiento.
     </p>
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
       <ng-container *ngFor="let servicio of servicios">
         <div class="p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all">
-          <div class="w-16 h-16 text-2xl rounded-2xl mx-auto mb-4 flex items-center justify-center bg-gradient-to-br from-green-100 to-green-200">
+          <div
+            class="w-16 h-16 text-2xl rounded-2xl mx-auto mb-4 flex items-center justify-center bg-gradient-to-br from-green-100 to-green-200">
             {{ servicio.icono }}
           </div>
           <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ servicio.titulo }}</h3>
@@ -86,12 +92,14 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
     <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Nuestro Proceso de Atención</h2>
     <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-16">
-      Un flujo optimizado que garantiza la mejor atención para tu mascota, desde la recepción hasta el seguimiento del tratamiento.
+      Un flujo optimizado que garantiza la mejor atención para tu mascota, desde la recepción hasta el seguimiento del
+      tratamiento.
     </p>
     <div class="grid md:grid-cols-4 gap-8">
       <ng-container *ngFor="let paso of proceso; index as i">
         <div class="bg-white rounded-2xl p-6 shadow-lg">
-          <div class="bg-gradient-to-br from-green-500 to-green-600 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 text-white font-bold text-lg">
+          <div
+            class="bg-gradient-to-br from-green-500 to-green-600 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 text-white font-bold text-lg">
             {{ i + 1 }}
           </div>
           <h3 class="font-semibold text-gray-900 mb-2">{{ paso.titulo }}</h3>
@@ -110,12 +118,17 @@
       Agenda tu cita ahora y aprovecha nuestro sistema digital de historial clínico para un seguimiento completo.
     </p>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <button routerLink="/agendar" class="bg-white text-green-600 px-6 py-3 rounded-xl font-semibold hover:bg-gray-100 transition">
+      <!-- Botón que va a la página de agendar -->
+      <a href="/agendar"
+        class="bg-white text-green-600 px-6 py-3 rounded-xl font-semibold hover:bg-gray-100 transition text-center">
         🗓️ Agendar Cita Online
-      </button>
-      <button class="border border-white text-white px-6 py-3 rounded-xl font-semibold hover:bg-white hover:text-green-600 transition">
+      </a>
+
+      <!-- Botón que realiza una llamada telefónica -->
+      <a href="tel:+51999999999"
+        class="border border-white text-white px-6 py-3 rounded-xl font-semibold hover:bg-white hover:text-green-600 transition text-center">
         📞 Llamar Ahora
-      </button>
+      </a>
     </div>
   </div>
 </section>
@@ -130,33 +143,41 @@
 
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
       <!-- Tarjeta de testimonio -->
-      <div class="bg-white rounded-3xl shadow-xl p-6 text-left flex flex-col justify-between transition hover:shadow-2xl">
+      <div
+        class="bg-white rounded-3xl shadow-xl p-6 text-left flex flex-col justify-between transition hover:shadow-2xl">
         <div class="flex items-start gap-4">
-          <div class="w-12 h-12 bg-gradient-to-br from-green-100 to-blue-100 text-green-800 font-bold rounded-full flex items-center justify-center text-lg shadow-sm">
+          <div
+            class="w-12 h-12 bg-gradient-to-br from-green-100 to-blue-100 text-green-800 font-bold rounded-full flex items-center justify-center text-lg shadow-sm">
             A
           </div>
           <div>
-            <p class="text-gray-600 italic">"El mejor servicio veterinario que hemos tenido. ¡Gracias por cuidar de nuestro perro!"</p>
+            <p class="text-gray-600 italic">"El mejor servicio veterinario que hemos tenido. ¡Gracias por cuidar de
+              nuestro perro!"</p>
             <div class="mt-2 font-semibold text-gray-900">Ana Pérez</div>
           </div>
         </div>
       </div>
 
-      <div class="bg-white rounded-3xl shadow-xl p-6 text-left flex flex-col justify-between transition hover:shadow-2xl">
+      <div
+        class="bg-white rounded-3xl shadow-xl p-6 text-left flex flex-col justify-between transition hover:shadow-2xl">
         <div class="flex items-start gap-4">
-          <div class="w-12 h-12 bg-gradient-to-br from-green-100 to-blue-100 text-green-800 font-bold rounded-full flex items-center justify-center text-lg shadow-sm">
+          <div
+            class="w-12 h-12 bg-gradient-to-br from-green-100 to-blue-100 text-green-800 font-bold rounded-full flex items-center justify-center text-lg shadow-sm">
             C
           </div>
           <div>
-            <p class="text-gray-600 italic">"Atención excepcional y un equipo muy profesional. Recomendados al 100%."</p>
+            <p class="text-gray-600 italic">"Atención excepcional y un equipo muy profesional. Recomendados al 100%."
+            </p>
             <div class="mt-2 font-semibold text-gray-900">Carlos Gómez</div>
           </div>
         </div>
       </div>
 
-      <div class="bg-white rounded-3xl shadow-xl p-6 text-left flex flex-col justify-between transition hover:shadow-2xl">
+      <div
+        class="bg-white rounded-3xl shadow-xl p-6 text-left flex flex-col justify-between transition hover:shadow-2xl">
         <div class="flex items-start gap-4">
-          <div class="w-12 h-12 bg-gradient-to-br from-green-100 to-blue-100 text-green-800 font-bold rounded-full flex items-center justify-center text-lg shadow-sm">
+          <div
+            class="w-12 h-12 bg-gradient-to-br from-green-100 to-blue-100 text-green-800 font-bold rounded-full flex items-center justify-center text-lg shadow-sm">
             L
           </div>
           <div>
@@ -166,9 +187,11 @@
         </div>
       </div>
 
-      <div class="bg-white rounded-3xl shadow-xl p-6 text-left flex flex-col justify-between transition hover:shadow-2xl">
+      <div
+        class="bg-white rounded-3xl shadow-xl p-6 text-left flex flex-col justify-between transition hover:shadow-2xl">
         <div class="flex items-start gap-4">
-          <div class="w-12 h-12 bg-gradient-to-br from-green-100 to-blue-100 text-green-800 font-bold rounded-full flex items-center justify-center text-lg shadow-sm">
+          <div
+            class="w-12 h-12 bg-gradient-to-br from-green-100 to-blue-100 text-green-800 font-bold rounded-full flex items-center justify-center text-lg shadow-sm">
             J
           </div>
           <div>
@@ -178,9 +201,11 @@
         </div>
       </div>
 
-      <div class="bg-white rounded-3xl shadow-xl p-6 text-left flex flex-col justify-between transition hover:shadow-2xl">
+      <div
+        class="bg-white rounded-3xl shadow-xl p-6 text-left flex flex-col justify-between transition hover:shadow-2xl">
         <div class="flex items-start gap-4">
-          <div class="w-12 h-12 bg-gradient-to-br from-green-100 to-blue-100 text-green-800 font-bold rounded-full flex items-center justify-center text-lg shadow-sm">
+          <div
+            class="w-12 h-12 bg-gradient-to-br from-green-100 to-blue-100 text-green-800 font-bold rounded-full flex items-center justify-center text-lg shadow-sm">
             M
           </div>
           <div>
@@ -190,13 +215,16 @@
         </div>
       </div>
 
-      <div class="bg-white rounded-3xl shadow-xl p-6 text-left flex flex-col justify-between transition hover:shadow-2xl">
+      <div
+        class="bg-white rounded-3xl shadow-xl p-6 text-left flex flex-col justify-between transition hover:shadow-2xl">
         <div class="flex items-start gap-4">
-          <div class="w-12 h-12 bg-gradient-to-br from-green-100 to-blue-100 text-green-800 font-bold rounded-full flex items-center justify-center text-lg shadow-sm">
+          <div
+            class="w-12 h-12 bg-gradient-to-br from-green-100 to-blue-100 text-green-800 font-bold rounded-full flex items-center justify-center text-lg shadow-sm">
             R
           </div>
           <div>
-            <p class="text-gray-600 italic">"Un lugar donde realmente se preocupan por los animales. ¡Altamente recomendados!"</p>
+            <p class="text-gray-600 italic">"Un lugar donde realmente se preocupan por los animales. ¡Altamente
+              recomendados!"</p>
             <div class="mt-2 font-semibold text-gray-900">Roberto Sánchez</div>
           </div>
         </div>
