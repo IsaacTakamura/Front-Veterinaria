@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -9,8 +9,6 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./agendar-page.component.css'],
   imports: [CommonModule, FormsModule]
 })
-
-
 export class AgendarPageComponent {
   // Datos del propietario
   nombreCliente = '';
@@ -30,16 +28,40 @@ export class AgendarPageComponent {
   veterinario = '';
   motivoConsulta = '';
 
+  // Mascota nueva o registrada
+  mascotasRegistradas: string[] = ['Luna', 'Max', 'Firulais', 'Michi'];
+  mascotaSeleccionada: string = '';
+  usarMascotaRegistrada: boolean = false;
+
+  constructor(private cdr: ChangeDetectorRef) {}
+
+  toggleSwitch() {
+    this.usarMascotaRegistrada = !this.usarMascotaRegistrada;
+
+    // Reiniciar campos si se cambia la opción
+    if (this.usarMascotaRegistrada) {
+      this.nombreMascota = '';
+      this.especie = '';
+      this.raza = '';
+      this.edadMascota = null;
+    } else {
+      this.mascotaSeleccionada = '';
+    }
+
+    // Forzar la detección de cambios por seguridad
+    this.cdr.detectChanges();
+  }
+
   agendarCita() {
     console.log('📋 Datos de la cita agendada:');
     console.log({
       nombreCliente: this.nombreCliente,
       telefono: this.telefono,
       correo: this.correo,
-      nombreMascota: this.nombreMascota,
-      especie: this.especie,
-      raza: this.raza,
-      edadMascota: this.edadMascota,
+      mascota: this.usarMascotaRegistrada ? this.mascotaSeleccionada : this.nombreMascota,
+      especie: this.usarMascotaRegistrada ? '🐾 registrada' : this.especie,
+      raza: this.usarMascotaRegistrada ? '🐾 registrada' : this.raza,
+      edadMascota: this.usarMascotaRegistrada ? '🐾 registrada' : this.edadMascota,
       fecha: this.fecha,
       tipoServicio: this.tipoServicio,
       horario: this.horario,
@@ -48,21 +70,4 @@ export class AgendarPageComponent {
     });
     alert('✅ Cita agendada correctamente');
   }
-
-  usarMascotaRegistrada = false;
-
-  toggleSwitch() {
-    this.usarMascotaRegistrada = !this.usarMascotaRegistrada;
-  }
-
-  mascota = {
-    nombre: '',
-    especie: '',
-    raza: '',
-    edad: 0
-  };
-
-  mascotasRegistradas: string[] = ['Luna', 'Max', 'Firulais', 'Michi'];
-  mascotaSeleccionada: string = '';
-
 }
