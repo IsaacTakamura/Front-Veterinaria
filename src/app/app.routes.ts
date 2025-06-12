@@ -4,7 +4,7 @@ import { RecetaPageComponent } from './pages/receta/receta-page.component';
 import { EnfermeraPageComponent } from './pages/enfermera/enfermera-page.component';
 import { LoginPageComponent } from './pages/login/login-page.component';
 import { RegisterPageComponent } from './pages/register/register-page.component';
-
+import { VeterinarioPageComponent } from './pages/veterinario/veterinario-page.component';
 
 export const routes: Routes = [
 
@@ -13,6 +13,10 @@ export const routes: Routes = [
   path: '',
   component: IndexPageComponent,
 },
+{
+    path: 'register',
+    component: RegisterPageComponent,
+  },
 {
   path: 'login',
   component: LoginPageComponent,
@@ -26,7 +30,7 @@ export const routes: Routes = [
   component: EnfermeraPageComponent,
 },
 {
-  path: 'register',
-  component: RegisterPageComponent,
-}
+ path: 'veterinario',
+ component: VeterinarioPageComponent,
+},
 ];
