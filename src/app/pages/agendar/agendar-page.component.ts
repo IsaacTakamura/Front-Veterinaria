@@ -3,26 +3,47 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-agendar',
+  selector: 'app-agendar-page',
   standalone: true,
-  imports: [CommonModule, FormsModule], // 👈 IMPORTANTE AQUÍ
   templateUrl: './agendar-page.component.html',
-  styleUrls: ['./agendar-page.component.css']
+  styleUrls: ['./agendar-page.component.css'],
+  imports: [CommonModule, FormsModule]
 })
 export class AgendarPageComponent {
-  title = "Sistema de Atención Veterinaria";
+  // Datos del propietario
+  nombreCliente = '';
+  telefono = '';
+  correo = '';
 
-  // Campos del formulario
-  nombreMascota: string = '';
-  fechaCita: string = new Date().toISOString().substring(0, 10); // Fecha actual
-  motivo: string = '';
-  doctor: string = '';
+  // Datos de la mascota
+  nombreMascota = '';
+  especie = '';
+  raza = '';
+  edadMascota: number | null = null;
+
+  // Detalles de la cita
+  fecha = '';
+  tipoServicio = '';
+  horario = '';
+  veterinario = '';
+  motivoConsulta = '';
 
   agendarCita() {
-    console.log("Cita agendada:");
-    console.log("Mascota:", this.nombreMascota);
-    console.log("Fecha:", this.fechaCita);
-    console.log("Motivo:", this.motivo);
-    console.log("Doctor:", this.doctor);
+    console.log('📋 Datos de la cita agendada:');
+    console.log({
+      nombreCliente: this.nombreCliente,
+      telefono: this.telefono,
+      correo: this.correo,
+      nombreMascota: this.nombreMascota,
+      especie: this.especie,
+      raza: this.raza,
+      edadMascota: this.edadMascota,
+      fecha: this.fecha,
+      tipoServicio: this.tipoServicio,
+      horario: this.horario,
+      veterinario: this.veterinario,
+      motivoConsulta: this.motivoConsulta,
+    });
+    alert('✅ Cita agendada correctamente');
   }
 }
