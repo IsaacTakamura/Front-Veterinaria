@@ -1,0 +1,180 @@
+<div class="min-h-screen bg-gray-50 p-6">
+    <div class="max-w-7xl mx-auto">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Bienvenido, Dr. Veterinario</h1>
+        <p class="text-gray-600">
+          Panel de control - {{ todayDate | date: 'fullDate':'':'es-ES' }}
+        </p>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="card">
+          <div class="card-header flex items-center justify-between pb-2">
+            <span class="text-sm font-medium">Citas Hoy</span>
+            <svg class="h-4 w-4 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3M16 7V3M3 11h18M5 21h14a2 2 0 0 0 2-2V11H3v8a2 2 0 0 0 2 2z" />
+          </svg>
+          </div>
+          <div class="card-content">
+            <div class="text-2xl font-bold">{{ stats.todayAppointments }}</div>
+            <p class="text-xs text-muted-foreground">+2 desde ayer</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header flex items-center justify-between pb-2">
+            <span class="text-sm font-medium">Consultas Pendientes</span>
+            <svg class="h-4 w-4 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <circle cx="12" cy="12" r="10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2"/>
+          </svg>
+          </div>
+          <div class="card-content">
+            <div class="text-2xl font-bold">{{ stats.pendingConsultations }}</div>
+            <p class="text-xs text-muted-foreground">Requieren atención</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header flex items-center justify-between pb-2">
+            <span class="text-sm font-medium">Completadas Hoy</span>
+            <svg class="h-4 w-4 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"></svg>
+          </div>
+          <div class="card-content">
+            <div class="text-2xl font-bold">{{ stats.completedToday }}</div>
+            <p class="text-xs text-muted-foreground">Consultas finalizadas</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header flex items-center justify-between pb-2">
+            <span class="text-sm font-medium">Emergencias</span>
+            <svg class="h-4 w-4 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"></svg>
+          </div>
+          <div class="card-content">
+            <div class="text-2xl font-bold text-red-600">{{ stats.emergencies }}</div>
+            <p class="text-xs text-muted-foreground">Casos urgentes</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Acciones Rápidas</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <button class="btn flex flex-col items-center justify-center space-y-2 h-20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 8v8m-4-4h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Nueva Consulta</span>
+          </button>
+          <button class="btn-outline flex flex-col items-center justify-center space-y-2 h-20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Buscar Paciente</span>
+          </button>
+          <button class="btn-outline flex flex-col items-center justify-center space-y-2 h-20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+              <polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/>
+              <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="2"/>
+              <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="2"/>
+              <line x1="10" y1="9" x2="8" y2="9" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span>Historial Clínico</span>
+          </button>
+          <button class="btn-outline flex flex-col items-center justify-center space-y-2 h-20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
+              <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span>Gestionar Citas</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Today's Appointments -->
+        <div class="card">
+          <div class="card-header">
+            <span class="text-lg font-semibold">Citas de Hoy</span>
+          </div>
+          <div class="card-content space-y-4">
+            <div *ngFor="let appt of todayAppointments">
+              <div class="flex items-center justify-between p-3 border rounded-lg">
+                <div class="flex items-center space-x-3">
+                  <div class="text-sm font-medium text-blue-600">{{ appt.time }}</div>
+                  <div>
+                    <div class="font-medium">{{ appt.pet }}</div>
+                    <div class="text-sm text-gray-500">{{ appt.owner }}</div>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <span class="badge-secondary text-xs">{{ appt.type }}</span>
+                  <span class="badge {{ getStatusColor(appt.status) }} text-xs">
+                    {{ getStatusText(appt.status) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <button class="btn-outline w-full mt-4">Ver Todas las Citas</button>
+          </div>
+        </div>
+
+        <!-- Recent Patients -->
+        <div class="card">
+          <div class="card-header">
+            <span class="text-lg font-semibold">Pacientes Recientes</span>
+          </div>
+          <div class="card-content space-y-4">
+            <div class="flex items-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <input
+                type="text"
+                placeholder="Buscar paciente..."
+                [value]="searchTerm()"
+                (input)="searchTerm.set($any($event.target).value)"
+                class="flex-1"
+              />
+            </div>
+            <div class="space-y-3">
+              <div *ngFor="let patient of filteredPatients()" class="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                     <svg class="h-4 w-4 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"></svg>
+                  </div>
+                  <div>
+                    <div class="font-medium">{{ patient.name }}</div>
+                    <div class="text-sm text-gray-500">{{ patient.species }} - {{ patient.breed }}</div>
+                  </div>
+                </div>
+                <div class="text-sm text-gray-500">{{ patient.lastVisit }}</div>
+              </div>
+            </div>
+            <button class="btn-outline w-full mt-4">Ver Todos los Pacientes</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emergency Alert -->
+      <div *ngIf="stats.emergencies > 0" class="card border-red-200 bg-red-50 mt-8">
+        <div class="card-header text-red-800 flex items-center space-x-2">
+           <svg class="h-4 w-4 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"></svg>
+          <span>Alerta de Emergencia</span>
+        </div>
+        <div class="card-content">
+          <p class="text-red-700 mb-4">
+            Hay {{ stats.emergencies }} caso(s) de emergencia que requiere(n) atención inmediata.
+          </p>
+          <button class="btn bg-red-600 hover:bg-red-700">Atender Emergencia</button>
+        </div>
+      </div>
+    </div>
+  </div>
