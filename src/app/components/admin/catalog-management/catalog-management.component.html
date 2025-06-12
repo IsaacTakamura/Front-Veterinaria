@@ -1,0 +1,144 @@
+<!-- ESPECIES Y RAZAS -->
+<div *ngIf="activeTab === 'especies-razas'">
+  <div class="bg-white rounded-lg shadow">
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+      <h2 class="text-xl font-semibold flex items-center">
+        <!-- Database SVG -->
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+        Especies y Razas
+      </h2>
+      <button class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center">
+        <!-- Plus SVG -->
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Agregar Especie
+      </button>
+    </div>
+    <div class="p-6">
+      <div *ngFor="let especie of especies" class="mb-6 p-4 border border-gray-200 rounded-lg">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="text-lg font-medium">{{ especie.nombre }}</h3>
+          <div class="space-x-2">
+            <button class="text-blue-600 hover:text-blue-800">
+              <!-- Edit SVG -->
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                   viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+            </button>
+            <button class="text-red-600 hover:text-red-800">
+              <!-- Trash SVG -->
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                   viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <span *ngFor="let raza of especie.razas" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+            {{ raza }}
+          </span>
+          <button class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm hover:bg-green-200">
+            + Agregar Raza
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VACUNAS -->
+<div *ngIf="activeTab === 'vacunas'">
+  <div class="bg-white rounded-lg shadow">
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+      <h2 class="text-xl font-semibold">Catálogo de Vacunas</h2>
+      <button class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center">
+        <!-- Plus SVG -->
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nueva Vacuna
+      </button>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vacuna</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Especie</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Frecuencia</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <tr *ngFor="let vacuna of vacunas">
+            <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ vacuna.nombre }}</td>
+            <td class="px-6 py-4 text-sm text-gray-500">{{ vacuna.especie }}</td>
+            <td class="px-6 py-4 text-sm text-gray-500">{{ vacuna.frecuencia }}</td>
+            <td class="px-6 py-4 text-sm space-x-2">
+              <button class="text-blue-600 hover:text-blue-800">
+                <!-- Edit SVG -->
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+              </button>
+              <button class="text-red-600 hover:text-red-800">
+                <!-- Trash SVG -->
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICIOS -->
+<div *ngIf="activeTab === 'servicios'">
+  <div class="bg-white rounded-lg shadow">
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+      <h2 class="text-xl font-semibold">Catálogo de Servicios</h2>
+      <button class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center">
+        <!-- Plus SVG -->
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nuevo Servicio
+      </button>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Servicio</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Precio</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Duración</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <tr *ngFor="let servicio of servicios">
+            <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ servicio.nombre }}</td>
+            <td class="px-6 py-4 text-sm text-gray-500">S/ {{ servicio.precio }}</td>
+            <td class="px-6 py-4 text-sm text-gray-500">{{ servicio.duracion }}</td>
+            <td class="px-6 py-4 text-sm space-x-2">
+              <button class="text-blue-600 hover:text-blue-800">
+                <!-- Edit SVG -->
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+              </button>
+              <button class="text-red-600 hover:text-red-800">
+                <!-- Trash SVG -->
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIGURACIÓN DE TARIFAS (DEFAULT) -->
+<div *ngIf="activeTab !== 'especies-razas' && activeTab !== 'vacunas' && activeTab !== 'servicios'" class="bg-white rounded-lg shadow p-6">
+  <h2 class="text-xl font-semibold mb-4">Configuración de Tarifas</h2>
+  <p class="text-gray-600">Gestión de precios y tarifas por servicio.</p>
+</div>

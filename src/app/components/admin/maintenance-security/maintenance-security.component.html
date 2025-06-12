@@ -1,0 +1,91 @@
+<!-- Respaldos -->
+<div *ngIf="activeTab === 'respaldos'" class="bg-white rounded-lg shadow">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h2 class="text-xl font-semibold flex items-center">
+      <!-- Database SVG -->
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+           viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+      Respaldos del Sistema
+    </h2>
+  </div>
+  <div class="p-6 space-y-4">
+    <div class="bg-green-50 p-4 rounded-lg">
+      <h3 class="font-semibold text-green-800 mb-2">Último Respaldo</h3>
+      <p class="text-green-600">15 de Enero 2024 - 02:00 AM</p>
+      <p class="text-sm text-green-500">Estado: Completado exitosamente</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <button class="bg-blue-600 text-white p-4 rounded-lg hover:bg-blue-700 flex items-center justify-center">
+        <!-- Download SVG -->
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 15l5 5 5-5"/><path d="M19 21H5"/></svg>
+        Crear Respaldo Manual
+      </button>
+      <button class="bg-green-600 text-white p-4 rounded-lg hover:bg-green-700 flex items-center justify-center">
+        <!-- Settings SVG -->
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 8.6 15a1.65 1.65 0 0 0-1.82-.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0 .33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 15 8.6c.22 0 .43.03.64.08a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82z"/></svg>
+        Configurar Respaldos Automáticos
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Logs del sistema -->
+<div *ngIf="activeTab === 'logs-sistema'" class="bg-white rounded-lg shadow">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h2 class="text-xl font-semibold flex items-center">
+      <!-- FileText SVG -->
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+           viewBox="0 0 24 24"><path d="M4 4v16c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V8l-6-6H6a2 2 0 0 0-2 2z"/><polyline points="14 3 14 8 19 8"/></svg>
+      Logs del Sistema
+    </h2>
+  </div>
+  <div class="p-6">
+    <div class="bg-gray-50 p-4 rounded-lg font-mono text-sm space-y-1">
+      <div *ngFor="let log of logs" [ngClass]="log.color">{{ log.text }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- Configuración por defecto -->
+<div *ngIf="activeTab !== 'respaldos' && activeTab !== 'logs-sistema'" class="bg-white rounded-lg shadow p-6">
+  <h2 class="text-xl font-semibold mb-4 flex items-center">
+    <!-- Settings SVG -->
+    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+         viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 8.6 15a1.65 1.65 0 0 0-1.82-.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0 .33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 15 8.6c.22 0 .43.03.64.08a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82z"/></svg>
+    Configuración del Sistema
+  </h2>
+  <div class="space-y-4">
+    <div class="border border-gray-200 rounded-lg p-4">
+      <h3 class="font-medium mb-2">Configuración General</h3>
+      <div class="space-y-2">
+        <label class="flex items-center">
+          <input type="checkbox" class="mr-2" checked />
+          Notificaciones por email
+        </label>
+        <label class="flex items-center">
+          <input type="checkbox" class="mr-2" checked />
+          Respaldos automáticos diarios
+        </label>
+        <label class="flex items-center">
+          <input type="checkbox" class="mr-2" />
+          Modo mantenimiento
+        </label>
+      </div>
+    </div>
+    <div class="border border-gray-200 rounded-lg p-4">
+      <h3 class="font-medium mb-2">Horarios de Atención</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm text-gray-600">Hora de Apertura</label>
+          <input type="time" value="08:00" class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-600">Hora de Cierre</label>
+          <input type="time" value="18:00" class="w-full border rounded px-3 py-2" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

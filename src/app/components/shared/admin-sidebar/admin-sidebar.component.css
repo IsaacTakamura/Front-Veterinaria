@@ -1,0 +1,123 @@
+.w-64 {
+  width: 16rem;
+}
+.bg-white {
+  background-color: #fff;
+}
+.border-r {
+  border-right: 1px solid #e5e7eb;
+}
+.border-gray-200 {
+  border-color: #e5e7eb;
+}
+.h-screen {
+  height: 100vh;
+}
+.overflow-y-auto {
+  overflow-y: auto;
+}
+.p-4 {
+  padding: 1rem;
+}
+.border-b {
+  border-bottom: 1px solid #e5e7eb;
+}
+.flex {
+  display: flex;
+}
+.items-center {
+  align-items: center;
+}
+.space-x-3 > :not(:last-child) {
+  margin-right: 0.75rem;
+}
+.w-8 {
+  width: 2rem;
+}
+.h-8 {
+  height: 2rem;
+}
+.bg-gradient-to-r {
+  background: linear-gradient(to right, #22c55e, #3b82f6);
+}
+.from-green-500 {
+  /* handled by gradient */
+}
+.to-blue-500 {
+  /* handled by gradient */
+}
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+.justify-center {
+  justify-content: center;
+}
+.font-semibold {
+  font-weight: 600;
+}
+.text-gray-900 {
+  color: #111827;
+}
+.text-xs {
+  font-size: 0.75rem;
+}
+.text-gray-500 {
+  color: #6b7280;
+}
+.p-2 {
+  padding: 0.5rem;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+.w-full {
+  width: 100%;
+}
+.text-left {
+  text-align: left;
+}
+.text-gray-700 {
+  color: #374151;
+}
+.hover\:bg-gray-100:hover {
+  background-color: #f3f4f6;
+}
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+.transition-colors {
+  transition: background-color 0.2s, color 0.2s;
+}
+.ml-4 {
+  margin-left: 1rem;
+}
+.mt-1 {
+  margin-top: 0.25rem;
+}
+.space-y-1 > :not(:last-child) {
+  margin-bottom: 0.25rem;
+}
+.font-medium {
+  font-weight: 500;
+}
+.bg-green-100 {
+  background-color: #dcfce7;
+}
+.text-green-700 {
+  color: #15803d;
+}
+.border-l-4 {
+  border-left-width: 4px;
+}
+.border-green-500 {
+  border-color: #22c55e;
+}
+.text-gray-600 {
+  color: #4b5563;
+}
+.hover\:bg-gray-50:hover {
+  background-color: #f9fafb;
+}
+.text-sm {
+  font-size: 0.875rem;
+}

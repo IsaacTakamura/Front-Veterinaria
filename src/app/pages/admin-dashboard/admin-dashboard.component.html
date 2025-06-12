@@ -1,0 +1,15 @@
+<div class="flex h-screen bg-gray-50">
+  <!-- Sidebar -->
+  <app-admin-sidebar
+    [activeSection]="activeSection"
+    (sectionChange)="setActiveSection($event)"
+  ></app-admin-sidebar>
+
+  <div class="flex-1 flex flex-col overflow-hidden">
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-6">
+      <ng-container *ngComponentOutlet="renderContent(); context: { $implicit: activeSection }"></ng-container>
+    </main>
+  </div>
+</div>

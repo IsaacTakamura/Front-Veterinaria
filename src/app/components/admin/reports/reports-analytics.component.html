@@ -1,0 +1,73 @@
+<div class="space-y-6">
+  <div class="bg-white rounded-lg shadow">
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+      <h2 class="text-xl font-semibold flex items-center">
+        <!-- BarChart SVG -->
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             viewBox="0 0 24 24">
+          <path d="M3 3v18h18"/>
+          <rect x="7" y="10" width="2" height="7"/>
+          <rect x="15" y="6" width="2" height="11"/>
+          <rect x="11" y="14" width="2" height="3"/>
+        </svg>
+        {{ getReporteData(activeTab)?.titulo || 'Reportes y Analítica' }}
+      </h2>
+      <button class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center">
+        <!-- Download SVG -->
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             viewBox="0 0 24 24">
+          <path d="M12 3v12"/>
+          <path d="M7 15l5 5 5-5"/>
+          <path d="M19 21H5"/>
+        </svg>
+        Exportar
+      </button>
+    </div>
+
+    <div class="p-6">
+      <!-- Atención Diaria -->
+      <div *ngIf="activeTab === 'atencion-diaria'" class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Consultas</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Emergencias</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Cirugías</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <tr *ngFor="let dia of getAtencionDiariaDatos()">
+              <td class="px-4 py-2 text-sm text-gray-900">{{ dia.fecha }}</td>
+              <td class="px-4 py-2 text-sm text-gray-500">{{ dia.consultas }}</td>
+              <td class="px-4 py-2 text-sm text-gray-500">{{ dia.emergencias }}</td>
+              <td class="px-4 py-2 text-sm text-gray-500">{{ dia.cirugias }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Facturación -->
+      <div *ngIf="activeTab === 'facturacion'" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-green-50 p-4 rounded-lg">
+          <h3 class="text-lg font-semibold text-green-800">Total Facturado</h3>
+          <p class="text-2xl font-bold text-green-600">S/ {{ facturacionResumen.total }}</p>
+        </div>
+        <div class="bg-blue-50 p-4 rounded-lg">
+          <h3 class="text-lg font-semibold text-blue-800">Servicios Realizados</h3>
+          <p class="text-2xl font-bold text-blue-600">{{ facturacionResumen.cantidad }}</p>
+        </div>
+        <div class="bg-purple-50 p-4 rounded-lg">
+          <h3 class="text-lg font-semibold text-purple-800">Promedio por Servicio</h3>
+          <p class="text-2xl font-bold text-purple-600">S/ {{ facturacionResumen.promedio }}</p>
+        </div>
+      </div>
+
+      <!-- Otros botones de exportar -->
+      <div class="flex justify-center space-x-4 mt-6">
+        <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Exportar a Excel</button>
+        <button class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Exportar a PDF</button>
+      </div>
+    </div>
+  </div>
+</div>

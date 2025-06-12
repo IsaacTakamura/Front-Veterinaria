@@ -1,0 +1,58 @@
+<!-- Todas las citas -->
+<div *ngIf="activeTab === 'todas-citas'" class="bg-white rounded-lg shadow">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h2 class="text-xl font-semibold flex items-center">
+      <!-- Calendar SVG -->
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Supervisión de Todas las Citas
+    </h2>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hora</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Paciente</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Propietario</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Veterinario</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        <tr *ngFor="let cita of citas">
+          <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ cita.hora }}</td>
+          <td class="px-6 py-4 text-sm text-gray-900">{{ cita.paciente }}</td>
+          <td class="px-6 py-4 text-sm text-gray-500">{{ cita.propietario }}</td>
+          <td class="px-6 py-4 text-sm text-gray-500">{{ cita.veterinario }}</td>
+          <td class="px-6 py-4">
+            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
+                  [ngClass]="getEstadoBadgeClass(cita.estado)">
+              {{ cita.estado }}
+            </span>
+          </td>
+          <td class="px-6 py-4 text-sm space-x-2">
+            <button class="text-blue-600 hover:text-blue-800">Reprogramar</button>
+            <button class="text-red-600 hover:text-red-800">Cancelar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Reprogramar o gestión de franjas horarias -->
+<div *ngIf="activeTab !== 'todas-citas'" class="bg-white rounded-lg shadow p-6">
+  <h2 class="text-xl font-semibold mb-4 flex items-center">
+    <!-- Clock SVG -->
+    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    {{ activeTab === 'reprogramar' ? 'Reprogramar Citas' : 'Gestión de Franjas Horarias' }}
+  </h2>
+  <p class="text-gray-600">
+    {{ activeTab === 'reprogramar'
+      ? 'Herramientas para reprogramar citas de cualquier veterinario.'
+      : 'Configuración de horarios disponibles y bloqueos para emergencias.' }}
+  </p>
+</div>
