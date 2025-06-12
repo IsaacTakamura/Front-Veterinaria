@@ -1,0 +1,35 @@
+<div class="cita-container">
+  <div class="formulario">
+    <h2>Agendar Cita Veterinaria</h2>
+    <form>
+      <div class="form-group">
+        <label for="nombreMascota">Nombre de la Mascota:</label>
+        <input id="nombreMascota" [(ngModel)]="nombreMascota" name="nombreMascota" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label for="fechaCita">Fecha de la Cita:</label>
+        <input type="date" id="fechaCita" [(ngModel)]="fechaCita" name="fechaCita" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label for="motivo">Motivo de la Cita:</label>
+        <textarea id="motivo" [(ngModel)]="motivo" name="motivo" class="form-control" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="doctor">Doctor:</label>
+        <select id="doctor" [(ngModel)]="doctor" name="doctor" class="form-control">
+          <option disabled selected value="">Selecciona un doctor</option>
+          <option>Dr. Jose Hurtado</option>
+          <option>Dr. Juan Chavez</option>
+          <option>Dr. Isaac Takamura</option>
+        </select>
+      </div>
+
+      <div class="boton-container">
+        <button type="button" (click)="agendarCita()">Agendar Cita</button>
+      </div>
+    </form>
+  </div>
+</div>

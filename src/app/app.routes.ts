@@ -5,7 +5,6 @@ import { EnfermeraPageComponent } from './pages/enfermera/enfermera-page.compone
 import { LoginPageComponent } from './pages/login/login-page.component';
 import { RegisterPageComponent } from './pages/register/register-page.component';
 import { VeterinarioPageComponent } from './pages/veterinario/veterinario-page.component';
-import { AdminIndexPageComponent } from './pages/admin-index/admin-index-page.component';
 
 export const routes: Routes = [
 
@@ -33,9 +32,5 @@ export const routes: Routes = [
 {
  path: 'veterinario',
  component: VeterinarioPageComponent,
-},
-{
-  path: 'admin',
-  component: AdminIndexPageComponent,
 },
 ];

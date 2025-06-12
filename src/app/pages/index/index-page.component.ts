@@ -1,10 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+
 
 @Component({
   selector: 'app-index-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+  ],
   templateUrl: './index-page.component.html',
   styleUrls: ['./index-page.component.css']
 })

@@ -4,7 +4,7 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: "app-receta-page",
+  selector: 'app-receta',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: "./receta-page.component.html",

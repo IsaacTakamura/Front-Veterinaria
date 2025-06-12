@@ -1,11 +1,19 @@
 /* Fuente elegante y estilo general */
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background-color: #f8f8f8;
+  background: linear-gradient(to right, #6EE7B7, #3B82F6); /* de verde suave a azul */
   color: #1c1c1e;
   margin: 0;
   padding: 1.5rem;
 }
+
+:host {
+  display: block;
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #ecfdf5, #eff6ff, #ffffff);
+  padding-top: 3rem;
+}
+
 
 /* Contenedor principal */
 .receta-container {
@@ -13,13 +21,14 @@ body {
   flex-wrap: wrap;
   gap: 2rem;
   align-items: flex-start;
+  padding-left: 2rem; /* 👈 Agregado */
 }
 
 /* Formulario */
 .formulario {
   flex: 1;
   max-width: 400px;
-  background-color: #e6f0fa; /* celeste pastel */
+  background: linear-gradient(to bottom right, #b1cff3, rgb(177, 232, 221)); /* celeste degradado */
   padding: 1.5rem;
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -32,7 +41,7 @@ body {
 }
 
 .vista-previa button {
-  background-color: #28a745;
+  background-image: linear-gradient(to right, #16a34a, #2563eb); /* Verde a azul */
   color: white;
   font-size: 16px;
   font-weight: 600;
@@ -40,19 +49,23 @@ body {
   border: none;
   border-radius: 12px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .vista-previa button:hover {
-  background-color: #218838;
+  background-image: linear-gradient(to right, #15803d, #1d4ed8); /* Tonos más intensos al hacer hover */
+  transform: scale(1.03);
 }
 
 /* Vista previa */
 .vista-previa {
   flex: 1;
   min-width: 320px;
-  background-color: #ffffff;
+  background: linear-gradient(to right, #fafffd, rgb(177, 232, 221));
   padding: 1.5rem;
+  padding-right: 1.5rem;
+  margin-right: 1rem;
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
@@ -135,4 +148,14 @@ select.form-control {
   background-position: right 1rem center;
   background-size: 1rem;
   padding-right: 2.5rem;
+}
+
+@media (max-width: 768px) {
+  .receta-container {
+    padding: 0 1rem;
+  }
+  .vista-previa,
+  .formulario {
+    margin: 0 0.5rem 2rem;
+  }
 }
