@@ -1,0 +1,4547 @@
+Directory structure:
+└── isaactakamura-front-veterinaria/
+    ├── README.md
+    ├── angular.json
+    ├── package.json
+    ├── tsconfig.app.json
+    ├── tsconfig.json
+    ├── tsconfig.spec.json
+    ├── .editorconfig
+    ├── public/
+    └── src/
+        ├── index.html
+        ├── main.ts
+        ├── styles.css
+        └── app/
+            ├── app.component.css
+            ├── app.component.html
+            ├── app.component.ts
+            ├── app.config.ts
+            ├── app.routes.ts
+            ├── assets/
+            ├── components/
+            │   ├── enfermeria/
+            │   │   ├── citas-hoy/
+            │   │   │   ├── citas-hoy.component.css
+            │   │   │   ├── citas-hoy.component.html
+            │   │   │   └── citas-hoy.component.ts
+            │   │   ├── citas-programadas/
+            │   │   │   ├── citas-programadas.component.css
+            │   │   │   ├── citas-programadas.component.html
+            │   │   │   └── citas-programadas.component.ts
+            │   │   ├── detalles-cita/
+            │   │   │   ├── detalles-cita-modal.component.css
+            │   │   │   ├── detalles-cita-modal.component.html
+            │   │   │   └── detalles-cita-modal.component.ts
+            │   │   ├── historial/
+            │   │   │   ├── historial-modal.component.css
+            │   │   │   ├── historial-modal.component.html
+            │   │   │   └── historial-modal.component.ts
+            │   │   ├── recordatorios/
+            │   │   │   ├── recordatorios.component.css
+            │   │   │   ├── recordatorios.component.html
+            │   │   │   └── recordatorios.component.ts
+            │   │   ├── tabla/
+            │   │   │   ├── tabla-citas.component.css
+            │   │   │   ├── tabla-citas.component.html
+            │   │   │   └── tabla-citas.component.ts
+            │   │   └── triaje/
+            │   │       ├── triaje-modal.component.css
+            │   │       ├── triaje-modal.component.html
+            │   │       └── triaje-modal.component.ts
+            │   ├── shared/
+            │   │   ├── footer/
+            │   │   │   ├── footer.component.css
+            │   │   │   ├── footer.component.html
+            │   │   │   └── footer.component.ts
+            │   │   ├── navbar-private/
+            │   │   │   ├── navbar-private.component.css
+            │   │   │   ├── navbar-private.component.html
+            │   │   │   └── navbar-private.component.ts
+            │   │   └── navbar-public/
+            │   │       ├── navbar-public.component.css
+            │   │       ├── navbar-public.component.html
+            │   │       └── navbar-public.component.ts
+            │   ├── ui/
+            │   │   ├── avatar.component.ts
+            │   │   ├── badge.component.ts
+            │   │   ├── button.component.ts
+            │   │   └── dropdown-menu.component.ts
+            │   └── vet-clinic-login/
+            │       ├── login.component.css
+            │       ├── login.component.html
+            │       └── login.component.ts
+            └── pages/
+                ├── enfermera/
+                │   ├── enfermera-page.component.css
+                │   ├── enfermera-page.component.html
+                │   └── enfermera-page.component.ts
+                ├── hero/
+                │   ├── hero-page.component.css
+                │   ├── hero-page.component.html
+                │   └── hero-page.component.ts
+                ├── index/
+                │   ├── index-page.component.css
+                │   ├── index-page.component.html
+                │   └── index-page.component.ts
+                ├── login/
+                │   ├── login-page.component.css
+                │   ├── login-page.component.html
+                │   └── login-page.component.ts
+                └── receta/
+                    ├── receta-page.component.css
+                    ├── receta-page.component.html
+                    └── receta-page.component.ts
+
+================================================
+FILE: README.md
+================================================
+# MyApp
+
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.9.
+
+## Development server
+
+To start a local development server, run:
+
+```bash
+ng serve
+```
+
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+
+## Code scaffolding
+
+Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+
+```bash
+ng generate component component-name
+```
+
+For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+
+```bash
+ng generate --help
+```
+
+## Building
+
+To build the project run:
+
+```bash
+ng build
+```
+
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+
+## Running unit tests
+
+To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+
+```bash
+ng test
+```
+
+## Running end-to-end tests
+
+For end-to-end (e2e) testing, run:
+
+```bash
+ng e2e
+```
+
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+
+## Additional Resources
+
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+
+================================================
+FILE: angular.json
+================================================
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "my-app": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/my-app",
+            "index": "src/index.html",
+            "browser": "src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "@angular/material/prebuilt-themes/rose-red.css",
+              "src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "my-app:build:production"
+            },
+            "development": {
+              "buildTarget": "my-app:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "tsconfig.spec.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "@angular/material/prebuilt-themes/rose-red.css",
+              "src/styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "analytics": false
+  }
+}
+
+
+
+================================================
+FILE: package.json
+================================================
+{
+  "name": "my-app",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/common": "^19.2.0",
+    "@angular/compiler": "^19.2.0",
+    "@angular/core": "^19.2.14",
+    "@angular/forms": "^19.2.0",
+    "@angular/platform-browser": "^19.2.0",
+    "@angular/platform-browser-dynamic": "^19.2.0",
+    "@angular/router": "^19.2.0",
+    "my-app": "file:",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^19.2.9",
+    "@angular/cli": "^19.2.9",
+    "@angular/compiler-cli": "^19.2.0",
+    "@types/jasmine": "~5.1.0",
+    "jasmine-core": "~5.6.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.7.2"
+  }
+}
+
+
+
+================================================
+FILE: tsconfig.app.json
+================================================
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "types": []
+  },
+  "files": [
+    "src/main.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
+  ]
+}
+
+
+
+================================================
+FILE: tsconfig.json
+================================================
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022"
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}
+
+
+
+================================================
+FILE: tsconfig.spec.json
+================================================
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/spec",
+    "types": [
+      "jasmine"
+    ]
+  },
+  "include": [
+    "src/**/*.spec.ts",
+    "src/**/*.d.ts"
+  ]
+}
+
+
+
+================================================
+FILE: .editorconfig
+================================================
+# Editor configuration, see https://editorconfig.org
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.ts]
+quote_type = single
+ij_typescript_use_double_quotes = false
+
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false
+
+
+
+
+================================================
+FILE: src/index.html
+================================================
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>MyApp</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link
+      href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+      <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+  <body class="mat-typography">
+    <app-root></app-root>
+  </body>
+</html>
+
+
+
+================================================
+FILE: src/main.ts
+================================================
+import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
+import { AppComponent } from './app/app.component';
+
+bootstrapApplication(AppComponent, appConfig)
+  .catch((err) => console.error(err));
+
+
+
+================================================
+FILE: src/styles.css
+================================================
+/* You can add global styles to this file, and also import other style files */
+:root {
+  --primary: #3B82F6;       /* Color primario */
+  --primary-dark: #1D4ED8;  /* Color primario oscuro */
+  --primary-rgb: 59, 130, 246; /* RGB para efectos con transparencia */
+  --dark: #1F2937;          /* Color de texto oscuro */
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+
+================================================
+FILE: src/app/app.component.css
+================================================
+
+
+
+================================================
+FILE: src/app/app.component.html
+================================================
+<!-- Mostrar navbar según login o ruta -->
+<ng-container *ngIf="!isLoginPage()">
+  <app-navbar-public *ngIf="!isLoggedIn()" />
+  <app-navbar-private *ngIf="isLoggedIn()" />
+</ng-container>
+
+<!-- index -->
+<section class="mx-5 mt-2">
+  <router-outlet></router-outlet>
+</section>
+
+<!-- <footer>Soy un footer</footer> -->
+<app-footer></app-footer>
+
+
+
+================================================
+FILE: src/app/app.component.ts
+================================================
+import { Component, computed, signal } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { NavbarPublicComponent } from './components/shared/navbar-public/navbar-public.component';
+import { NavbarPrivateComponent } from './components/shared/navbar-private/navbar-private.component';
+import { FooterComponent } from './components/shared/footer/footer.component';
+import { RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, NavbarPublicComponent, NavbarPrivateComponent, FooterComponent],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+export class AppComponent {
+  currentRoute = signal<string>('');
+
+  // Simulación de login
+  isLoggedIn = signal<boolean>(false); // cambia esto cuando el usuario se loguee de verdad
+
+  constructor(private router: Router) {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      this.currentRoute.set(event.url);
+    });
+  }
+
+  isLoginPage = computed(() => this.currentRoute().includes('/login'));
+}
+
+
+
+================================================
+FILE: src/app/app.config.ts
+================================================
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes)]
+};
+
+
+
+================================================
+FILE: src/app/app.routes.ts
+================================================
+import { Routes } from '@angular/router';
+import { IndexPageComponent } from './pages/index/index-page.component';
+import { RecetaPageComponent } from './pages/receta/receta-page.component';
+import { EnfermeraPageComponent } from './pages/enfermera/enfermera-page.component';
+import { LoginPageComponent } from './pages/login/login-page.component';
+
+
+
+export const routes: Routes = [
+
+
+{
+  path: '',
+  component: IndexPageComponent,
+},
+{
+  path: 'login',
+  component: LoginPageComponent,
+},
+{
+  path: 'receta',
+  component: RecetaPageComponent,
+},
+{
+  path: 'enfermera',
+  component: EnfermeraPageComponent,
+},
+];
+
+
+
+
+================================================
+FILE: src/app/components/enfermeria/citas-hoy/citas-hoy.component.css
+================================================
+
+
+
+================================================
+FILE: src/app/components/enfermeria/citas-hoy/citas-hoy.component.html
+================================================
+<div class="space-y-6">
+  <!-- Tarjetas de Resumen -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <!-- Tarjeta Pendientes -->
+    <div class="border rounded-lg shadow-sm">
+      <div class="p-3 border-b">
+        <h3 class="text-sm font-medium">Pendientes</h3>
+      </div>
+      <div class="p-4">
+        <div class="text-2xl font-bold">{{ pendientes() }}</div>
+        <span
+          class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-yellow-500 hover:bg-yellow-600 text-white">
+          Pendientes
+        </span>
+      </div>
+    </div>
+
+    <!-- Tarjeta En Triaje -->
+    <div class="border rounded-lg shadow-sm">
+      <div class="p-3 border-b">
+        <h3 class="text-sm font-medium">En Triaje</h3>
+      </div>
+      <div class="p-4">
+        <div class="text-2xl font-bold">{{ enTriaje() }}</div>
+        <span
+          class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-500 hover:bg-blue-600 text-white">
+          En Triaje
+        </span>
+      </div>
+    </div>
+
+    <!-- Tarjeta Con Veterinario -->
+    <div class="border rounded-lg shadow-sm">
+      <div class="p-3 border-b">
+        <h3 class="text-sm font-medium">Con Veterinario</h3>
+      </div>
+      <div class="p-4">
+        <div class="text-2xl font-bold">{{ conVeterinario() }}</div>
+        <span
+          class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-purple-500 hover:bg-purple-600 text-white">
+          Con Veterinario
+        </span>
+      </div>
+    </div>
+
+    <!-- Tarjeta Completadas -->
+    <div class="border rounded-lg shadow-sm">
+      <div class="p-3 border-b">
+        <h3 class="text-sm font-medium">Completadas</h3>
+      </div>
+      <div class="p-4">
+        <div class="text-2xl font-bold">{{ completadas() }}</div>
+        <span
+          class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-500 hover:bg-green-600 text-white">
+          Completadas
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Buscador -->
+  <div class="flex items-center gap-4">
+    <div class="relative flex-1">
+      <div class="absolute left-2.5 top-2.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.3-4.3" />
+        </svg>
+      </div>
+      <input type="search" placeholder="Buscar por paciente o propietario..."
+        class="pl-8 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
+    </div>
+  </div>
+
+  <!-- Tabla de Citas -->
+  <app-tabla-citas [citas]="citasFiltradas()" (onTriaje)="abrirModalTriaje($event)"
+    (onHistorial)="abrirModalHistorial($event)" (onDetalles)="abrirModalDetalles($event)" />
+
+  <!-- Modales -->
+  @if (citaSeleccionada()) {
+  <app-triaje-modal [isOpen]="modalTriajeAbierto()" [cita]="citaSeleccionada()"
+    (closeModal)="modalTriajeAbierto.set(false)"></app-triaje-modal>
+  <app-historial-modal [isOpenValue]="modalHistorialAbierto()" [citaData]="citaSeleccionada()"
+    (onClose)="modalHistorialAbierto.set(false)" />
+  <app-detalles-cita-modal [isOpenValue]="modalDetallesAbierto()" [citaData]="citaSeleccionada()"
+    (onClose)="modalDetallesAbierto.set(false)" />
+  }
+</div>
+
+
+
+================================================
+FILE: src/app/components/enfermeria/citas-hoy/citas-hoy.component.ts
+================================================
+// citas-hoy.component.ts
+import { Component, signal, computed } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { TablaCitasComponent } from '../tabla/tabla-citas.component';
+import { TriajeModalComponent } from '../triaje/triaje-modal.component';
+import { HistorialModalComponent } from '../historial/historial-modal.component';
+import { DetallesCitaModalComponent } from '../detalles-cita/detalles-cita-modal.component';
+
+// Datos de ejemplo para las citas de hoy
+const CITAS_HOY = [
+  {
+    id: "1",
+    hora: "09:00",
+    paciente: "Max",
+    especie: "Perro",
+    raza: "Labrador",
+    edad: "3 años",
+    propietario: "Juan Pérez",
+    telefono: "987654321",
+    motivo: "Vacunación",
+    estado: "pendiente",
+  },
+  {
+    id: "2",
+    hora: "09:30",
+    paciente: "Luna",
+    especie: "Gato",
+    raza: "Siamés",
+    edad: "2 años",
+    propietario: "María García",
+    telefono: "987123456",
+    motivo: "Control",
+    estado: "en-triaje",
+  },
+  {
+    id: "3",
+    hora: "10:00",
+    paciente: "Rocky",
+    especie: "Perro",
+    raza: "Bulldog",
+    edad: "5 años",
+    propietario: "Carlos López",
+    telefono: "912345678",
+    motivo: "Consulta general",
+    estado: "con-veterinario",
+  },
+  {
+    id: "4",
+    hora: "10:30",
+    paciente: "Michi",
+    especie: "Gato",
+    raza: "Persa",
+    edad: "1 año",
+    propietario: "Ana Martínez",
+    telefono: "945678123",
+    motivo: "Desparasitación",
+    estado: "completada",
+  },
+  {
+    id: "5",
+    hora: "11:00",
+    paciente: "Toby",
+    especie: "Perro",
+    raza: "Poodle",
+    edad: "4 años",
+    propietario: "Pedro Sánchez",
+    telefono: "978123456",
+    motivo: "Vacunación",
+    estado: "pendiente",
+  },
+];
+
+@Component({
+  selector: 'app-citas-hoy',
+  standalone: true,
+  imports: [
+    CommonModule,
+    TablaCitasComponent,
+    TriajeModalComponent,
+    HistorialModalComponent,
+    DetallesCitaModalComponent
+  ],
+  templateUrl: './citas-hoy.component.html',
+  styleUrls: ['./citas-hoy.component.css'],
+})
+export class CitasHoyComponent {
+  // Señales para el estado
+  searchTerm = signal('');
+  citaSeleccionada = signal<any>(null);
+  modalTriajeAbierto = signal(false);
+  modalHistorialAbierto = signal(false);
+  modalDetallesAbierto = signal(false);
+
+  // Computed properties
+  citasFiltradas = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    if (!term) return CITAS_HOY;
+
+    return CITAS_HOY.filter(cita =>
+      cita.paciente.toLowerCase().includes(term) ||
+      cita.propietario.toLowerCase().includes(term)
+    );
+  });
+
+  pendientes = computed(() =>
+    CITAS_HOY.filter(cita => cita.estado === "pendiente").length
+  );
+
+  enTriaje = computed(() =>
+    CITAS_HOY.filter(cita => cita.estado === "en-triaje").length
+  );
+
+  conVeterinario = computed(() =>
+    CITAS_HOY.filter(cita => cita.estado === "con-veterinario").length
+  );
+
+  completadas = computed(() =>
+    CITAS_HOY.filter(cita => cita.estado === "completada").length
+  );
+
+  // Métodos para abrir modales
+  abrirModalTriaje(cita: any): void {
+    this.citaSeleccionada.set(cita);
+    this.modalTriajeAbierto.set(true);
+  }
+
+  abrirModalHistorial(cita: any): void {
+    this.citaSeleccionada.set(cita);
+    this.modalHistorialAbierto.set(true);
+  }
+
+  abrirModalDetalles(cita: any): void {
+    this.citaSeleccionada.set(cita);
+    this.modalDetallesAbierto.set(true);
+  }
+}
+
+
+
+================================================
+FILE: src/app/components/enfermeria/citas-programadas/citas-programadas.component.css
+================================================
+
+
+
+================================================
+FILE: src/app/components/enfermeria/citas-programadas/citas-programadas.component.html
+================================================
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <!-- Tarjeta del Calendario -->
+  <div class="md:col-span-1 border rounded-lg shadow-sm">
+    <div class="p-4 border-b">
+      <h2 class="text-lg font-semibold">Calendario</h2>
+    </div>
+    <div class="p-4">
+      <div class="flex justify-between items-center mb-4">
+        <button (click)="cambiarMes(-1)" class="p-2 rounded-full hover:bg-gray-100">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+        </button>
+        <span class="font-medium">{{ fechaActual | date:'MMMM yyyy' }}</span>
+        <button (click)="cambiarMes(1)" class="p-2 rounded-full hover:bg-gray-100">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="m9 18 6-6-6-6" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Días de la semana -->
+      <div class="grid grid-cols-7 gap-1 mb-2 text-center text-xs font-medium text-gray-500">
+        <div>L</div>
+        <div>M</div>
+        <div>X</div>
+        <div>J</div>
+        <div>V</div>
+        <div>S</div>
+        <div>D</div>
+      </div>
+
+      <!-- Días del mes -->
+      <div class="grid grid-cols-7 gap-1">
+        @for (dia of diasDelMes(); track $index) {
+        @if (dia) {
+        <button class="aspect-square rounded-md text-center p-1 text-sm hover:bg-gray-100 transition-colors"
+          [class.bg-blue-100]="esFechaSeleccionada(dia)" [class.font-bold]="tieneCitas(dia)"
+          [class.text-blue-600]="tieneCitas(dia)" (click)="seleccionarFecha(dia)">
+          {{ dia | date:'d' }}
+        </button>
+        } @else {
+        <div></div>
+        }
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Tarjeta de Citas del Día -->
+  <div class="md:col-span-2 border rounded-lg shadow-sm">
+    <div class="p-4 border-b">
+      <h2 class="text-lg font-semibold">
+        Citas para el {{ fechaSeleccionada() | date:'fullDate' }}
+      </h2>
+    </div>
+    <div class="p-4">
+      @if (citasDelDia().length > 0) {
+      <app-tabla-citas [citas]="citasDelDia()" (onTriaje)="abrirModalTriaje($event)"
+        (onHistorial)="abrirModalHistorial($event)" (onDetalles)="abrirModalDetalles($event)" />
+      } @else {
+      <p class="text-center py-6 text-gray-500">
+        No hay citas programadas para este día.
+      </p>
+      }
+    </div>
+  </div>
+
+  <!-- Modales -->
+  @if (citaSeleccionada()) {
+  <app-triaje-modal [isOpen]="modalTriajeAbierto()" [cita]="citaSeleccionada()"
+    (closeModal)="modalTriajeAbierto.set(false)"></app-triaje-modal>
+  <app-historial-modal [isOpenValue]="modalHistorialAbierto()" [citaData]="citaSeleccionada()"
+    (onClose)="modalHistorialAbierto.set(false)" />
+  <app-detalles-cita-modal [isOpenValue]="modalDetallesAbierto()" [citaData]="citaSeleccionada()"
+    (onClose)="modalDetallesAbierto.set(false)" />
+  }
+</div>
+
+
+
+================================================
+FILE: src/app/components/enfermeria/citas-programadas/citas-programadas.component.ts
+================================================
+// citas-programadas.component.ts
+import { Component, signal, computed } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import { TablaCitasComponent } from '../tabla/tabla-citas.component';
+import { TriajeModalComponent } from '../triaje/triaje-modal.component';
+import { HistorialModalComponent } from '../historial/historial-modal.component';
+import { DetallesCitaModalComponent } from '../detalles-cita/detalles-cita-modal.component';
+
+// Datos de ejemplo para las citas programadas
+const CITAS_PROGRAMADAS: Record<string, any[]> = {
+  "2025-05-23": [
+    {
+      id: "6",
+      hora: "09:00",
+      paciente: "Pelusa",
+      especie: "Perro",
+      raza: "Pomerania",
+      edad: "2 años",
+      propietario: "Laura Jiménez",
+      telefono: "987654321",
+      motivo: "Vacunación",
+      estado: "pendiente",
+    },
+    {
+      id: "7",
+      hora: "10:30",
+      paciente: "Simba",
+      especie: "Gato",
+      raza: "Angora",
+      edad: "3 años",
+      propietario: "Roberto Díaz",
+      telefono: "912345678",
+      motivo: "Control",
+      estado: "pendiente",
+    },
+  ],
+  "2025-05-24": [
+    {
+      id: "8",
+      hora: "11:00",
+      paciente: "Lola",
+      especie: "Perro",
+      raza: "Beagle",
+      edad: "4 años",
+      propietario: "Carmen Ruiz",
+      telefono: "945678123",
+      motivo: "Consulta general",
+      estado: "pendiente",
+    },
+  ],
+  "2025-05-25": [
+    {
+      id: "9",
+      hora: "09:30",
+      paciente: "Nala",
+      especie: "Gato",
+      raza: "Común europeo",
+      edad: "1 año",
+      propietario: "Miguel Torres",
+      telefono: "978123456",
+      motivo: "Desparasitación",
+      estado: "pendiente",
+    },
+    {
+      id: "10",
+      hora: "12:00",
+      paciente: "Rex",
+      especie: "Perro",
+      raza: "Pastor Alemán",
+      edad: "5 años",
+      propietario: "Sofía Morales",
+      telefono: "987123456",
+      motivo: "Vacunación",
+      estado: "pendiente",
+    },
+  ],
+};
+
+@Component({
+  selector: 'app-citas-programadas',
+  standalone: true,
+  imports: [
+    CommonModule,
+    TablaCitasComponent,
+    TriajeModalComponent,
+    HistorialModalComponent,
+    DetallesCitaModalComponent
+  ],
+  providers: [DatePipe],
+  templateUrl: './citas-programadas.component.html',
+  styleUrls: ['./citas-programadas.component.css'],
+})
+export class CitasProgramadasComponent {
+  // Señales para el estado
+  fechaActual = new Date();
+  fechaSeleccionada = signal<Date>(new Date());
+  citaSeleccionada = signal<any>(null);
+  modalTriajeAbierto = signal(false);
+  modalHistorialAbierto = signal(false);
+  modalDetallesAbierto = signal(false);
+
+  // Computed properties
+  citasDelDia = computed(() => {
+    const fechaStr = this.formatDate(this.fechaSeleccionada());
+    return CITAS_PROGRAMADAS[fechaStr] || [];
+  });
+
+  diasDelMes = computed(() => {
+    const year = this.fechaActual.getFullYear();
+    const month = this.fechaActual.getMonth();
+
+    // Primer día del mes
+    const firstDay = new Date(year, month, 1);
+    // Último día del mes
+    const lastDay = new Date(year, month + 1, 0);
+
+    // Días del mes anterior para completar la primera semana
+    const days: (Date | null)[] = [];
+    const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+
+    // Agregar días vacíos para alinear el primer día
+    for (let i = 0; i < startDay; i++) {
+      days.push(null);
+    }
+
+    // Agregar todos los días del mes
+    for (let i = 1; i <= lastDay.getDate(); i++) {
+      days.push(new Date(year, month, i));
+    }
+
+    return days;
+  });
+
+  // Formatear fecha a YYYY-MM-DD
+  private formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  // Verificar si una fecha tiene citas
+  tieneCitas(fecha: Date | null): boolean {
+    if (!fecha) return false;
+    const fechaStr = this.formatDate(fecha);
+    return !!CITAS_PROGRAMADAS[fechaStr]?.length;
+  }
+
+  // Verificar si una fecha es la seleccionada
+  esFechaSeleccionada(fecha: Date): boolean {
+    return fecha.toDateString() === this.fechaSeleccionada().toDateString();
+  }
+
+  // Seleccionar una fecha
+  seleccionarFecha(fecha: Date): void {
+    this.fechaSeleccionada.set(fecha);
+  }
+
+  // Cambiar de mes
+  cambiarMes(delta: number): void {
+    this.fechaActual = new Date(
+      this.fechaActual.getFullYear(),
+      this.fechaActual.getMonth() + delta,
+      1
+    );
+  }
+
+  // Abrir modales
+  abrirModalTriaje(cita: any): void {
+    this.citaSeleccionada.set(cita);
+    this.modalTriajeAbierto.set(true);
+  }
+
+  abrirModalHistorial(cita: any): void {
+    this.citaSeleccionada.set(cita);
+    this.modalHistorialAbierto.set(true);
+  }
+
+  abrirModalDetalles(cita: any): void {
+    this.citaSeleccionada.set(cita);
+    this.modalDetallesAbierto.set(true);
+  }
+}
+
+
+
+================================================
+FILE: src/app/components/enfermeria/detalles-cita/detalles-cita-modal.component.css
+================================================
+
+
+
+================================================
+FILE: src/app/components/enfermeria/detalles-cita/detalles-cita-modal.component.html
+================================================
+<div
+    *ngIf="isOpen()"
+    class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+    (click)="closeModal($event)"
+  >
+    <div
+      class="bg-white rounded-lg shadow-xl w-full max-w-md"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Header -->
+      <div class="border-b p-4">
+        <h2 class="text-lg font-semibold">Detalles de la Cita</h2>
+        <p class="text-sm text-gray-500">Información completa de la cita agendada.</p>
+      </div>
+
+      <!-- Content -->
+      <div class="p-4 space-y-4">
+        @if (cita()) {
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold">{{ cita().paciente }}</h3>
+            <span
+              class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {{ getBadgeColor(cita().estado) }}"
+            >
+              {{ getEstadoTexto(cita().estado) }}
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <p class="text-sm font-medium text-gray-500">Especie</p>
+              <p>{{ cita().especie }}</p>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-500">Raza</p>
+              <p>{{ cita().raza }}</p>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-500">Edad</p>
+              <p>{{ cita().edad }}</p>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-500">Hora de Cita</p>
+              <p>{{ cita().hora }}</p>
+            </div>
+          </div>
+
+          <div class="border-t pt-4">
+            <h4 class="font-medium mb-2">Información del Propietario</h4>
+            <div class="grid grid-cols-1 gap-3">
+              <div>
+                <p class="text-sm font-medium text-gray-500">Nombre</p>
+                <p>{{ cita().propietario }}</p>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Teléfono</p>
+                <div class="flex items-center gap-2">
+                  <p>{{ cita().telefono }}</p>
+                  <button
+                    class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 w-8"
+                    title="Llamar"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                    <span class="sr-only">Llamar</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t pt-4">
+            <h4 class="font-medium mb-2">Motivo de la Consulta</h4>
+            <p>{{ cita().motivo }}</p>
+          </div>
+        }
+      </div>
+
+      <!-- Footer -->
+      <div class="border-t p-4 flex justify-end">
+        <button
+          (click)="onClose.emit()"
+          class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
+================================================
+FILE: src/app/components/enfermeria/detalles-cita/detalles-cita-modal.component.ts
+================================================
+// detalles-cita-modal.component.ts
+import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-detalles-cita-modal',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './detalles-cita-modal.component.html',
+  styleUrls: ['./detalles-cita-modal.component.css'],
+})
+export class DetallesCitaModalComponent {
+  // Señales para el estado del componente
+  isOpen = signal(false);
+  cita = signal<any>(null);
+
+  // Actualizadores de inputs mediante setters
+  @Input() set isOpenValue(value: boolean) {
+    this.isOpen.set(value);
+  }
+
+  @Input() set citaData(value: any) {
+    this.cita.set(value);
+  }
+
+  // Evento de salida para cerrar el modal
+  @Output() onClose = new EventEmitter<void>();
+
+  // Función para obtener el color de la badge según el estado
+  getBadgeColor(estado: string): string {
+    switch (estado) {
+      case "pendiente":
+        return "bg-yellow-500 hover:bg-yellow-600 text-white";
+      case "en-triaje":
+        return "bg-blue-500 hover:bg-blue-600 text-white";
+      case "con-veterinario":
+        return "bg-purple-500 hover:bg-purple-600 text-white";
+      case "completada":
+        return "bg-green-500 hover:bg-green-600 text-white";
+      default:
+        return "bg-gray-500 text-white";
+    }
+  }
+
+  // Función para obtener el texto del estado
+  getEstadoTexto(estado: string): string {
+    switch (estado) {
+      case "pendiente":
+        return "Pendiente";
+      case "en-triaje":
+        return "En Triaje";
+      case "con-veterinario":
+        return "Con Veterinario";
+      case "completada":
+        return "Completada";
+      default:
+        return estado;
+    }
+  }
+
+  // Cerrar modal al hacer clic en el fondo
+  closeModal(event: MouseEvent) {
+    if ((event.target as HTMLElement).classList.contains('bg-black')) {
+      this.onClose.emit();
+    }
+  }
+}
+
+
+
+================================================
+FILE: src/app/components/enfermeria/historial/historial-modal.component.css
+================================================
+
+
+
+================================================
+FILE: src/app/components/enfermeria/historial/historial-modal.component.html
+================================================
+<div *ngIf="isOpen()" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" (click)="closeModal($event)">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden" (click)="$event.stopPropagation()">
+      <!-- Header -->
+      <div class="border-b p-4">
+        <h2 class="text-lg font-semibold">Historial Clínico: {{ cita()?.paciente }}</h2>
+        <p class="text-sm text-gray-500">
+          {{ cita()?.especie }} - {{ cita()?.raza }} - {{ cita()?.edad }}
+        </p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="border-b">
+        <div class="flex">
+          <button
+            class="py-3 px-4 font-medium text-sm relative"
+            [class.text-primary border-b-2 border-primary]="activeTab() === 'consultas'"
+            (click)="activeTab.set('consultas')"
+          >
+            Consultas
+          </button>
+          <button
+            class="py-3 px-4 font-medium text-sm relative"
+            [class.text-primary border-b-2 border-primary]="activeTab() === 'vacunas'"
+            (click)="activeTab.set('vacunas')"
+          >
+            Vacunas
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="overflow-auto" [style.max-height]="'calc(90vh - 150px)'">
+        <!-- Consultas Tab -->
+        @if (activeTab() === 'consultas') {
+          <div class="p-4 space-y-4">
+            @for (consulta of historialEjemplo; track $index) {
+              <div class="border rounded-lg overflow-hidden">
+                <div class="bg-gray-50 px-4 py-2 border-b">
+                  <h3 class="font-semibold">{{ consulta.fecha }} - {{ consulta.motivo }}</h3>
+                  <p class="text-sm text-gray-500">{{ consulta.veterinario }}</p>
+                </div>
+                <div class="p-4 text-sm">
+                  <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div>
+                      <span class="font-medium">Temperatura:</span> {{ consulta.signos.temperatura }}
+                    </div>
+                    <div>
+                      <span class="font-medium">Peso:</span> {{ consulta.signos.peso }}
+                    </div>
+                    <div>
+                      <span class="font-medium">Frec. Cardíaca:</span> {{ consulta.signos.frecuenciaCardiaca }}
+                    </div>
+                    <div>
+                      <span class="font-medium">Frec. Respiratoria:</span> {{ consulta.signos.frecuenciaRespiratoria }}
+                    </div>
+                  </div>
+                  <div class="mb-2">
+                    <span class="font-medium">Diagnóstico:</span> {{ consulta.diagnostico }}
+                  </div>
+                  <div class="mb-2">
+                    <span class="font-medium">Tratamiento:</span> {{ consulta.tratamiento }}
+                  </div>
+                  <div>
+                    <span class="font-medium">Observaciones:</span> {{ consulta.observaciones }}
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Vacunas Tab -->
+        @if (activeTab() === 'vacunas') {
+          <div class="p-4">
+            <div class="border rounded-md overflow-hidden">
+              <table class="w-full">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="text-left p-3 font-semibold text-sm">Fecha</th>
+                    <th class="text-left p-3 font-semibold text-sm">Tipo</th>
+                    <th class="text-left p-3 font-semibold text-sm">Lote</th>
+                    <th class="text-left p-3 font-semibold text-sm">Próxima</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (vacuna of vacunasEjemplo; track $index) {
+                    <tr class="border-b hover:bg-gray-50">
+                      <td class="p-3">{{ vacuna.fecha }}</td>
+                      <td class="p-3">{{ vacuna.tipo }}</td>
+                      <td class="p-3">{{ vacuna.lote }}</td>
+                      <td class="p-3">{{ vacuna.proxima }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Footer -->
+      <div class="border-t p-4 flex justify-end">
+        <button
+          (click)="onClose.emit()"
+          class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
+================================================
+FILE: src/app/components/enfermeria/historial/historial-modal.component.ts
+================================================
+// historial-modal.component.ts
+import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-historial-modal',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './historial-modal.component.html',
+  styleUrls: ['./historial-modal.component.css'],
+})
+export class HistorialModalComponent {
+  // Señales para el estado del componente
+  isOpen = signal(false);
+  activeTab = signal<'consultas' | 'vacunas'>('consultas');
+  cita = signal<any>(null);
+
+  // Actualizadores de inputs mediante setters
+  @Input() set isOpenValue(value: boolean) {
+    this.isOpen.set(value);
+  }
+
+  @Input() set citaData(value: any) {
+    this.cita.set(value);
+  }
+
+  // Evento de salida para cerrar el modal
+  @Output() onClose = new EventEmitter<void>();
+
+  // Datos de ejemplo
+  historialEjemplo = [
+    {
+      fecha: "15/04/2025",
+      motivo: "Vacunación",
+      veterinario: "Dr. Martínez",
+      signos: {
+        temperatura: "38.5°C",
+        frecuenciaCardiaca: "120 lpm",
+        frecuenciaRespiratoria: "22 rpm",
+        peso: "5.2 kg",
+      },
+      diagnostico: "Paciente sano",
+      tratamiento: "Vacuna antirrábica",
+      observaciones: "Reacción normal a la vacuna. Próxima vacuna en un año.",
+    },
+    {
+      fecha: "10/01/2025",
+      motivo: "Control",
+      veterinario: "Dra. Gómez",
+      signos: {
+        temperatura: "38.7°C",
+        frecuenciaCardiaca: "125 lpm",
+        frecuenciaRespiratoria: "24 rpm",
+        peso: "5.0 kg",
+      },
+      diagnostico: "Paciente sano",
+      tratamiento: "Desparasitación interna",
+      observaciones: "Se recomienda control en 3 meses.",
+    },
+    {
+      fecha: "05/10/2024",
+      motivo: "Consulta por vómitos",
+      veterinario: "Dr. Martínez",
+      signos: {
+        temperatura: "39.1°C",
+        frecuenciaCardiaca: "130 lpm",
+        frecuenciaRespiratoria: "26 rpm",
+        peso: "4.8 kg",
+      },
+      diagnostico: "Gastroenteritis leve",
+      tratamiento: "Metoclopramida 0.5ml/12h por 3 días, dieta blanda",
+      observaciones: "Mejoría en 48 horas. Control si persisten los síntomas.",
+    },
+  ];
+
+  vacunasEjemplo = [
+    {
+      fecha: "15/04/2025",
+      tipo: "Antirrábica",
+      lote: "RAB-2025-456",
+      proxima: "15/04/2026",
+    },
+    {
+      fecha: "15/03/2025",
+      tipo: "Parvovirus",
+      lote: "PAR-2025-123",
+      proxima: "15/03/2026",
+    },
+    {
+      fecha: "15/02/2025",
+      tipo: "Moquillo",
+      lote: "MOQ-2025-789",
+      proxima: "15/02/2026",
+    },
+  ];
+
+  // Cerrar modal al hacer clic en el fondo
+  closeModal(event: MouseEvent) {
+    if ((event.target as HTMLElement).classList.contains('bg-black')) {
+      this.onClose.emit();
+    }
+  }
+}
+
+
+
+================================================
+FILE: src/app/components/enfermeria/recordatorios/recordatorios.component.css
+================================================
+
+
+
+================================================
+FILE: src/app/components/enfermeria/recordatorios/recordatorios.component.html
+================================================
+<!-- Tabs para navegación -->
+<div class="tabs">
+  <button class="tab" [class.active]="true">Pendientes</button>
+  <button class="tab">Programados</button>
+</div>
+
+<!-- Tarjetas resumen -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-4">
+  <div class="card bg-red-100 text-red-800 p-4 rounded">
+    <div class="text-sm">Urgentes</div>
+    <div class="text-2xl font-bold">{{ urgentes() }}</div>
+  </div>
+  <div class="card bg-yellow-100 text-yellow-800 p-4 rounded">
+    <div class="text-sm">Próximos a vencer</div>
+    <div class="text-2xl font-bold">{{ proximosVencer() }}</div>
+  </div>
+  <div class="card bg-green-100 text-green-800 p-4 rounded">
+    <div class="text-sm">Enviados</div>
+    <div class="text-2xl font-bold">{{ enviados() }}</div>
+  </div>
+  <div class="card bg-blue-100 text-blue-800 p-4 rounded">
+    <div class="text-sm">Total Pendientes</div>
+    <div class="text-2xl font-bold">{{ totalPendientes() }}</div>
+  </div>
+</div>
+
+<!-- Buscador -->
+<input
+  type="text"
+  placeholder="Buscar por nombre del paciente o propietario"
+  class="input w-full mb-4"
+  (input)="searchTerm.set($any($event.target).value)"
+/>
+
+<!-- Tabla de recordatorios pendientes -->
+<table class="table w-full text-sm">
+  <thead>
+    <tr class="text-left border-b">
+      <th>Paciente</th>
+      <th>Dueño</th>
+      <th>Teléfono</th>
+      <th>Tipo</th>
+      <th>Descripción</th>
+      <th>Vence</th>
+      <th>Días</th>
+      <th>Prioridad</th>
+      <th>Estado</th>
+      <th>Último envío</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let r of recordatoriosFiltrados()" class="border-b hover:bg-gray-50">
+      <td>{{ r.paciente }}</td>
+      <td>{{ r.propietario }}</td>
+      <td>{{ r.telefono }}</td>
+      <td>{{ getTipoIcon(r.tipo) }}</td>
+      <td>{{ r.descripcion }}</td>
+      <td>{{ r.fechaVencimiento }}</td>
+      <td>{{ r.diasRestantes }}</td>
+      <td>
+        <span class="px-2 py-1 text-white text-xs rounded"
+              [ngClass]="getPrioridadColor(r.prioridad)">
+          {{ r.prioridad }}
+        </span>
+      </td>
+      <td>
+        <span [ngClass]="{
+          'text-green-600': r.estado === 'enviado',
+          'text-yellow-600': r.estado === 'pendiente'
+        }">
+          {{ r.estado }}
+        </span>
+      </td>
+      <td>{{ r.ultimoEnvio || 'N/A' }}</td>
+      <td>
+        <button class="btn btn-blue btn-sm mr-2"
+                (click)="abrirModal(r)">
+          Enviar
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Modal para enviar recordatorio -->
+<div class="modal" *ngIf="modalAbierto()">
+  <div class="modal-content p-6 bg-white rounded shadow-lg max-w-md mx-auto mt-10">
+    <h2 class="text-xl font-bold mb-4">Enviar recordatorio</h2>
+
+    <div *ngIf="recordatorioSeleccionado()">
+      <p><strong>Paciente:</strong> {{ recordatorioSeleccionado()?.paciente }}</p>
+      <p><strong>Dueño:</strong> {{ recordatorioSeleccionado()?.propietario }}</p>
+      <p><strong>Descripción:</strong> {{ recordatorioSeleccionado()?.descripcion }}</p>
+    </div>
+
+    <div class="mt-4 space-x-2">
+      <button class="btn btn-green" (click)="enviarRecordatorio(recordatorioSeleccionado()?.id!, 'whatsapp')">
+        Enviar por WhatsApp
+      </button>
+      <button class="btn btn-blue" (click)="enviarRecordatorio(recordatorioSeleccionado()?.id!, 'sms')">
+        Enviar por SMS
+      </button>
+      <button class="btn btn-gray" (click)="cerrarModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+
+
+================================================
+FILE: src/app/components/enfermeria/recordatorios/recordatorios.component.ts
+================================================
+import { Component, computed, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+interface RecordatorioPendiente {
+  id: string;
+  paciente: string;
+  propietario: string;
+  telefono: string;
+  tipo: string;
+  descripcion: string;
+  fechaVencimiento: string;
+  diasRestantes: number;
+  prioridad: 'alta' | 'media' | 'baja';
+  estado: 'pendiente' | 'enviado';
+  ultimoEnvio: string | null;
+}
+
+interface RecordatorioProgramado {
+  id: string;
+  paciente: string;
+  propietario: string;
+  telefono: string;
+  tipo: string;
+  descripcion: string;
+  fechaProgramada: string;
+  estado: 'programado';
+}
+
+@Component({
+  selector: 'app-recordatorios',
+  templateUrl: './recordatorios.component.html',
+  styleUrls: ['./recordatorios.component.css'],
+  standalone: true,
+  imports: [CommonModule]
+})
+export class RecordatoriosComponent {
+  searchTerm = signal('');
+  modalAbierto = signal(false);
+  recordatorioSeleccionado = signal<RecordatorioPendiente | null>(null);
+
+  recordatorios = signal<RecordatorioPendiente[]>([
+    // Aquí pega los datos de recordatoriosPendientes
+  ]);
+
+  recordatoriosProgramados = signal<RecordatorioProgramado[]>([
+    // Aquí pega los datos de recordatoriosProgramados
+  ]);
+
+  // --- Computed signals ---
+  recordatoriosFiltrados = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    return this.recordatorios().filter(r =>
+      r.paciente.toLowerCase().includes(term) || r.propietario.toLowerCase().includes(term)
+    );
+  });
+
+  urgentes = computed(() =>
+    this.recordatorios().filter(r => r.diasRestantes <= 3 && r.estado === 'pendiente').length
+  );
+
+  proximosVencer = computed(() =>
+    this.recordatorios().filter(r => r.diasRestantes <= 7 && r.estado === 'pendiente').length
+  );
+
+  enviados = computed(() =>
+    this.recordatorios().filter(r => r.estado === 'enviado').length
+  );
+
+  totalPendientes = computed(() =>
+    this.recordatorios().filter(r => r.estado === 'pendiente').length
+  );
+
+  abrirModal(recordatorio: RecordatorioPendiente) {
+    this.recordatorioSeleccionado.set(recordatorio);
+    this.modalAbierto.set(true);
+  }
+
+  cerrarModal() {
+    this.modalAbierto.set(false);
+  }
+
+  enviarRecordatorio(id: string, metodo: string) {
+    const actualizados = this.recordatorios().map(r => {
+      if (r.id === id) {
+        return {
+          ...r,
+          estado: 'enviado' as 'enviado',
+          ultimoEnvio: new Date().toISOString().split('T')[0] as string | null,
+        } as RecordatorioPendiente;
+      }
+      return r;
+    });
+    this.recordatorios.set(actualizados);
+  }
+
+  getTipoIcon(tipo: string): string {
+    switch (tipo) {
+      case 'vacuna': return '💉';
+      case 'control': return '🩺';
+      case 'desparasitacion': return '💊';
+      default: return '📋';
+    }
+  }
+
+  getPrioridadColor(prioridad: string): string {
+    switch (prioridad) {
+      case 'alta': return 'bg-red-500 hover:bg-red-600';
+      case 'media': return 'bg-yellow-500 hover:bg-yellow-600';
+      case 'baja': return 'bg-green-500 hover:bg-green-600';
+      default: return '';
+    }
+  }
+}
+
+
+
+================================================
+FILE: src/app/components/enfermeria/tabla/tabla-citas.component.css
+================================================
+
+
+
+================================================
+FILE: src/app/components/enfermeria/tabla/tabla-citas.component.html
+================================================
+<div class="border rounded-md">
+    <table class="w-full">
+      <thead>
+        <tr class="border-b">
+          <th class="text-left p-4">Hora</th>
+          <th class="text-left p-4">Paciente</th>
+          <th class="hidden md:table-cell text-left p-4">Propietario</th>
+          <th class="hidden md:table-cell text-left p-4">Motivo</th>
+          <th class="text-left p-4">Estado</th>
+          <th class="text-right p-4">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (citas.length === 0) {
+          <tr class="border-b">
+            <td colspan="6" class="text-center p-6 h-24">
+              No se encontraron citas.
+            </td>
+          </tr>
+        } @else {
+          @for (cita of citas; track cita.id) {
+            <tr class="border-b hover:bg-gray-50">
+              <td class="p-4">{{ cita.hora }}</td>
+              <td class="p-4">
+                <div>
+                  <div class="font-medium">{{ cita.paciente }}</div>
+                  <div class="text-sm text-muted-foreground">
+                    {{ cita.especie }} - {{ cita.raza }}
+                  </div>
+                </div>
+              </td>
+              <td class="hidden md:table-cell p-4">{{ cita.propietario }}</td>
+              <td class="hidden md:table-cell p-4">{{ cita.motivo }}</td>
+              <td class="p-4">
+                <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {{ getBadgeColor(cita.estado) }}">
+                  {{ getEstadoTexto(cita.estado) }}
+                </span>
+              </td>
+              <td class="p-4 text-right">
+                <div class="flex justify-end gap-2">
+                  <button
+                    class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10"
+                    (click)="onDetalles.emit(cita)"
+                    title="Ver detalles"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <span class="sr-only">Ver detalles</span>
+                  </button>
+                  <button
+                    class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10"
+                    (click)="onTriaje.emit(cita)"
+                    title="Realizar triaje"
+                    [disabled]="cita.estado === 'completada' || cita.estado === 'con-veterinario'"
+                    [class.opacity-50]="cita.estado === 'completada' || cita.estado === 'con-veterinario'"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/>
+                      <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/>
+                      <circle cx="20" cy="10" r="2"/>
+                    </svg>
+                    <span class="sr-only">Realizar triaje</span>
+                  </button>
+                  <button
+                    class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10"
+                    (click)="onHistorial.emit(cita)"
+                    title="Ver historial"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                      <polyline points="14 2 14 8 20 8"/>
+                      <line x1="16" x2="8" y1="13" y2="13"/>
+                      <line x1="16" x2="8" y1="17" y2="17"/>
+                      <line x1="10" x2="8" y1="9" y2="9"/>
+                    </svg>
+                    <span class="sr-only">Ver historial</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+
+
+================================================
+FILE: src/app/components/enfermeria/tabla/tabla-citas.component.ts
+================================================
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-tabla-citas',
+  templateUrl: './tabla-citas.component.html',
+  styleUrls: ['./tabla-citas.component.css'],
+  imports: [CommonModule],
+  standalone: true
+})
+export class TablaCitasComponent {
+  @Input() citas: any[] = [];
+  @Output() onTriaje = new EventEmitter<any>();
+  @Output() onHistorial = new EventEmitter<any>();
+  @Output() onDetalles = new EventEmitter<any>();
+
+  getBadgeColor(estado: string): string {
+    switch (estado) {
+      case 'pendiente':
+        return 'bg-yellow-500 hover:bg-yellow-600';
+      case 'en-triaje':
+        return 'bg-blue-500 hover:bg-blue-600';
+      case 'con-veterinario':
+        return 'bg-purple-500 hover:bg-purple-600';
+      case 'completada':
+        return 'bg-green-500 hover:bg-green-600';
+      default:
+        return '';
+    }
+  }
+
+  getEstadoTexto(estado: string): string {
+    switch (estado) {
+      case 'pendiente':
+        return 'Pendiente';
+      case 'en-triaje':
+        return 'En Triaje';
+      case 'con-veterinario':
+        return 'Con Veterinario';
+      case 'completada':
+        return 'Completada';
+      default:
+        return estado;
+    }
+  }
+}
+
+
+
+================================================
+FILE: src/app/components/enfermeria/triaje/triaje-modal.component.css
+================================================
+.input {
+  width: 100%;
+  border-radius: 0.375rem;
+  border: 1px solid #d1d5db;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.input:focus {
+  box-shadow: 0 0 0 2px #3b82f6;
+  border-color: #3b82f6;
+}
+
+.btn-primary {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background-color: #2563eb;
+  color: #fff;
+  border-radius: 0.375rem;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-outline {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  border-radius: 0.375rem;
+  transition: background-color 0.2s;
+}
+
+.btn-outline:hover {
+  background-color: #f3f4f6;
+}
+.btn-secondary {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background-color: #e5e7eb;
+  color: #374151;
+  border-radius: 0.375rem;
+  transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: #d1d5db;
+}
+
+
+
+================================================
+FILE: src/app/components/enfermeria/triaje/triaje-modal.component.html
+================================================
+<ng-container *ngIf="isOpenSignal()"> <!-- ✅ Usar la señal como función -->
+  <div class="fixed inset-0 bg-black/50 z-40"></div>
+  <div class="fixed inset-0 z-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg w-full max-w-xl p-6 shadow-lg">
+      <h2 class="text-lg font-bold mb-1">Triaje para {{ cita?.paciente }}</h2>
+      <p class="text-sm text-gray-600 mb-4">
+        Registra los signos vitales y observaciones iniciales del paciente.
+      </p>
+
+      <form [formGroup]="triajeForm" (ngSubmit)="onSubmit()" class="grid gap-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium">Temperatura (°C)</label>
+            <input type="number" step="0.1" formControlName="temperatura" class="input" required />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium">Peso (kg)</label>
+            <input type="number" step="0.1" formControlName="peso" class="input" required />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium">Frecuencia Cardíaca (lpm)</label>
+            <input type="number" formControlName="frecuenciaCardiaca" class="input" required />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium">Frecuencia Respiratoria (rpm)</label>
+            <input type="number" formControlName="frecuenciaRespiratoria" class="input" required />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium">Observaciones</label>
+          <textarea formControlName="observaciones" rows="3" class="input resize-none"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 mt-4">
+          <button type="button" (click)="onCancel()" class="btn-outline">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar y enviar a veterinario</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-container>
+
+
+
+================================================
+FILE: src/app/components/enfermeria/triaje/triaje-modal.component.ts
+================================================
+import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+@Component({
+  selector: 'app-triaje-modal',
+  templateUrl: './triaje-modal.component.html',
+  styleUrls: ['./triaje-modal.component.css'], // si usás Tailwind, podés quitar esto
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule] // <-- Agrega esto
+})
+export class TriajeModalComponent {
+  // Cambiar nombre de la señal (isOpen => isOpenSignal)
+  isOpenSignal = signal(false); // ✅ Nombre único
+
+  // Mantener input con su nombre original
+  @Input() set isOpen(value: boolean) {
+    this.isOpenSignal.set(value); // ✅ Usar la señal renombrada
+  }
+  @Input() cita: any = null;
+  @Output() closeModal = new EventEmitter<void>();
+
+  triajeForm: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.triajeForm = this.fb.group({
+      temperatura: ['', [Validators.required]],
+      peso: ['', [Validators.required]],
+      frecuenciaCardiaca: ['', [Validators.required]],
+      frecuenciaRespiratoria: ['', [Validators.required]],
+      observaciones: ['']
+    });
+  }
+
+  onSubmit(): void {
+    if (this.triajeForm.valid) {
+      const datosTriaje = {
+        citaId: this.cita?.id,
+        ...this.triajeForm.value
+      };
+
+      console.log(datosTriaje);
+      this.closeModal.emit();
+    }
+  }
+
+  onCancel(): void {
+    this.closeModal.emit();
+  }
+}
+
+
+
+================================================
+FILE: src/app/components/shared/footer/footer.component.css
+================================================
+.footer {
+  background-color: #1f2937;
+  color: #f3f4f6;
+  padding: 4rem 0 1.5rem;
+  position: relative;
+}
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-heading {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+.footer-heading::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 2px;
+  background-color: #3b82f6;
+}
+
+.footer-description {
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  color: #9ca3af;
+}
+
+.footer-logo {
+  margin-top: auto;
+}
+.footer-logo .logo-image {
+  max-width: 120px;
+  height: auto;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-link {
+  display: flex;
+  align-items: center;
+  color: #9ca3af;
+  text-decoration: none;
+  padding: 0.5rem 0;
+  transition: all 0.3s;
+}
+.footer-link:hover {
+  color: #f3f4f6;
+  transform: translateX(5px);
+}
+.footer-link .link-icon {
+  margin-right: 0.5rem;
+  font-size: 1.1rem;
+  color: #3b82f6;
+}
+
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  color: #9ca3af;
+}
+
+.contact-icon {
+  margin-right: 0.75rem;
+  color: #3b82f6;
+  min-width: 16px;
+}
+
+.contact-button-wrapper {
+  margin-top: 1rem;
+}
+
+.contact-button {
+  background-color: transparent;
+  color: #f3f4f6;
+  border: 1px solid #3b82f6;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.contact-button:hover {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.social-links {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #f3f4f6;
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+.social-link:hover {
+  background-color: #3b82f6;
+  transform: translateY(-3px);
+}
+
+.newsletter {
+  margin-top: 1.5rem;
+}
+
+.newsletter-heading {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+}
+
+.newsletter-form {
+  display: flex;
+  height: 42px;
+}
+
+.newsletter-input {
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 4px 0 0 4px;
+  padding: 0 1rem;
+  color: #f3f4f6;
+}
+.newsletter-input::placeholder {
+  color: #9ca3af;
+}
+.newsletter-input:focus {
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.newsletter-button {
+  width: 42px;
+  background-color: #3b82f6;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.newsletter-button:hover {
+  background-color: #60a5fa;
+}
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid #374151;
+  gap: 1rem;
+}
+
+.copyright {
+  color: #9ca3af;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.footer-legal {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.legal-link {
+  color: #9ca3af;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.legal-link:hover {
+  color: #f3f4f6;
+}
+
+.separator {
+  color: #374151;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 3rem 0 1rem;
+  }
+  .footer-grid {
+    gap: 2rem;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-col {
+    text-align: center;
+  }
+  .footer-col .footer-heading::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .contact-item {
+    justify-content: center;
+  }
+  .footer-link {
+    justify-content: center;
+  }
+  .social-links {
+    justify-content: center;
+  }
+}
+
+
+
+================================================
+FILE: src/app/components/shared/footer/footer.component.html
+================================================
+<footer class="bg-gray-900 text-white py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-4 gap-8">
+      <!-- Logo y descripción -->
+      <div class="space-y-4">
+        <div class="flex items-center space-x-2">
+          <div class="bg-gradient-to-r from-green-600 to-blue-600 p-2 rounded-lg">
+            <!-- Heart SVG icon -->
+            <svg class="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </div>
+          <span class="text-xl font-bold">Veterinaria Santa Anita</span>
+        </div>
+        <p class="text-gray-400">Cuidando a tu mejor amigo con tecnología avanzada y amor profesional.</p>
+        <div class="flex space-x-4">
+          <div class="bg-gray-800 p-2 rounded-lg hover:bg-gray-700 cursor-pointer">
+            <!-- Phone SVG icon -->
+            <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h2.28a2 2 0 011.94 1.52l.3 1.2a2 2 0 01-.45 1.95l-1.27 1.27a16.06 16.06 0 006.6 6.6l1.27-1.27a2 2 0 011.95-.45l1.2.3A2 2 0 0121 18.72V21a2 2 0 01-2 2h-1C7.82 23 1 16.18 1 8V7a2 2 0 012-2z"/>
+            </svg>
+          </div>
+          <div class="bg-gray-800 p-2 rounded-lg hover:bg-gray-700 cursor-pointer">
+            <!-- Heart SVG icon -->
+            <svg class="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Servicios -->
+      <div>
+        <h3 class="font-semibold mb-4">Servicios</h3>
+        <ul class="space-y-2 text-gray-400">
+          <li>Consulta General</li>
+          <li>Vacunación</li>
+          <li>Cirugías</li>
+          <li>Emergencias 24/7</li>
+          <li>Servicio a Domicilio</li>
+          <li>Estética Canina</li>
+        </ul>
+      </div>
+
+      <!-- Horarios -->
+      <div>
+        <h3 class="font-semibold mb-4">Horarios</h3>
+        <ul class="space-y-2 text-gray-400">
+          <li>Lunes - Viernes: 8:00 AM - 8:00 PM</li>
+          <li>Sábados: 8:00 AM - 6:00 PM</li>
+          <li>Domingos: 9:00 AM - 5:00 PM</li>
+          <li class="text-green-400 font-semibold">Emergencias: 24/7</li>
+        </ul>
+      </div>
+
+      <!-- Contacto -->
+      <div>
+        <h3 class="font-semibold mb-4">Contacto</h3>
+        <ul class="space-y-2 text-gray-400">
+          <li>📍 Santa Anita, Lima</li>
+          <li>📞 (01) 123-4567</li>
+          <li>📱 WhatsApp: 987-654-321</li>
+          <li>✉️ info-veterinariasantaanita.com</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+      <p>&copy; 2024 Veterinaria Santa Anita. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+
+
+================================================
+FILE: src/app/components/shared/footer/footer.component.ts
+================================================
+import { Component } from '@angular/core';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+
+interface QuickLink {
+  label: string;
+  route: string;
+}
+
+interface ContactInfo {
+  icon: string;
+  text: string;
+}
+
+interface SocialLink {
+  name: string;
+  url: string;
+  icon: string;
+}
+
+@Component({
+  selector: 'app-footer',
+  imports: [CommonModule, RouterModule],
+  templateUrl: './footer.component.html',
+  styleUrls: ['./footer.component.css'],
+  standalone: true
+})
+export class FooterComponent {
+  currentYear = new Date().getFullYear();
+
+  quickLinks: QuickLink[] = [
+    { label: 'Inicio', route: '/inicio' },
+    { label: 'Características', route: '/caracteristicas' },
+    { label: 'Servicios', route: '/servicios' },
+    { label: 'Nosotros', route: '/nosotros' },
+    { label: 'Contacto', route: '/contacto' }
+  ];
+
+  contactInfo: ContactInfo[] = [
+    { icon: 'fas fa-map-marker-alt', text: 'Av. Principal 123, Santa Anita' },
+    { icon: 'fas fa-phone', text: '(01) 123-4567' },
+    { icon: 'fas fa-envelope', text: 'info@veterinariasantaanita.com' },
+    { icon: 'fas fa-clock', text: 'Lun-Sáb: 9am - 7pm | Dom: 9am - 2pm' }
+  ];
+
+  socialLinks: SocialLink[] = [
+    { name: 'Facebook', url: 'https://facebook.com/veterinariasantaanita', icon: 'fab fa-facebook-f' },
+    { name: 'Instagram', url: 'https://instagram.com/veterinariasantaanita', icon: 'fab fa-instagram' },
+    { name: 'Twitter', url: 'https://twitter.com/vetsantaanita', icon: 'fab fa-twitter' },
+    { name: 'WhatsApp', url: 'https://wa.me/51123456789', icon: 'fab fa-whatsapp' }
+  ];
+}
+
+
+
+================================================
+FILE: src/app/components/shared/navbar-private/navbar-private.component.css
+================================================
+:host {
+  display: block;
+}
+
+
+
+================================================
+FILE: src/app/components/shared/navbar-private/navbar-private.component.html
+================================================
+<header class="bg-white border-b border-gray-200 shadow-sm">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3.172 5.172a4 4 0 015.656 0L12 8.343l3.172-3.171a4 4 0 115.656 5.656L12 21.343 3.172 10.828a4 4 0 010-5.656z" />
+          </svg>
+          class="h-6 w-6 text-white" />
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-gray-900">VetCare Pro</h1>
+          <p class="text-xs text-gray-500">Sistema de Gestión Veterinaria</p>
+        </div>
+      </div>
+
+      <!-- Usuario + Acciones -->
+      <div class="flex items-center gap-4">
+        <!-- Notificaciones -->
+        <app-button variant="ghost" size="sm" class="relative">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11c0-3.314-2.686-6-6-6S6 7.686 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+          class="h-5 w-5" />
+          <app-badge *ngIf="notifications() > 0" variant="destructive"
+            class="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
+            {{ notifications() }}
+          </app-badge>
+        </app-button>
+
+        <!-- Nombre y Rol -->
+        <div class="hidden md:flex items-center gap-3">
+          <div class="text-right">
+            <p class="text-sm font-medium text-gray-900">{{ user.name }}</p>
+            <app-badge variant="secondary" [ngClass]="getRoleColor(user.role)">
+              {{ user.role }}
+            </app-badge>
+          </div>
+        </div>
+
+        <!-- Dropdown -->
+        <app-dropdown-menu [avatar]="user.avatar" [initials]="getInitials(user.name)">
+          <ng-container dropdown-label>
+            <div class="flex flex-col space-y-2">
+              <p class="text-sm font-medium leading-none">{{ user.name }}</p>
+              <app-badge variant="secondary" [ngClass]="getRoleColor(user.role)" class="w-fit">
+                {{ user.role }}
+              </app-badge>
+            </div>
+          </ng-container>
+          <ng-container dropdown-content>
+            <button class="flex items-center w-full px-2 py-2 hover:bg-gray-100 text-gray-700">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9.75 3a1.5 1.5 0 012.5 0L13.25 5.5h2.5a1.5 1.5 0 011.5 1.5v2.5l2.5 1.25a1.5 1.5 0 010 2.5L17.75 13v2.5a1.5 1.5 0 01-1.5 1.5h-2.5l-1.25 2.5a1.5 1.5 0 01-2.5 0L10.75 17H8.25a1.5 1.5 0 01-1.5-1.5V13l-2.5-1.25a1.5 1.5 0 010-2.5L6.75 8.5V6a1.5 1.5 0 011.5-1.5h2.5L9.75 3z" />
+              </svg>
+              class="mr-2 h-4 w-4" />
+              Configuración
+            </button>
+            <hr />
+            <button (click)="logout()" class="flex items-center w-full px-2 py-2 text-red-600 hover:bg-red-50">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+              </svg>
+              class="mr-2 h-4 w-4" />
+              Cerrar Sesión
+            </button>
+          </ng-container>
+        </app-dropdown-menu>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+
+================================================
+FILE: src/app/components/shared/navbar-private/navbar-private.component.ts
+================================================
+import { Component, Input, Signal, computed, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NgIf, NgClass } from '@angular/common';
+import { AvatarComponent } from '../../ui/avatar.component';
+import { ButtonComponent } from '../../ui/button.component';
+import { BadgeComponent } from '../../ui/badge.component';
+import { DropdownMenuComponent } from '../../ui/dropdown-menu.component';
+
+interface User {
+  name: string;
+  role: string;
+  email: string;
+  avatar: string;
+}
+
+@Component({
+  selector: 'app-navbar-private',
+  standalone: true,
+  imports: [
+    CommonModule,
+    AvatarComponent,
+    ButtonComponent,
+    BadgeComponent,
+    DropdownMenuComponent,
+    NgIf,
+    NgClass,
+  ],
+  templateUrl: './navbar-private.component.html',
+  styleUrls: ['./navbar-private.component.css']
+})
+export class NavbarPrivateComponent {
+  @Input() user!: User;
+  notifications = signal(3); // Estado reactivo con señales
+
+  logout() {
+    console.log('Cerrando sesión...');
+    // Aquí pondrías tu navegación o cierre de sesión real
+  }
+
+  getInitials(name: string): string {
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase();
+  }
+
+  getRoleColor(role: string): string {
+    switch (role.toLowerCase()) {
+      case 'veterinario':
+        return 'bg-blue-100 text-blue-800';
+      case 'asistente':
+        return 'bg-green-100 text-green-800';
+      case 'recepcionista':
+        return 'bg-purple-100 text-purple-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  }
+}
+
+
+
+================================================
+FILE: src/app/components/shared/navbar-public/navbar-public.component.css
+================================================
+/* Estilos mejorados */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.02);
+}
+
+.logo img {
+  height: 50px;
+  width: auto;
+}
+
+.logo h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.navigation {
+  transition: all 0.3s ease;
+}
+
+.navigation ul {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--dark);
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+  background: rgba(var(--primary-rgb), 0.1);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.primary-button {
+  background: var(--primary);
+  color: white;
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.primary-button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--dark);
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .header-container {
+    padding: 1rem;
+  }
+
+  .navigation {
+    position: fixed;
+    top: 70px;
+    right: -100%;
+    background: white;
+    width: 100%;
+    max-width: 300px;
+    height: calc(100vh - 70px);
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease;
+  }
+
+  .navigation.open {
+    right: 0;
+  }
+
+  .navigation ul {
+    flex-direction: column;
+    padding: 2rem;
+    gap: 1.5rem;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 1rem;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .login-btn {
+    display: none;
+  }
+
+  .logo h1 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo h1 {
+    display: none;
+  }
+}
+
+
+
+================================================
+FILE: src/app/components/shared/navbar-public/navbar-public.component.html
+================================================
+<nav class="bg-white/90 backdrop-blur-md border-b border-green-100/50 sticky top-0 z-50 shadow-lg shadow-green-100/20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-20">
+      <!-- Logo y título -->
+      <div class="flex items-center space-x-3 group">
+        <div class="bg-gradient-to-br from-green-500 via-green-600 to-blue-600 p-3 rounded-xl shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
+          <!-- Heart SVG icon -->
+          <svg class="h-7 w-7 text-white group-hover:animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-2xl font-bold bg-gradient-to-r from-green-600 via-green-700 to-blue-600 bg-clip-text text-transparent">
+            Veterinaria Santa Anita
+          </span>
+          <span class="text-xs text-gray-500 font-medium tracking-wide">Cuidado profesional 24/7</span>
+        </div>
+      </div>
+
+      <!-- Menú de navegación (desktop) -->
+      <div class="hidden md:flex items-center space-x-1">
+        <a href="#servicios" class="relative px-4 py-2 text-gray-700 hover:text-green-600 transition-all duration-300 rounded-lg hover:bg-green-50 group">
+          <span class="relative z-10">Servicios</span>
+          <div class="absolute inset-0 bg-gradient-to-r from-green-100 to-blue-100 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        </a>
+        <a href="#nosotros" class="relative px-4 py-2 text-gray-700 hover:text-green-600 transition-all duration-300 rounded-lg hover:bg-green-50 group">
+          <span class="relative z-10">Nosotros</span>
+          <div class="absolute inset-0 bg-gradient-to-r from-green-100 to-blue-100 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        </a>
+        <a href="#contacto" class="relative px-4 py-2 text-gray-700 hover:text-green-600 transition-all duration-300 rounded-lg hover:bg-green-50 group">
+          <span class="relative z-10">Contacto</span>
+          <div class="absolute inset-0 bg-gradient-to-r from-green-100 to-blue-100 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        </a>
+        <div class="ml-4 relative">
+          <button class="bg-gradient-to-r from-green-600 via-green-700 to-blue-600 hover:from-green-700 hover:via-green-800 hover:to-blue-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-semibold flex items-center relative">
+            <!-- Calendar SVG icon -->
+            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor"/>
+              <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor"/>
+            </svg>
+            Agendar Cita
+            <div class="absolute inset-0 bg-white/20 rounded-xl opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Botón menú móvil -->
+      <div class="md:hidden">
+        <button (click)="toggleMenu()" class="p-2 bg-transparent border-none focus:outline-none">
+          <div class="w-6 h-6 flex flex-col justify-center items-center">
+            <span class="block w-5 h-0.5 bg-gray-600 mb-1 transition-all duration-300"></span>
+            <span class="block w-5 h-0.5 bg-gray-600 mb-1 transition-all duration-300"></span>
+            <span class="block w-5 h-0.5 bg-gray-600 transition-all duration-300"></span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <!-- Menú móvil -->
+    <div *ngIf="isMenuOpen" class="md:hidden mt-2 bg-white rounded-lg shadow-lg p-4 space-y-2">
+      <a href="#servicios" class="block px-4 py-2 text-gray-700 hover:text-green-600 rounded-lg hover:bg-green-50">Servicios</a>
+      <a href="#nosotros" class="block px-4 py-2 text-gray-700 hover:text-green-600 rounded-lg hover:bg-green-50">Nosotros</a>
+      <a href="#contacto" class="block px-4 py-2 text-gray-700 hover:text-green-600 rounded-lg hover:bg-green-50">Contacto</a>
+      <button class="w-full bg-gradient-to-r from-green-600 via-green-700 to-blue-600 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-semibold flex items-center justify-center mt-2">
+        <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor"/>
+          <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor"/>
+        </svg>
+        Agendar Cita
+      </button>
+    </div>
+  </div>
+</nav>
+
+
+
+================================================
+FILE: src/app/components/shared/navbar-public/navbar-public.component.ts
+================================================
+import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
+
+@Component({
+  selector: "app-navbar-public",
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: "./navbar-public.component.html",
+  styleUrls: ["./navbar-public.component.css"],
+})
+export class NavbarPublicComponent {
+  title = "Sistema de Atención Veterinaria";
+
+  isMenuOpen = false;
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+}
+
+
+
+================================================
+FILE: src/app/components/ui/avatar.component.ts
+================================================
+import { Component, Input } from '@angular/core';
+import { NgIf, NgClass } from '@angular/common';
+
+@Component({
+  selector: 'app-avatar',
+  standalone: true,
+  imports: [NgIf, NgClass],
+  template: `
+    <div class="relative inline-block rounded-full overflow-hidden bg-gray-200" [ngClass]="size">
+      <img *ngIf="src; else fallback" [src]="src" [alt]="alt" class="object-cover w-full h-full" />
+      <ng-template #fallback>
+        <div class="flex items-center justify-center w-full h-full text-sm font-semibold text-emerald-700 bg-gradient-to-br from-emerald-100 to-blue-100">
+          {{ fallbackText }}
+        </div>
+      </ng-template>
+    </div>
+  `,
+})
+export class AvatarComponent {
+  @Input() src = '';
+  @Input() alt = '';
+  @Input() fallbackText = '??';
+  @Input() size = 'w-10 h-10';
+}
+
+
+
+================================================
+FILE: src/app/components/ui/badge.component.ts
+================================================
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-badge',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <span [ngClass]="badgeClass">
+      <ng-content></ng-content>
+    </span>
+  `,
+})
+export class BadgeComponent {
+  @Input() variant: 'default' | 'secondary' | 'destructive' = 'default';
+
+  get badgeClass() {
+    const base = 'inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold';
+    const styles = {
+      default: 'bg-gray-100 text-gray-800',
+      secondary: 'bg-gray-200 text-gray-900',
+      destructive: 'bg-red-500 text-white',
+    };
+    return `${base} ${styles[this.variant]}`;
+  }
+}
+
+
+
+================================================
+FILE: src/app/components/ui/button.component.ts
+================================================
+import { Component, Input } from '@angular/core';
+import { NgClass } from '@angular/common';
+@Component({
+  selector: 'app-button',
+  standalone: true,
+  imports: [NgClass],
+  template: `
+    <button [ngClass]="classes" [type]="type">
+      <ng-content></ng-content>
+    </button>
+  `,
+})
+export class ButtonComponent {
+  @Input() variant: 'ghost' | 'default' = 'default';
+  @Input() size: 'sm' | 'md' = 'md';
+  @Input() type: 'button' | 'submit' = 'button';
+
+  get classes() {
+    const base = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none';
+    const variants = {
+      ghost: 'bg-transparent hover:bg-gray-100 text-gray-700',
+      default: 'bg-emerald-600 text-white hover:bg-emerald-700',
+    };
+    const sizes = {
+      sm: 'h-8 px-2 text-sm',
+      md: 'h-10 px-4 text-base',
+    };
+    return `${base} ${variants[this.variant]} ${sizes[this.size]}`;
+  }
+}
+
+
+
+================================================
+FILE: src/app/components/ui/dropdown-menu.component.ts
+================================================
+import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
+import { NgIf, NgTemplateOutlet } from '@angular/common';
+import { AvatarComponent } from './avatar.component'; // Adjust the path as needed
+
+@Component({
+  selector: 'app-dropdown-menu',
+  standalone: true,
+  imports: [NgIf, NgTemplateOutlet, AvatarComponent],
+  template: `
+    <div class="relative group">
+      <button class="h-10 w-10 rounded-full border-2 border-emerald-200 overflow-hidden focus:outline-none">
+        <app-avatar [src]="avatar" [fallbackText]="initials" />
+      </button>
+
+      <div class="hidden group-hover:flex absolute right-0 mt-2 w-56 flex-col bg-white border border-gray-200 rounded-md shadow-lg z-10 p-2">
+        <ng-container *ngTemplateOutlet="dropdownLabel"></ng-container>
+        <hr class="my-2" />
+        <ng-container *ngTemplateOutlet="dropdownContent"></ng-container>
+      </div>
+    </div>
+  `,
+})
+export class DropdownMenuComponent {
+  @Input() avatar: string = '';
+  @Input() initials: string = '??';
+
+  @ContentChild('dropdownLabel') dropdownLabel!: TemplateRef<any>;
+  @ContentChild('dropdownContent') dropdownContent!: TemplateRef<any>;
+}
+
+
+
+================================================
+FILE: src/app/components/vet-clinic-login/login.component.css
+================================================
+.w-full {
+  width: 100%;
+}
+.max-w-md {
+  max-width: 28rem;
+}
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+.absolute {
+  position: absolute;
+}
+.top-8 {
+  top: 2rem;
+}
+.left-1\/2 {
+  left: 50%;
+}
+.transform {
+  transform: translateX(-50%);
+}
+.-translate-x-1\/2 {
+  transform: translateX(-50%);
+}
+.flex {
+  display: flex;
+}
+.items-center {
+  align-items: center;
+}
+.gap-2 {
+  gap: 0.5rem;
+}
+.h-8 {
+  height: 2rem;
+}
+.w-8 {
+  width: 2rem;
+}
+.text-cyan-300 {
+  color: #67e8f9;
+}
+.text-2xl {
+  font-size: 1.5rem;
+}
+.font-bold {
+  font-weight: bold;
+}
+.text-white {
+  color: #fff;
+}
+.bg-white\/10 {
+  background-color: rgba(255,255,255,0.1);
+}
+.backdrop-blur-lg {
+  backdrop-filter: blur(16px);
+}
+.shadow-\[0_8px_30px_rgb\(0\,0\,0\,0\.12\)\] {
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+.rounded-xl {
+  border-radius: 1rem;
+}
+.p-6 {
+  padding: 1.5rem;
+}
+.text-center {
+  text-align: center;
+}
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0.5rem;
+}
+.mb-4 {
+  margin-bottom: 1rem;
+}
+.w-16 {
+  width: 4rem;
+}
+.h-16 {
+  height: 4rem;
+}
+.rounded-full {
+  border-radius: 9999px;
+}
+.bg-gradient-to-r {
+  background-image: linear-gradient(to right, #22d3ee, #34d399);
+}
+.from-cyan-400 {
+  --tw-gradient-from: #22d3ee;
+}
+.to-emerald-300 {
+  --tw-gradient-to: #34d399;
+}
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+.text-cyan-100 {
+  color: #cffafe;
+}
+.space-y-4 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 1rem;
+}
+.block {
+  display: block;
+}
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+.relative {
+  position: relative;
+}
+.pl-10 {
+  padding-left: 2.5rem;
+}
+.bg-white\/5 {
+  background-color: rgba(255,255,255,0.05);
+}
+.border {
+  border-width: 1px;
+  border-style: solid;
+}
+.border-cyan-300\/30 {
+  border-color: rgba(103,232,249,0.3);
+}
+.focus\:border-cyan-400:focus {
+  border-color: #22d3ee;
+}
+.placeholder\:text-cyan-200\/50::placeholder {
+  color: rgba(165,243,252,0.5);
+}
+.rounded {
+  border-radius: 0.5rem;
+}
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.absolute {
+  position: absolute;
+}
+.left-3 {
+  left: 0.75rem;
+}
+.top-2\.5 {
+  top: 0.625rem;
+}
+.h-5 {
+  height: 1.25rem;
+}
+.w-5 {
+  width: 1.25rem;
+}
+.right-1 {
+  right: 0.25rem;
+}
+.top-1 {
+  top: 0.25rem;
+}
+.h-8 {
+  height: 2rem;
+}
+.w-8 {
+  width: 2rem;
+}
+.hover\:text-white:hover {
+  color: #fff;
+}
+.hover\:bg-cyan-500\/20:hover {
+  background-color: rgba(6,182,212,0.2);
+}
+.rounded {
+  border-radius: 0.5rem;
+}
+.flex {
+  display: flex;
+}
+.items-center {
+  align-items: center;
+}
+.space-x-2 > :not([hidden]) ~ :not([hidden]) {
+  margin-left: 0.5rem;
+}
+.accent-cyan-500 {
+  accent-color: #06b6d4;
+}
+.border-cyan-300 {
+  border-color: #67e8f9;
+}
+.text-sm {
+  font-size: 0.875rem;
+}
+.w-full {
+  width: 100%;
+}
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.font-medium {
+  font-weight: 500;
+}
+.text-black {
+  color: #000;
+}
+.bg-gradient-to-r {
+  background-image: linear-gradient(to right, #22d3ee, #34d399);
+}
+.from-cyan-400 {
+  --tw-gradient-from: #22d3ee;
+}
+.to-emerald-300 {
+  --tw-gradient-to: #34d399;
+}
+.hover\:from-cyan-500:hover {
+  background-image: linear-gradient(to right, #06b6d4, #34d399);
+}
+.hover\:to-emerald-400:hover {
+  background-image: linear-gradient(to right, #22d3ee, #10b981);
+}
+.mt-4 {
+  margin-top: 1rem;
+}
+.text-center {
+  text-align: center;
+}
+.space-y-1 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0.25rem;
+}
+.text-cyan-300 {
+  color: #67e8f9;
+}
+.hover\:text-cyan-100:hover {
+  color: #cffafe;
+}
+.transition-colors {
+  transition-property: color;
+  transition-duration: 0.2s;
+}
+.text-xs {
+  font-size: 0.75rem;
+}
+.text-cyan-200\/70 {
+  color: rgba(165,243,252,0.7);
+}
+
+
+
+================================================
+FILE: src/app/components/vet-clinic-login/login.component.html
+================================================
+<div class="w-full max-w-md mx-auto">
+  <div class="absolute top-8 left-1/2 transform -translate-x-1/2 flex items-center gap-2">
+    <svg class="h-8 w-8 text-cyan-300" fill="none" stroke="currentColor" stroke-width="2"><!-- ícono Paw --></svg>
+    <h1 class="text-2xl font-bold text-white">VetFuture</h1>
+  </div>
+
+  <div class="bg-white/10 backdrop-blur-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] text-white rounded-xl p-6">
+    <div class="text-center space-y-2 mb-4">
+      <div class="w-16 h-16 rounded-full bg-gradient-to-r from-cyan-400 to-emerald-300 flex items-center justify-center mx-auto">
+        <svg class="h-8 w-8 text-white"><!-- ícono Paw --></svg>
+      </div>
+      <h2 class="text-2xl font-bold">Bienvenido</h2>
+      <p class="text-cyan-100">Ingresa tus credenciales para acceder al sistema</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+      <div>
+        <label for="email" class="text-cyan-100 block mb-1">Email</label>
+        <div class="relative">
+          <input
+            formControlName="email"
+            id="email"
+            type="email"
+            placeholder="doctor@vetfuture.com"
+            class="pl-10 w-full bg-white/5 border border-cyan-300/30 focus:border-cyan-400 text-white placeholder:text-cyan-200/50 rounded px-3 py-2"
+            required
+          />
+          <svg class="absolute left-3 top-2.5 h-5 w-5 text-cyan-300"><!-- ícono Mail --></svg>
+        </div>
+      </div>
+
+      <div>
+        <label for="password" class="text-cyan-100 block mb-1">Contraseña</label>
+        <div class="relative">
+          <input
+            formControlName="password"
+            id="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            class="pl-10 w-full bg-white/5 border border-cyan-300/30 focus:border-cyan-400 text-white rounded px-3 py-2"
+            required
+          />
+          <button type="button"
+            class="absolute right-1 top-1 h-8 w-8 text-cyan-300 hover:text-white hover:bg-cyan-500/20 rounded"
+            (click)="togglePassword()">
+            <svg *ngIf="showPassword(); else eyeIcon" class="h-4 w-4"><!-- EyeOff --></svg>
+            <ng-template #eyeIcon>
+              <svg class="h-4 w-4"><!-- Eye --></svg>
+            </ng-template>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <input type="checkbox" id="remember" formControlName="remember"
+          class="accent-cyan-500 border-cyan-300" />
+        <label for="remember" class="text-sm text-cyan-100">Recordar mis datos</label>
+      </div>
+
+      <button type="submit"
+        class="w-full py-2 rounded font-medium text-black bg-gradient-to-r from-cyan-400 to-emerald-300 hover:from-cyan-500 hover:to-emerald-400"
+        [disabled]="isLoading()">
+        {{ isLoading() ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
+      </button>
+    </form>
+
+    <div class="mt-4 text-center space-y-1">
+      <a routerLink="/forgot-password" class="text-sm text-cyan-300 hover:text-cyan-100 transition-colors block">
+        ¿Olvidaste tu contraseña?
+      </a>
+      <div class="text-xs text-cyan-200/70">Sistema de Gestión Veterinaria VetFuture © 2025</div>
+    </div>
+  </div>
+</div>
+
+
+
+================================================
+FILE: src/app/components/vet-clinic-login/login.component.ts
+================================================
+import { Component, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
+})
+export class LoginComponent {
+  showPassword = signal(false);
+  isLoading = signal(false);
+
+  form: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.form = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+      remember: [false]
+    });
+  }
+
+  togglePassword() {
+    this.showPassword.set(!this.showPassword());
+  }
+
+  onSubmit() {
+    if (this.form.invalid) return;
+
+    this.isLoading.set(true);
+
+    setTimeout(() => {
+      this.isLoading.set(false);
+      console.log('Formulario enviado', this.form.value);
+    }, 2000);
+  }
+}
+
+
+
+================================================
+FILE: src/app/pages/enfermera/enfermera-page.component.css
+================================================
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+
+
+================================================
+FILE: src/app/pages/enfermera/enfermera-page.component.html
+================================================
+<div class="flex min-h-screen flex-col bg-gray-50">
+
+  <main class="flex-1 container py-6 mx-auto px-4">
+    <h1 class="text-2xl font-bold mb-6">Panel de Enfermería</h1>
+
+    <div class="w-full">
+      <!-- Tabs Navigation -->
+      <div class="flex mb-4 border-b">
+        <button
+          class="px-4 py-2 font-medium relative"
+          [class.text-primary]="activeTab() === 'hoy'"
+          [class.border-b-2]="activeTab() === 'hoy'"
+          [class.border-primary]="activeTab() === 'hoy'"
+          (click)="activeTab.set('hoy')"
+        >
+          Citas de Hoy
+        </button>
+        <button
+          class="px-4 py-2 font-medium relative"
+          [class.text-primary]="activeTab() === 'programadas'"
+          [class.border-b-2]="activeTab() === 'programadas'"
+          [class.border-primary]="activeTab() === 'programadas'"
+          (click)="activeTab.set('programadas')"
+        >
+          Citas Programadas
+        </button>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="py-4">
+        @if (activeTab() === 'hoy') {
+        <app-citas-hoy />
+        }
+        @if (activeTab() === 'programadas') {
+        <app-citas-programadas />
+        }
+      </div>
+    </div>
+  </main>
+</div>
+
+
+
+================================================
+FILE: src/app/pages/enfermera/enfermera-page.component.ts
+================================================
+import { Component, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CitasHoyComponent } from '../../components/enfermeria/citas-hoy/citas-hoy.component';
+import { CitasProgramadasComponent } from '../../components/enfermeria/citas-programadas/citas-programadas.component';
+
+@Component({
+  selector: 'app-enfermera-page',
+  standalone: true,
+  imports: [
+    CommonModule,
+    CitasHoyComponent,
+    CitasProgramadasComponent,
+  ],
+  templateUrl: './enfermera-page.component.html',
+  styleUrls: ['./enfermera-page.component.css'],
+})
+export class EnfermeraPageComponent {
+  activeTab = signal<'hoy' | 'programadas'>('hoy');
+
+}
+
+
+
+
+
+================================================
+FILE: src/app/pages/hero/hero-page.component.css
+================================================
+/* hero-page.component.css */
+
+body {
+  background-color: #f5f7fa;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.hero-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+}
+
+h1 {
+  color: #2d6cdf;
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+}
+
+p {
+  color: #444;
+  font-size: 1.2rem;
+  margin-top: 0;
+}
+
+
+
+================================================
+FILE: src/app/pages/hero/hero-page.component.html
+================================================
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Hola Isaac a</title>
+</head>
+<body>
+  <h1>Hola Isaac</h1>
+</body>
+</html>
+
+
+
+================================================
+FILE: src/app/pages/hero/hero-page.component.ts
+================================================
+import {Component} from '@angular/core';
+import {CommonModule} from '@angular/common';
+
+@Component({
+  selector: 'app-hero-page',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './hero-page.component.html',
+  styleUrls: ['./hero-page.component.css']
+})
+
+export class HeroPageComponent {
+  title = 'Sistema de Atención Veterinaria';
+
+  isMenuOpen = false;
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+}
+
+
+
+================================================
+FILE: src/app/pages/index/index-page.component.css
+================================================
+/* Variables globales */
+:root {
+  --primary: #3b82f6;
+  --primary-dark: #1d4ed8;
+  --secondary: #10b981;
+  --accent: #8b5cf6;
+  --light: #f3f4f6;
+  --dark: #1f2937;
+  --gray: #6b7280;
+  --danger: #ef4444;
+  --success: #22c55e;
+}
+
+/* Estilos generales */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f9fafb;
+  color: var(--dark);
+  line-height: 1.6;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Header */
+header {
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+
+.login-btn {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--dark);
+}
+
+/* Hero section */
+.hero {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  color: white;
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.hero p {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.cta-btn {
+  background-color: white;
+  color: var(--primary);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.secondary-btn {
+  background-color: transparent;
+  color: white;
+  border: 2px solid white;
+  margin-left: 1rem;
+}
+
+.secondary-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Features section */
+.features {
+  padding: 5rem 0;
+  background-color: white;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-title h3 {
+  font-size: 2rem;
+  color: var(--dark);
+  margin-bottom: 1rem;
+}
+
+.section-title p {
+  color: var(--gray);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+  background-color: var(--primary);
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.feature-card h4 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--dark);
+}
+
+.feature-card p {
+  color: var(--gray);
+}
+
+/* About section */
+.about {
+  padding: 5rem 0;
+  background-color: #f3f4f6;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3rem;
+  align-items: center;
+}
+
+.about-content h3 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--dark);
+}
+
+.about-content p {
+  color: var(--gray);
+  margin-bottom: 1.5rem;
+}
+
+.about-image img {
+  width: 100%;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Stats section */
+.stats {
+  padding: 3rem 0;
+  background-color: var(--primary);
+  color: white;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  text-align: center;
+}
+
+.stat-item h4 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.stat-item p {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+/* CTA section */
+.cta {
+  padding: 5rem 0;
+  background-color: white;
+  text-align: center;
+}
+
+.cta h3 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--dark);
+}
+
+.cta p {
+  color: var(--gray);
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  nav {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 99;
+  }
+
+  nav.open {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  nav ul {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .hero h2 {
+    font-size: 2rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cta-btn,
+  .secondary-btn {
+    display: block;
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+}
+
+
+
+================================================
+FILE: src/app/pages/index/index-page.component.html
+================================================
+<!-- Hero Section -->
+<section class="hero" id="inicio">
+  <div class="container">
+    <div class="hero-content">
+      <h2>Sistema Informático para la Atención Veterinaria</h2>
+      <p>
+        Digitalice sus historias clínicas, mejore la precisión en diagnósticos y
+        optimice la atención a sus pacientes con nuestro sistema integral.
+      </p>
+      <div>
+        <a href="#" class="cta-btn">Solicitar Demo</a>
+        <a href="#caracteristicas" class="cta-btn secondary-btn">Conocer Más</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features" id="caracteristicas">
+  <div class="container">
+    <div class="section-title">
+      <h3>Características Principales</h3>
+      <p>
+        Nuestro sistema está diseñado para mejorar la eficiencia y calidad de
+        atención en su consultorio veterinario.
+      </p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-file-medical"></i>
+        </div>
+        <h4>Historias Clínicas Digitales</h4>
+        <p>
+          Acceda rápidamente a historiales completos, evitando pérdidas de
+          información y mejorando la toma de decisiones.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-bell"></i>
+        </div>
+        <h4>Alertas y Recordatorios</h4>
+        <p>
+          Reciba notificaciones sobre vacunas pendientes, alergias registradas y
+          seguimientos de tratamientos.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <h4>Reportes y Estadísticas</h4>
+        <p>
+          Genere informes detallados sobre la evolución de parámetros clínicos y
+          tratamientos aplicados.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-calendar-alt"></i>
+        </div>
+        <h4>Gestión de Citas</h4>
+        <p>
+          Organice eficientemente la agenda de consultas, evitando sobrecargas y
+          mejorando la experiencia del cliente.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-prescription"></i>
+        </div>
+        <h4>Recetas Digitales</h4>
+        <p>
+          Genere recetas médicas digitales con detalle del medicamento,
+          posología y duración del tratamiento.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h4>Seguridad de Datos</h4>
+        <p>
+          Proteja la información sensible con controles de acceso basados en
+          roles y copias de seguridad automáticas.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section class="about" id="nosotros">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-content">
+        <h3>Sobre Nosotros</h3>
+        <p>
+          <strong>Misión:</strong> En la Clínica Veterinaria Santa Anita, nos
+          dedicamos a ofrecer un servicio médico veterinario integral, ético y
+          de alta calidad, enfocado en el bienestar de las mascotas y la
+          tranquilidad de sus dueños.
+        </p>
+        <p>
+          <strong>Visión:</strong> Ser reconocidos como una clínica veterinaria
+          líder en la región, destacando por la excelencia médica, la innovación
+          tecnológica en la gestión de nuestros servicios y el trato cálido
+          hacia nuestros pacientes y clientes.
+        </p>
+        <a href="#contacto" class="cta-btn">Contáctanos</a>
+      </div>
+      <div class="about-image">
+        <img
+          src="/assets/heart-paw.png"
+          alt="Corazón con huella veterinaria"
+          style="max-width: 100%; height: auto"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <h4>40%</h4>
+        <p>Reducción en tiempo de consulta</p>
+      </div>
+      <div class="stat-item">
+        <h4>30%</h4>
+        <p>Menos errores en tratamientos</p>
+      </div>
+      <div class="stat-item">
+        <h4>50%</h4>
+        <p>Mejora en seguimiento de pacientes</p>
+      </div>
+      <div class="stat-item">
+        <h4>100%</h4>
+        <p>Acceso a historiales completos</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta" id="contacto">
+  <div class="container">
+    <h3>¿Listo para mejorar la atención en su clínica?</h3>
+    <p>
+      Solicite una demostración gratuita y descubra cómo nuestro sistema puede
+      transformar su consultorio veterinario.
+    </p>
+    <a href="#" class="cta-btn">Solicitar Demo</a>
+  </div>
+</section>
+
+
+
+================================================
+FILE: src/app/pages/index/index-page.component.ts
+================================================
+import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
+
+@Component({
+  selector: "app-index-page",
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: "./index-page.component.html",
+  styleUrls: ["./index-page.component.css"],
+})
+export class IndexPageComponent {
+  title = "Sistema de Atención Veterinaria";
+
+  isMenuOpen = false;
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+}
+
+
+
+================================================
+FILE: src/app/pages/login/login-page.component.css
+================================================
+main {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #083344, #065f46);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+
+
+================================================
+FILE: src/app/pages/login/login-page.component.html
+================================================
+<main class="min-h-screen bg-gradient-to-br from-cyan-900 to-emerald-900 flex items-center justify-center p-4">
+  <app-login />
+</main>
+
+
+
+================================================
+FILE: src/app/pages/login/login-page.component.ts
+================================================
+import { Component } from '@angular/core';
+import { LoginComponent } from '../../components/vet-clinic-login/login.component'; // ajusta ruta si es diferente
+
+@Component({
+  selector: 'app-home',
+  standalone: true,
+  imports: [LoginComponent],
+  templateUrl: './login-page.component.html',
+  styleUrls: ['./login-page.component.css']
+})
+export class LoginPageComponent {}
+
+
+
+================================================
+FILE: src/app/pages/receta/receta-page.component.css
+================================================
+/* Variables globales */
+:root {
+  --primary: #3b82f6;
+  --primary-dark: #1d4ed8;
+  --secondary: #10b981;
+  --accent: #8b5cf6;
+  --light: #f3f4f6;
+  --dark: #1f2937;
+  --gray: #6b7280;
+  --danger: #ef4444;
+  --success: #22c55e;
+}
+
+/* Estilos generales */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f9fafb;
+  color: var(--dark);
+  line-height: 1.6;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Header */
+header {
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+
+.login-btn {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--dark);
+}
+
+/* Hero section */
+.hero {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  color: white;
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.hero p {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.cta-btn {
+  background-color: white;
+  color: var(--primary);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.secondary-btn {
+  background-color: transparent;
+  color: white;
+  border: 2px solid white;
+  margin-left: 1rem;
+}
+
+.secondary-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Features section */
+.features {
+  padding: 5rem 0;
+  background-color: white;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-title h3 {
+  font-size: 2rem;
+  color: var(--dark);
+  margin-bottom: 1rem;
+}
+
+.section-title p {
+  color: var(--gray);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+  background-color: var(--primary);
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.feature-card h4 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--dark);
+}
+
+.feature-card p {
+  color: var(--gray);
+}
+
+/* About section */
+.about {
+  padding: 5rem 0;
+  background-color: #f3f4f6;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3rem;
+  align-items: center;
+}
+
+.about-content h3 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--dark);
+}
+
+.about-content p {
+  color: var(--gray);
+  margin-bottom: 1.5rem;
+}
+
+.about-image img {
+  width: 100%;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Stats section */
+.stats {
+  padding: 3rem 0;
+  background-color: var(--primary);
+  color: white;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  text-align: center;
+}
+
+.stat-item h4 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.stat-item p {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+/* CTA section */
+.cta {
+  padding: 5rem 0;
+  background-color: white;
+  text-align: center;
+}
+
+.cta h3 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--dark);
+}
+
+.cta p {
+  color: var(--gray);
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  nav {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 99;
+  }
+
+  nav.open {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  nav ul {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .hero h2 {
+    font-size: 2rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cta-btn,
+  .secondary-btn {
+    display: block;
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+}
+
+
+
+================================================
+FILE: src/app/pages/receta/receta-page.component.html
+================================================
+<div style="display: flex; gap: 2rem; align-items: flex-start;">
+
+  <!-- Formulario de ingreso de datos -->
+  <div style="flex: 1; max-width: 400px;">
+    <h2>Generar Receta Médica</h2>
+    <form #recetaForm="ngForm">
+      <div style="margin-bottom: 1rem;">
+        <label for="nombreMascota">Nombre de la Mascota:</label>
+        <input id="nombreMascota" name="nombreMascota" type="text" [(ngModel)]="nombreMascota" class="form-control" required>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <label for="fecha">Fecha:</label>
+        <input id="fecha" name="fecha" type="date" [(ngModel)]="fecha" class="form-control" required>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <label for="diagnostico">Diagnóstico:</label>
+        <textarea id="diagnostico" name="diagnostico" rows="3" [(ngModel)]="diagnostico" class="form-control" required></textarea>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <label>Doctor a cargo:</label>
+        <div>
+          <button type="button" [class.selected]="doctor === 'nicolas serrucho arias'" (click)="doctor = 'nicolas serrucho arias'">
+            nicolas serrucho arias
+          </button>
+          <button type="button" [class.selected]="doctor === 'juanca'" (click)="doctor = 'juanca'">
+            juanca
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Vista previa de la receta médica -->
+  <div style="flex: 1; border: 1px solid #ccc; padding: 1.5rem; border-radius: 8px; background: #f9f9f9; min-width: 320px;">
+    <h2 style="text-align: center;">Receta Médica</h2>
+    <p><strong>Mascota:</strong> {{ nombreMascota || '---' }}</p>
+    <p><strong>Fecha:</strong> {{ fecha || '---' }}</p>
+    <p><strong>Diagnóstico:</strong></p>
+    <p style="min-height: 60px;">{{ diagnostico || '---' }}</p>
+    <p><strong>Doctor a cargo:</strong> {{ doctor || '---' }}</p>
+  </div>
+
+</div>
+
+<style>
+  button {
+    margin-right: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid #007bff;
+    background: #fff;
+    color: #007bff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button.selected, button:hover {
+    background: #007bff;
+    color: #fff;
+  }
+  .form-control {
+    width: 100%;
+    padding: 0.4rem;
+    margin-top: 0.2rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+</style>
+
+
+
+================================================
+FILE: src/app/pages/receta/receta-page.component.ts
+================================================
+
+import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: "app-receta-page",
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: "./receta-page.component.html",
+  styleUrls: ["./receta-page.component.css"],
+})
+export class RecetaPageComponent {
+  title = "Sistema de Atención Veterinaria";
+  nombreMascota: string = '';
+  diagnostico: string = '';
+  doctor: string = 'Nicolas alayo arias';
+  fecha: string = new Date().toISOString().substring(0, 10);
+
+  isMenuOpen = false;
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+}
+
+
