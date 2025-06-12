@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Agendar Cita - Clínica Veterinaria</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f9f9f9;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .form-row {
+      display: flex;
+      gap: 20px;
+    }
+    .form-row > div {
+      flex: 1;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Agendar Cita</h1>
+
+  <div class="section">
+    <h2>Datos del Propietario</h2>
+    <label for="nombre_cliente">Nombre del cliente</label>
+    <input type="text" id="nombre_cliente" name="nombre_cliente">
+
+    <label for="telefono">Teléfono</label>
+    <input type="tel" id="telefono" name="telefono">
+
+    <label for="correo">Correo electrónico</label>
+    <input type="email" id="correo" name="correo">
+  </div>
+
+  <div class="section">
+    <h2>Datos de la Mascota</h2>
+    <label for="nombre_mascota">Nombre de la mascota</label>
+    <input type="text" id="nombre_mascota" name="nombre_mascota">
+
+    <div class="form-row">
+      <div>
+        <label for="especie">Especie</label>
+        <select id="especie" name="especie">
+          <option value="">Seleccione la especie</option>
+          <option value="Perro">Perro</option>
+          <option value="Gato">Gato</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+      <div>
+        <label for="raza">Raza</label>
+        <input type="text" id="raza" name="raza">
+      </div>
+      <div>
+        <label for="edad">Edad</label>
+        <input type="number" id="edad" name="edad">
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Detalles de la Cita</h2>
+    <label for="fecha">Fecha</label>
+    <input type="date" id="fecha" name="fecha">
+
+    <label for="tipo_servicio">Tipo de servicio</label>
+    <select id="tipo_servicio" name="tipo_servicio">
+      <option value="">Seleccione el servicio</option>
+      <option value="Consulta">Consulta</option>
+      <option value="Vacunación">Vacunación</option>
+      <option value="Desparasitación">Desparasitación</option>
+      <option value="Control general">Control general</option>
+    </select>
+
+    <label for="horario">Horario</label>
+    <input type="time" id="horario" name="horario">
+
+    <label for="veterinario">Veterinario (opcional)</label>
+    <input type="text" id="veterinario" name="veterinario">
+
+    <label for="motivo">Motivo de la consulta</label>
+    <textarea id="motivo" name="motivo" rows="4"></textarea>
+
+    <button type="submit">Agendar Cita</button>
+  </div>
+</div>
+
+</body>
+</html>
