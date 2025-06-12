@@ -1,13 +1,13 @@
 <div class="cita-container">
 
   <!-- 🔁 Switch estilo iOS para elegir mascota nueva o registrada -->
-<div class="ios-switch-container">
-  <div class="ios-switch" [class.registrada]="usarMascotaRegistrada" (click)="toggleSwitch()">
-    <div class="option nueva">Nueva Mascota</div>
-    <div class="option registrada">Mascota Registrada</div>
-    <div class="slider"></div>
+  <div class="ios-switch-container">
+    <div class="ios-switch" [class.registrada]="usarMascotaRegistrada" (click)="toggleSwitch()">
+      <div class="option nueva">Nueva Mascota</div>
+      <div class="option registrada">Mascota Registrada</div>
+      <div class="slider"></div>
+    </div>
   </div>
-</div>
 
   <!-- 📄 Formulario general -->
   <form>
@@ -67,34 +67,43 @@
 
       <!-- Parte inferior: Detalles de la cita -->
       <div class="detalles-cita">
-        <h3 class="titulo-seccion gradiante">Detalles de la Cita</h3>
-        <div class="form-group">
-          <label>Fecha:</label>
-          <input type="date" [(ngModel)]="fecha" name="fecha" class="form-control">
+        <h3 class="titulo-seccion">Detalles de la Cita</h3>
+
+        <div class="grid-cita">
+          <div class="form-group">
+            <label>Fecha:</label>
+            <input type="date" [(ngModel)]="fecha" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Tipo de Servicio:</label>
+            <select [(ngModel)]="tipoServicio" class="form-control">
+              <option>Consulta</option>
+              <option>Vacunación</option>
+              <option>Desparasitación</option>
+              <option>Control</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Horario:</label>
+            <input type="time" [(ngModel)]="horario" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Veterinario (opcional):</label>
+            <select [(ngModel)]="veterinario" class="form-control">
+              <option value="">Selecciona un veterinario</option>
+              <option value="Dr. Jose Hurtado">Dr. Jose Hurtado</option>
+              <option value="Dr. Juan Chavez">Dr. Juan Chavez</option>
+              <option value="Dr. Isaac Takamura">Dr. Isaac Takamura</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label>Motivo de la Consulta:</label>
+            <textarea [(ngModel)]="motivoConsulta" class="form-control"></textarea>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Tipo de Servicio:</label>
-          <select [(ngModel)]="tipoServicio" name="tipoServicio" class="form-control">
-            <option>Consulta</option>
-            <option>Vacunación</option>
-            <option>Desparasitación</option>
-            <option>Control</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Horario:</label>
-          <input type="time" [(ngModel)]="horario" name="horario" class="form-control">
-        </div>
-        <div class="form-group">
-          <label>Veterinario (opcional):</label>
-          <input type="text" [(ngModel)]="veterinario" name="veterinario" class="form-control">
-        </div>
-        <div class="form-group">
-          <label>Motivo de la Consulta:</label>
-          <textarea [(ngModel)]="motivoConsulta" name="motivoConsulta" class="form-control"></textarea>
-        </div>
+
         <div class="boton-container">
-          <button type="button" (click)="agendarCita()">Agendar Cita</button>
+          <button (click)="agendarCita()">Agendar Cita</button>
         </div>
       </div>
     </div>

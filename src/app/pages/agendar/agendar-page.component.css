@@ -8,6 +8,16 @@
   box-shadow: 0 0 10px rgba(0,0,0,0.05);
 }
 
+.grid-cita {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.full-width {
+  grid-column: 1 / -1; /* Ocupa ambas columnas */
+}
+
 /* Datos de cliente y mascota: lado a lado */
 .datos-superiores {
   display: flex;
