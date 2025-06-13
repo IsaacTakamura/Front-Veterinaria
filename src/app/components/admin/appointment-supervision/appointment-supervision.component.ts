@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgComponentOutlet } from '@angular/common';
 
 
 @Component({
   selector: 'app-appointment-supervision',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgComponentOutlet],
   templateUrl: './appointment-supervision.component.html',
   styleUrls: ['./appointment-supervision.component.css']
 })

@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgComponentOutlet } from '@angular/common';
 
 @Component({
   selector: 'app-catalog-management',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgComponentOutlet],
   templateUrl: './catalog-management.component.html',
   styleUrls: ['./catalog-management.component.css']
 })

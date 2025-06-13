@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgComponentOutlet } from '@angular/common';
+
 
 @Component({
   selector: 'app-maintenance-security',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgComponentOutlet],
   templateUrl: './maintenance-security.component.html',
   styleUrls: ['./maintenance-security.component.css']
 })

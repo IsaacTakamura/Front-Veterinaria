@@ -1,11 +1,11 @@
 import { AdminDashboardComponent } from '../admin-dashboard/admin-dashboard.component';
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgComponentOutlet} from '@angular/common';
 
 @Component({
   selector: 'app-admin-index-page',
   standalone: true,
-  imports: [CommonModule, AdminDashboardComponent],
+  imports: [CommonModule, AdminDashboardComponent, NgComponentOutlet],
   template: `<app-admin-dashboard></app-admin-dashboard>`,
 })
 export class AdminIndexPageComponent {

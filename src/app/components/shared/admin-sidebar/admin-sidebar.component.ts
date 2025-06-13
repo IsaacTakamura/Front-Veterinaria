@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgComponentOutlet } from '@angular/common';
 import { IconShieldComponent } from '../../icons/icon-shield.component';
 import { IconUsersComponent } from '../../icons/icon-users.Component';
 import { IconUserPlusComponent } from '../../icons/icon-userplus.Component';
@@ -13,6 +13,7 @@ import { IconChevronRightComponent } from '../../icons/icon-chevron-right.compon
   standalone: true,
   imports: [CommonModule,
     IconShieldComponent,
+    NgComponentOutlet,
     IconUsersComponent,
     IconUserPlusComponent,
     IconDatabaseComponent,

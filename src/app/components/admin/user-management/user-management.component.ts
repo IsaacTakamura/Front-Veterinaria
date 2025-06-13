@@ -1,5 +1,5 @@
 import { Component, Input, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgComponentOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 interface User {
@@ -19,7 +19,7 @@ interface NewUser {
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgComponentOutlet],
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.css']
 })
