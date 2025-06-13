@@ -1,10 +1,25 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { IconShieldComponent } from '../../icons/icon-shield.component';
+import { IconUsersComponent } from '../../icons/icon-users.Component';
+import { IconUserPlusComponent } from '../../icons/icon-userplus.Component';
+import { IconDatabaseComponent } from '../../icons/icon-database.component';
+import { IconSettingsComponent } from '../../icons/icon-settings.component';
+import { IconChevronDownComponent } from '../../icons/icon-chevron-down.component';
+import { IconChevronRightComponent } from '../../icons/icon-chevron-right.component';
 
 @Component({
   selector: 'app-admin-sidebar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,
+    IconShieldComponent,
+    IconUsersComponent,
+    IconUserPlusComponent,
+    IconDatabaseComponent,
+    IconSettingsComponent,
+    IconChevronDownComponent,
+    IconChevronRightComponent
+  ],
   templateUrl: './admin-sidebar.component.html',
   styleUrls: ['./admin-sidebar.component.css']
 })

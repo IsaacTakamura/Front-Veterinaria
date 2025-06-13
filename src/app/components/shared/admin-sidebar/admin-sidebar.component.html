@@ -2,7 +2,7 @@
   <div class="p-4 border-b border-gray-200">
     <div class="flex items-center space-x-3">
       <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center">
-        <span [innerHTML]="icon('shield', 20, 'text-white')"></span>
+        <app-icon-shield [size]="20" class="text-white"></app-icon-shield>
       </div>
       <div>
         <h2 class="font-semibold text-gray-900">Panel Admin</h2>
@@ -14,28 +14,27 @@
   <nav class="p-2">
     <ng-container *ngFor="let menu of menuItems">
       <div class="mb-2">
-        <button
-          type="button"
-          (click)="toggleMenu(menu.id)"
-          class="w-full flex items-center justify-between p-2 text-left text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-        >
+        <button type="button" (click)="toggleMenu(menu.id)"
+          class="w-full flex items-center justify-between p-2 text-left text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
           <div class="flex items-center space-x-3">
             <span [innerHTML]="icon(menu.icon, 20)"></span>
             <span class="font-medium">{{ menu.title }}</span>
           </div>
-          <span [innerHTML]="expandedMenus.includes(menu.id) ? icon('chevrondown', 16) : icon('chevronright', 16)"></span>
+          <ng-container *ngIf="expandedMenus.includes(menu.id); else rightIcon">
+            <app-icon-chevron-down [size]="16"></app-icon-chevron-down>
+          </ng-container>
+          <ng-template #rightIcon>
+            <app-icon-chevron-right [size]="16"></app-icon-chevron-right>
+          </ng-template>
         </button>
 
         <div *ngIf="expandedMenus.includes(menu.id)" class="ml-4 mt-1 space-y-1">
           <ng-container *ngFor="let item of menu.items">
-            <button
-              type="button"
-              (click)="sectionChange.emit(item.id)"
+            <button type="button" (click)="sectionChange.emit(item.id)"
               class="w-full flex items-center space-x-3 p-2 text-left rounded-lg transition-colors"
-              [ngClass]="activeSection === item.id ? 'bg-green-100 text-green-700 border-l-4 border-green-500' : 'text-gray-600 hover:bg-gray-50'"
-            >
+              [ngClass]="activeSection === item.id ? 'bg-green-100 text-green-700 border-l-4 border-green-500' : 'text-gray-600 hover:bg-gray-50'">
               <span [innerHTML]="icon(item.icon, 16)"></span>
-              <span class="text-sm">{{ item.title }}</span>
+              <span [innerHTML] class="text-sm">{{ item.title }}</span>
             </button>
           </ng-container>
         </div>
