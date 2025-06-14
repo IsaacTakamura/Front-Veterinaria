@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule, NgComponentOutlet } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-inventory-management',
   standalone: true,
-  imports: [CommonModule, NgComponentOutlet],
+  imports: [CommonModule],
   templateUrl: './inventory-management.component.html',
   styleUrls: ['./inventory-management.component.css']
 })

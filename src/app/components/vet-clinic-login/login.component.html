@@ -1,6 +1,8 @@
 <div class="w-full max-w-md mx-auto">
   <div class="absolute top-8 left-1/2 transform -translate-x-1/2 flex items-center gap-2">
-    <svg class="h-8 w-8 text-cyan-300" fill="none" stroke="currentColor" stroke-width="2"><!-- ícono Paw --></svg>
+    <svg class="h-8 w-8 text-cyan-300" fill="none" stroke="currentColor" stroke-width="2">
+      <!-- ícono Paw -->
+    </svg>
     <h1 class="text-2xl font-bold text-white">VetFuture</h1>
   </div>
 
@@ -15,20 +17,23 @@
     </div>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+      <!-- Username -->
       <div>
-        <label for="username" class="text-cyan-100 block mb-1">Username</label>
+        <label for="username" class="text-cyan-100 block mb-1">Usuario</label>
         <div class="relative">
           <input formControlName="username" id="username" type="text" placeholder="doctor123"
             class="pl-10 w-full bg-white/5 border border-cyan-300/30 focus:border-cyan-400 text-white placeholder:text-cyan-200/50 rounded px-3 py-2"
             required />
-          <svg class="absolute left-3 top-2.5 h-5 w-5 text-cyan-300"><!-- ícono User --></svg>
+          <svg class="absolute left-3 top-2.5 h-5 w-5 text-cyan-300"><!-- icon User --></svg>
         </div>
       </div>
 
+      <!-- Password -->
       <div>
         <label for="password" class="text-cyan-100 block mb-1">Contraseña</label>
         <div class="relative">
           <input formControlName="password" id="password" [type]="showPassword() ? 'text' : 'password'"
+            placeholder="********"
             class="pl-10 w-full bg-white/5 border border-cyan-300/30 focus:border-cyan-400 text-white rounded px-3 py-2"
             required />
           <button type="button"
@@ -42,11 +47,13 @@
         </div>
       </div>
 
+      <!-- Recordar -->
       <div class="flex items-center space-x-2">
         <input type="checkbox" id="remember" formControlName="remember" class="accent-cyan-500 border-cyan-300" />
         <label for="remember" class="text-sm text-cyan-100">Recordar mis datos</label>
       </div>
 
+      <!-- Botón submit -->
       <button type="submit"
         class="w-full py-2 rounded font-medium text-black bg-gradient-to-r from-cyan-400 to-emerald-300 hover:from-cyan-500 hover:to-emerald-400"
         [disabled]="isLoading()">
@@ -62,3 +69,4 @@
     </div>
   </div>
 </div>
+

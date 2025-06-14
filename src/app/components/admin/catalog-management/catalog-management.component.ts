@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule, NgComponentOutlet } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { IconPencilComponent } from "../../icons/icon-pencil.component";
 
 @Component({
   selector: 'app-catalog-management',
   standalone: true,
-  imports: [CommonModule, NgComponentOutlet],
+  imports: [CommonModule, IconPencilComponent],
   templateUrl: './catalog-management.component.html',
   styleUrls: ['./catalog-management.component.css']
 })

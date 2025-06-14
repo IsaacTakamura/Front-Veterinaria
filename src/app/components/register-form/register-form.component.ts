@@ -56,7 +56,8 @@ export class RegisterFormComponent {
     this.isLoading.set(true);
 
     try {
-      const result = await this.authService.register(this.form.value).toPromise();
+      const { username, password, rol } = this.form.value;
+      const result = await this.authService.register(username, password, rol).toPromise();
       this.message.set({ type: 'success', text: 'Usuario registrado exitosamente' });
       this.form.reset();
     } catch (error) {

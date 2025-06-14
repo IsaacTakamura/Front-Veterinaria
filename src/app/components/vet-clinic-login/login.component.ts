@@ -1,7 +1,14 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators
+} from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service'; // Asegúrate de que la ruta sea correcta
 
 @Component({
   selector: 'app-login',
@@ -16,9 +23,13 @@ export class LoginComponent {
 
   form: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.form = this.fb.group({
-      username: ['', [Validators.required]], // Cambiado de 'email' a 'username'
+      username: ['', Validators.required],
       password: ['', Validators.required],
       remember: [false]
     });
@@ -33,9 +44,19 @@ export class LoginComponent {
 
     this.isLoading.set(true);
 
-    setTimeout(() => {
-      this.isLoading.set(false);
-      console.log('Formulario enviado', this.form.value);
-    }, 2000);
+    const { username, password } = this.form.value;
+
+    this.authService.login(username, password).subscribe({
+      next: (res) => {
+        this.isLoading.set(false);
+        console.log('Login exitoso', res);
+        // redirección automática se maneja dentro del AuthService
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        console.error('Error de login', err);
+        // Aquí puedes mostrar una alerta visual si quieres
+      }
+    });
   }
 }

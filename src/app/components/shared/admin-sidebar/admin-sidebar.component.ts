@@ -1,10 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule, NgComponentOutlet } from '@angular/common';
 import { IconShieldComponent } from '../../icons/icon-shield.component';
-import { IconUsersComponent } from '../../icons/icon-users.Component';
-import { IconUserPlusComponent } from '../../icons/icon-userplus.Component';
-import { IconDatabaseComponent } from '../../icons/icon-database.component';
-import { IconSettingsComponent } from '../../icons/icon-settings.component';
 import { IconChevronDownComponent } from '../../icons/icon-chevron-down.component';
 import { IconChevronRightComponent } from '../../icons/icon-chevron-right.component';
 
@@ -13,13 +9,8 @@ import { IconChevronRightComponent } from '../../icons/icon-chevron-right.compon
   standalone: true,
   imports: [CommonModule,
     IconShieldComponent,
-    NgComponentOutlet,
-    IconUsersComponent,
-    IconUserPlusComponent,
-    IconDatabaseComponent,
-    IconSettingsComponent,
     IconChevronDownComponent,
-    IconChevronRightComponent
+    IconChevronRightComponent,
   ],
   templateUrl: './admin-sidebar.component.html',
   styleUrls: ['./admin-sidebar.component.css']
@@ -106,7 +97,7 @@ export class AdminSidebarComponent {
   // SVG Icon generator (lucide style, minimal set)
   icon(name: string, size = 20, classes = ''): string {
     const icons: Record<string, string> = {
-      users: `<svg width="${size}" height="${size}" class="${classes}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+      users: `<svg width="${size}" height="${size}" class="${classes}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-3-3.87"/><path d="M7 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="4"/><path d="M17 11a4 4 0 0 1 4-4h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-1a4 4 0 0 1-4-4z"/></svg>`,
       userplus: `<svg width="${size}" height="${size}" class="${classes}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-3-3.87"/><path d="M7 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>`,
       shield: `<svg width="${size}" height="${size}" class="${classes}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
       database: `<svg width="${size}" height="${size}" class="${classes}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>`,
