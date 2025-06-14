@@ -1,11 +1,22 @@
 import { Component } from '@angular/core';
-import { LoginComponent } from '../../components/vet-clinic-login/login.component'; // ajusta ruta si es diferente
+import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-login',
   standalone: true,
-  imports: [LoginComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.css']
 })
-export class LoginPageComponent {}
+export class LoginComponent {
+  username = '';
+  password = '';
+
+  constructor(private auth: AuthService) {}
+
+  login() {
+    this.auth.login(this.username, this.password).subscribe();
+  }
+}
