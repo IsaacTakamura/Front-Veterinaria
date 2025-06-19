@@ -1,7 +1,6 @@
 import { Component, Input, Signal, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIf, NgClass } from '@angular/common';
-import { AvatarComponent } from '../../ui/avatar.component';
 import { ButtonComponent } from '../../ui/button.component';
 import { BadgeComponent } from '../../ui/badge.component';
 import { DropdownMenuComponent } from '../../ui/dropdown-menu.component';
@@ -18,7 +17,6 @@ interface User {
   standalone: true,
   imports: [
     CommonModule,
-    AvatarComponent,
     ButtonComponent,
     BadgeComponent,
     DropdownMenuComponent,
