@@ -1,8 +1,9 @@
 // src/app/services/auth.service.ts
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { tap } from 'rxjs/operators';
+import { tap, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -10,15 +11,21 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) { }
 
-  register(usuario: { username: string; password: string; rol: string }) {
-    return this.http.post('/api/v1/authentication/register', usuario);
+  register(usuario: { username: string; password: string; rol: string }): Observable<any> {
+    return this.http.post<any>(`${this.api}/register`, usuario).pipe(
+      switchMap(() => {
+        // Login automático tras registro
+        return this.login(usuario.username, usuario.password);
+      })
+    );
   }
 
-  login(username: string, password: string) {
+  login(username: string, password: string): Observable<any> {
     return this.http.post<any>(`${this.api}/login`, { username, password }).pipe(
       tap(response => {
-        // Asegúrate que el backend retorne un token válido
         localStorage.setItem('auth_token', response.token);
+        localStorage.setItem('user_name', response.nombre || username);
+        localStorage.setItem('user_rol', response.rol || ''); // Guarda el rol
         this.handleRedirect(response);
       })
     );
@@ -26,7 +33,9 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('auth_token');
-    this.router.navigate(['/login']); // Opcional: redirige tras logout
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('user_rol');
+    this.router.navigate(['/login']);
   }
 
   getToken(): string | null {
@@ -34,7 +43,7 @@ export class AuthService {
   }
 
   handleRedirect(response: any) {
-    const rol = response.rol?.toUpperCase(); // Asegura mayúsculas
+    const rol = response.rol?.toUpperCase();
     if (rol === 'ADMIN') {
       this.router.navigate(['/admin']);
     } else if (rol === 'VET') {
