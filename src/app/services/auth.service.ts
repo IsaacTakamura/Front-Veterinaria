@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private api = 'http://localhost:8080/api/v1/authentication';
+  private api = '/api/v1/authentication';
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -17,6 +17,7 @@ export class AuthService {
   login(username: string, password: string) {
     return this.http.post<any>(`${this.api}/login`, { username, password }).pipe(
       tap(response => {
+        // Asegúrate que el backend retorne un token válido
         localStorage.setItem('auth_token', response.token);
         this.handleRedirect(response);
       })
@@ -32,7 +33,7 @@ export class AuthService {
     return localStorage.getItem('auth_token');
   }
 
-  private handleRedirect(response: any) {
+  handleRedirect(response: any) {
     const rol = response.rol?.toUpperCase(); // Asegura mayúsculas
     if (rol === 'ADMIN') {
       this.router.navigate(['/admin']);
