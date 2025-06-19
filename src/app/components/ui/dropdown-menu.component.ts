@@ -1,11 +1,11 @@
 import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
-import { NgIf, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { AvatarComponent } from './avatar.component'; // Adjust the path as needed
 
 @Component({
   selector: 'app-dropdown-menu',
   standalone: true,
-  imports: [NgIf, NgTemplateOutlet, AvatarComponent],
+  imports: [ NgTemplateOutlet, AvatarComponent],
   template: `
     <div class="relative group">
       <button class="h-10 w-10 rounded-full border-2 border-emerald-200 overflow-hidden focus:outline-none">
