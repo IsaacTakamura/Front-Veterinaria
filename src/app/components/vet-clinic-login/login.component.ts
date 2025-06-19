@@ -40,23 +40,42 @@ export class LoginComponent {
   }
 
   onSubmit() {
-    if (this.form.invalid) return;
+  if (this.form.invalid) return;
 
-    this.isLoading.set(true);
+  this.isLoading.set(true);
 
-    const { username, password } = this.form.value;
+  const { username, password } = this.form.value;
 
-    this.authService.login(username, password).subscribe({
-      next: (res) => {
-        this.isLoading.set(false);
-        console.log('Login exitoso', res);
-        // redirección automática se maneja dentro del AuthService
-      },
-      error: (err) => {
-        this.isLoading.set(false);
-        console.error('Error de login', err);
-        // Aquí puedes mostrar una alerta visual si quieres
+  this.authService.login(username, password).subscribe({
+    next: (res) => {
+      this.isLoading.set(false);
+
+      // Guarda token y rol en el localStorage
+      localStorage.setItem('auth_token', res.token);
+      localStorage.setItem('user_rol', res.rol);
+
+      // Redirecciona según rol
+      switch (res.rol) {
+        case 'ADMIN':
+          this.router.navigate(['/admin']);
+          break;
+        case 'VET':
+          this.router.navigate(['/veterinario']);
+          break;
+        case 'ASISTENTE':
+          this.router.navigate(['/enfermera']);
+          break;
+        default:
+          this.router.navigate(['/']);
+          break;
       }
-    });
-  }
+    },
+    error: (err) => {
+      this.isLoading.set(false);
+      console.error('Error de login', err);
+      // Aquí puedes agregar visual feedback si deseas
+    }
+  });
+}
+
 }
