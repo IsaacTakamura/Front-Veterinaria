@@ -10,13 +10,8 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) { }
 
-  register(username: string, password: string, rol: string) {
-    return this.http.post<any>(`${this.api}/register`, { username, password, rol }).pipe(
-      tap(response => {
-        localStorage.setItem('auth_token', response.token);
-        this.handleRedirect(response);
-      })
-    );
+  register(usuario: { username: string; password: string; rol: string }) {
+    return this.http.post('/api/v1/authentication/register', usuario);
   }
 
   login(username: string, password: string) {

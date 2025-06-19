@@ -22,7 +22,7 @@ export class RegisterFormComponent {
 
   constructor(private fb: FormBuilder, private authService: AuthService) {
     this.form = this.fb.group({
-      username: ['', Validators.required],
+      username: [{ value: '', disabled: false }, Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
       rol: ['', Validators.required],
     });
@@ -57,7 +57,7 @@ export class RegisterFormComponent {
 
     try {
       const { username, password, rol } = this.form.value;
-      const result = await this.authService.register(username, password, rol).toPromise();
+      const result = await this.authService.register({ username, password, rol }).toPromise();
       this.message.set({ type: 'success', text: 'Usuario registrado exitosamente' });
       this.form.reset();
     } catch (error) {
