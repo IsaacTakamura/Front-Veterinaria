@@ -23,7 +23,7 @@ interface Patient {
   standalone: true,
   imports: [
     CommonModule,
-    DatePipe
+    DatePipe,
   ],
   templateUrl: './veterinarian-dashboard.component.html',
   styleUrls: ['./veterinarian-dashboard.component.css']
@@ -75,5 +75,15 @@ export class VeterinarianDashboardComponent {
       case 'pending': return 'Pendiente';
       default: return status;
     }
+  }
+  // Property to control modal visibility
+  showBuscadorMascota = true;
+
+  openBuscadorMascota() {
+    this.showBuscadorMascota = true;
+  }
+
+  closeBuscadorMascota() {
+    this.showBuscadorMascota = false;
   }
 }
