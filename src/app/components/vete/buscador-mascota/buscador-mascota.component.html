@@ -1,0 +1,20 @@
+<div>
+  <input type="text" [(ngModel)]="nombreMascota" placeholder="Nombre de la mascota" />
+  <button (click)="buscar()">Buscar</button>
+
+  <div *ngIf="mascota && cliente" class="modal">
+    <h3>Datos de la Mascota</h3>
+    <p><strong>Nombre:</strong> {{ mascota.nombre }}</p>
+    <p><strong>Especie:</strong> {{ mascota.especie }}</p>
+    <p><strong>Raza:</strong> {{ mascota.raza }}</p>
+
+    <h3>Datos del Cliente</h3>
+    <p><strong>Nombre:</strong> {{ cliente.nombre }} {{ cliente.apellido }}</p>
+    <p><strong>Dirección:</strong> {{ cliente.direccion }}</p>
+    <p><strong>Teléfono:</strong> {{ cliente.telefono }}</p>
+    <p><strong>Email:</strong> {{ cliente.email }}</p>
+    <p><strong>Ciudad:</strong> {{ cliente.ciudad }}</p>
+
+    <button (click)="cerrarModal()">Cerrar</button>
+  </div>
+</div>

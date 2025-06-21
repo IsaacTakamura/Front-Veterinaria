@@ -1,0 +1,57 @@
+/* Fondo oscuro y centrado del modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+/* Caja del modal */
+.modal > div {
+  background: #fff;
+  padding: 2rem 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  max-width: 400px;
+  width: 100%;
+  animation: modalFadeIn 0.2s;
+}
+
+/* Animación de entrada */
+@keyframes modalFadeIn {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Botón de cerrar */
+.modal button {
+  margin-top: 1.5rem;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.modal button:hover {
+  background: #1d4ed8;
+}
+
+/* Títulos y textos */
+.modal h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #22223b;
+}
+
+.modal p {
+  margin: 0.25rem 0;
+  color: #4b5563;
+}

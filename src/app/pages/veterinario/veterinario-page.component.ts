@@ -1,6 +1,6 @@
 "use client"
 import { Component } from "@angular/core";
-import { VeterinarianDashboardComponent } from "../../components/veterinario/veterinarian-dasboard.component";
+import { VeterinarianDashboardComponent } from "../../components/vete/veterinario/veterinarian-dasboard.component";
 
 @Component({
   selector: "app-veterinario-page",
