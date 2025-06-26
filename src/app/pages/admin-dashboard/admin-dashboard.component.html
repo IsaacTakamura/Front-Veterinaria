@@ -1,15 +1,43 @@
-<div class="flex h-screen bg-gray-50">
-  <!-- Sidebar -->
+<!-- Sidebar fijo a la izquierda -->
+<div class="flex h-screen overflow-hidden bg-gray-100">
   <app-admin-sidebar
+    class="w-64 bg-white border-r shadow-md"
     [activeSection]="activeSection"
     (sectionChange)="setActiveSection($event)">
   </app-admin-sidebar>
 
-   <div class="flex-1 flex flex-col overflow-hidden">
+  <!-- Área de contenido -->
+  <div class="flex-1 overflow-y-auto">
+    <div class="p-6">
+      <!-- ✅ Gestión de Usuarios -->
+      <app-user-management
+        *ngIf="['crear-usuario', 'lista-usuarios', 'roles-permisos'].includes(activeSection)"
+        [activeTab]="activeSection" />
 
+      <!-- ✅ Catálogo Maestro -->
+      <app-catalog-management
+        *ngIf="['especies-razas', 'vacunas', 'servicios', 'tarifas'].includes(activeSection)"
+        [activeTab]="activeSection" />
 
-    <main class="flex-1 overflow-y-auto p-6">
-      <ng-container [ngComponentOutlet]="renderContent()"></ng-container>
-    </main>
+      <!-- ✅ Supervisión de Agenda -->
+      <app-appointment-supervision
+        *ngIf="['todas-citas', 'reprogramar', 'franjas-horarias'].includes(activeSection)"
+        [activeTab]="activeSection" />
+
+      <!-- ✅ Reportes y Analítica -->
+      <app-reports-analytics
+        *ngIf="['atencion-diaria', 'reprogramaciones', 'facturacion', 'uso-insumos'].includes(activeSection)"
+        [activeTab]="activeSection" />
+
+      <!-- ✅ Inventario y Proveedores -->
+      <app-inventory-management
+        *ngIf="['stock-medicamentos', 'proveedores', 'ordenes-compra'].includes(activeSection)"
+        [activeTab]="activeSection" />
+
+      <!-- ✅ Mantenimiento y Seguridad -->
+      <app-maintenance-security
+        *ngIf="['respaldos', 'logs-sistema', 'configuracion'].includes(activeSection)"
+        [activeTab]="activeSection" />
+    </div>
   </div>
 </div>

@@ -1,159 +1,100 @@
-<!-- Crear usuario -->
-<div *ngIf="activeTab === 'crear-usuario'" class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
-  <h2 class="text-xl font-semibold mb-6 flex items-center">
-    <!-- UserPlus SVG -->
-    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-         viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-3-3.87"/><path d="M7 10a4 4 0 1 0 8 0 4 4 0 0 0-8 0"/><path d="M20 8v6"/><path d="M23 11h-6"/></svg>
-    Crear Nuevo Usuario
-  </h2>
+<!-- CREAR USUARIO -->
+<div *ngIf="activeTab === 'crear-usuario'" class="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow space-y-4">
+  <h2 class="text-2xl font-bold text-gray-800 mb-4">👤 Crear Usuario</h2>
 
-  <form (submit)="handleCreateUser($event)" class="space-y-4">
+  <form (ngSubmit)="handleCreateUser($event)" class="space-y-4">
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de Usuario</label>
+      <label class="block text-sm font-medium text-gray-700">Nombre de Usuario</label>
+      <input type="text" [(ngModel)]="newUser().username" name="username" class="w-full border p-2 rounded" required />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Contraseña</label>
       <input
-        type="text"
-        [value]="newUser().username"
-        (input)="setUsername($any($event.target).value)"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
-        placeholder="ej: dr.martinez"
+        [type]="showPassword() ? 'text' : 'password'"
+        [(ngModel)]="newUser().password"
+        name="password"
+        class="w-full border p-2 rounded"
         required
       />
+      <label class="inline-flex items-center mt-2 text-sm">
+        <input type="checkbox" (change)="showPassword.set(!showPassword())" class="mr-2" />
+        Mostrar contraseña
+      </label>
     </div>
 
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
-      <div class="relative">
-        <input
-          [type]="showPassword() ? 'text' : 'password'"
-          [value]="newUser().password"
-          (input)="setPassword($any($event.target).value)"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent pr-10"
-          placeholder="Mínimo 6 caracteres"
-          required
-        />
-        <button
-          type="button"
-          (click)="showPassword.set(!showPassword())"
-          class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        >
-          <ng-container *ngIf="showPassword(); else eyeIcon">
-            <!-- EyeOff SVG -->
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                 viewBox="0 0 24 24"><path d="M17.94 17.94C16.24 19.26 14.16 20 12 20c-7 0-11-8-11-8a20.29 20.29 0 0 1 5.39-5.94"/><path d="M1 1l22 22"/></svg>
-          </ng-container>
-          <ng-template #eyeIcon>
-            <!-- Eye SVG -->
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                 viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
-          </ng-template>
-        </button>
-      </div>
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Rol</label>
-      <select
-        [value]="newUser().rol"
-        (change)="setRol($any($event.target).value)"
-        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
-      >
-        <option value="ASISTENTE">Asistente</option>
-        <option value="VET">Veterinario</option>
-        <option value="ADMIN">Administrador</option>
+      <label class="block text-sm font-medium text-gray-700">Rol</label>
+      <select [(ngModel)]="newUser().rol" name="rol" class="w-full border p-2 rounded">
+        <option *ngFor="let rol of roles" [value]="rol.id">{{ rol.label }}</option>
       </select>
-      <p class="text-xs text-gray-500 mt-1">
-        {{ newUser().rol === 'VET' ? 'Diagnóstico, tratamiento y seguimiento' :
-           newUser().rol === 'ASISTENTE' ? 'Triaje, datos vitales y apoyo general' :
-           'Acceso completo al sistema' }}
-      </p>
+      <p class="text-sm text-gray-500 mt-1">{{ getRolDescripcion() }}</p>
     </div>
 
-    <button
-      type="submit"
-      class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors"
-    >
-      Crear Usuario
-    </button>
+    <div class="text-right">
+      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+        Crear Usuario
+      </button>
+    </div>
   </form>
 </div>
 
-<!-- Listar usuarios -->
-<div *ngIf="activeTab === 'lista-usuarios'" class="bg-white rounded-lg shadow">
-  <div class="px-6 py-4 border-b border-gray-200">
-    <h2 class="text-xl font-semibold flex items-center">
-      <!-- Shield SVG -->
-      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-           viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      Gestión de Usuarios
-    </h2>
-  </div>
-  <div class="overflow-x-auto">
-    <table class="w-full">
-      <thead class="bg-gray-50">
-        <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Creación</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-        <tr *ngFor="let user of users()">
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm font-medium text-gray-900">{{ user.username }}</div>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <span
-              class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-              [ngClass]="user.rol === 'VET'
-                  ? 'bg-blue-100 text-blue-800'
-                  : user.rol === 'ASISTENTE'
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-purple-100 text-purple-800'"
-            >
-              {{ user.rol }}
-            </span>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <span
-              class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
-              [ngClass]="user.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
-            >
-              {{ user.activo ? 'Activo' : 'Inactivo' }}
-            </span>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.fechaCreacion }}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-            <button class="text-blue-600 hover:text-blue-900">
-              <!-- Edit SVG -->
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                   viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"/></svg>
-            </button>
-            <button
-              (click)="toggleUserStatus(user.id)"
-              [ngClass]="user.activo ? 'text-red-600 hover:text-red-900' : 'text-green-600 hover:text-green-900'"
-            >
-              <ng-container *ngIf="user.activo; else eyeIconRow">
-                <!-- EyeOff SVG -->
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                     viewBox="0 0 24 24"><path d="M17.94 17.94C16.24 19.26 14.16 20 12 20c-7 0-11-8-11-8a20.29 20.29 0 0 1 5.39-5.94"/><path d="M1 1l22 22"/></svg>
-              </ng-container>
-              <ng-template #eyeIconRow>
-                <!-- Eye SVG -->
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                     viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
-              </ng-template>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+<!-- LISTA DE USUARIOS -->
+<div *ngIf="activeTab === 'lista-usuarios'" class="p-6 bg-white rounded-xl shadow">
+  <h2 class="text-2xl font-bold text-gray-800 mb-4">📋 Lista de Usuarios</h2>
+
+  <table class="w-full text-sm border">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="p-2 text-left">Usuario</th>
+        <th class="p-2 text-left">Rol</th>
+        <th class="p-2 text-left">Estado</th>
+        <th class="p-2 text-left">Fecha</th>
+        <th class="p-2 text-left">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users()" class="border-t hover:bg-gray-50">
+        <td class="p-2">{{ user.username }}</td>
+        <td class="p-2">{{ user.rol }}</td>
+        <td class="p-2">
+          <span [ngClass]="user.activo ? 'text-green-600' : 'text-red-500'">
+            {{ user.activo ? 'Activo' : 'Inactivo' }}
+          </span>
+        </td>
+        <td class="p-2">{{ user.fechaCreacion }}</td>
+        <td class="p-2">
+          <button (click)="toggleUserStatus(user.id)" class="text-blue-600 hover:underline text-sm">
+            Cambiar Estado
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
-<!-- Default: Roles y Permisos -->
-<div *ngIf="activeTab !== 'crear-usuario' && activeTab !== 'lista-usuarios'" class="bg-white rounded-lg shadow p-6">
-  <h2 class="text-xl font-semibold mb-4">Roles y Permisos</h2>
-  <p class="text-gray-600">Configuración de roles y permisos del sistema.</p>
+<!-- ROLES Y PERMISOS -->
+<div *ngIf="activeTab === 'roles-permisos'" class="p-6 bg-white rounded-xl shadow">
+  <h2 class="text-2xl font-bold text-gray-800 mb-4">🛡️ Roles y Permisos</h2>
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let rol of roles" class="p-4 bg-gray-50 rounded-xl shadow hover:shadow-md transition">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="text-2xl">
+          <ng-container [ngSwitch]="rol.id">
+            <span *ngSwitchCase="'ADMIN'">👑</span>
+            <span *ngSwitchCase="'VET'">🐾</span>
+            <span *ngSwitchCase="'ASISTENTE'">📋</span>
+            <span *ngSwitchDefault>🔐</span>
+          </ng-container>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900">{{ rol.label }}</h3>
+      </div>
+      <p class="text-sm text-gray-600 mb-2">{{ rol.desc }}</p>
+      <ul class="text-sm text-gray-500 list-disc list-inside">
+        <li *ngIf="rol.id === 'ADMIN'">Gestión completa del sistema</li>
+        <li *ngIf="rol.id === 'VET'">Acceso a consultas, triaje, recetas</li>
+        <li *ngIf="rol.id === 'ASISTENTE'">Soporte operativo y control de citas</li>
+      </ul>
+    </div>
+  </div>
 </div>

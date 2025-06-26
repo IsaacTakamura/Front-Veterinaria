@@ -33,39 +33,50 @@ export class UserManagementComponent {
   ]);
   users = this._users;
 
-  newUser = signal<NewUser>({ username: '', password: '', rol: 'ASISTENTE' });
+  newUser = signal<NewUser>({
+    username: '',
+    password: '',
+    rol: 'ASISTENTE'
+  });
+
   showPassword = signal(false);
+
+  roles = [
+    { id: 'ADMIN', label: 'Administrador', desc: 'Acceso completo al sistema' },
+    { id: 'VET', label: 'Veterinario', desc: 'Puede gestionar pacientes y consultas' },
+    { id: 'ASISTENTE', label: 'Asistente', desc: 'Acceso limitado a citas y triaje' }
+  ];
 
   handleCreateUser(event: Event) {
     event.preventDefault();
+
     const current = this.newUser();
-    const next: User = {
+    const nuevo: User = {
       id: this.users().length + 1,
       username: current.username,
       rol: current.rol,
       activo: true,
       fechaCreacion: new Date().toISOString().split('T')[0]
     };
-    this._users.set([...this.users(), next]);
-    this.newUser.set({ username: '', password: '', rol: 'ASISTENTE' });
+
+    this._users.set([...this.users(), nuevo]);
+
+    this.newUser.set({
+      username: '',
+      password: '',
+      rol: 'ASISTENTE'
+    });
   }
 
   toggleUserStatus(id: number) {
-    const updated = this.users().map(u =>
-      u.id === id ? { ...u, activo: !u.activo } : u
+    const actualizados = this.users().map(user =>
+      user.id === id ? { ...user, activo: !user.activo } : user
     );
-    this._users.set(updated);
-  }
-  setUsername(username: string) {
-    this.newUser.set({ ...this.newUser(), username });
+    this._users.set(actualizados);
   }
 
-  setPassword(password: string) {
-    this.newUser.set({ ...this.newUser(), password });
+  getRolDescripcion(): string {
+    const actualRol = this.roles.find(r => r.id === this.newUser().rol);
+    return actualRol ? actualRol.desc : '';
   }
-
-  setRol(rol: 'ASISTENTE' | 'VET' | 'ADMIN') {
-    this.newUser.set({ ...this.newUser(), rol });
-  }
-
 }
