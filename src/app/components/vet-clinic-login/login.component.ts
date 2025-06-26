@@ -40,42 +40,39 @@ export class LoginComponent {
   }
 
   onSubmit() {
-  if (this.form.invalid) return;
+    if (this.form.invalid) return;
 
-  this.isLoading.set(true);
+    this.isLoading.set(true);
+    const { username, password } = this.form.value;
 
-  const { username, password } = this.form.value;
+    this.authService.login(username, password).subscribe({
+      next: (res) => {
+        localStorage.setItem('auth_token', res.token);
+        this.authService.getUsuarioByUsername(username).subscribe({
+          next: (userRes) => {
+            const rol = userRes.rol;
+            localStorage.setItem('user_info', JSON.stringify(userRes));
+            this.isLoading.set(false);
 
-  this.authService.login(username, password).subscribe({
-    next: (res) => {
-      this.isLoading.set(false);
-
-      // Guarda token y rol en el localStorage
-      localStorage.setItem('auth_token', res.token);
-      localStorage.setItem('user_rol', res.rol);
-
-      // Redirecciona según rol
-      switch (res.rol) {
-        case 'ADMIN':
-          this.router.navigate(['/admin']);
-          break;
-        case 'VET':
-          this.router.navigate(['/veterinario']);
-          break;
-        case 'ASISTENTE':
-          this.router.navigate(['/enfermera']);
-          break;
-        default:
-          this.router.navigate(['/']);
-          break;
+            // Redirección según rol
+            if (rol === 'ADMIN') this.router.navigate(['/admin']);
+            else if (rol === 'VET') this.router.navigate(['/veterinario']);
+            else if (rol === 'ASISTENTE') this.router.navigate(['/enfermera']);
+            else this.router.navigate(['/']);
+          },
+          error: (err) => {
+            this.isLoading.set(false);
+            console.error('Error obteniendo información del usuario', err);
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error de login', err);
+        this.isLoading.set(false);
+        // Aquí deberías implementar un mecanismo para mostrar mensajes de error
+        // Por ejemplo, añadir un signal de mensaje en la clase
       }
-    },
-    error: (err) => {
-      this.isLoading.set(false);
-      console.error('Error de login', err);
-      // Aquí puedes agregar visual feedback si deseas
-    }
-  });
-}
+    });
+  }
 
 }

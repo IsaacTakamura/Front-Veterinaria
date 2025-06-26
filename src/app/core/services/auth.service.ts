@@ -19,7 +19,7 @@ export class AuthService {
    * @param usuario.password - Contraseña del usuario
    * @param usuario.rol - Rol asignado al usuario en el sistema
    * @returns Observable que emite el resultado del proceso de login que se ejecuta automáticamente después del registro
-   * 
+   *
    * @remarks
    * Este método realiza dos operaciones secuenciales:
    * 1. Registra al usuario enviando sus datos al endpoint de registro
@@ -44,6 +44,12 @@ export class AuthService {
       })
     );
   }
+
+  // auth.service.ts
+  getUsuarioByUsername(username: string) {
+    return this.http.get<any>(`${this.api}/usuario/${username}`);
+  }
+
 
   logout() {
     localStorage.removeItem('auth_token');

@@ -1,9 +1,7 @@
-import { Component, Input, Signal, computed, signal } from '@angular/core';
+import { Component, Input, OnInit, Signal, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgIf, NgClass } from '@angular/common';
-import { ButtonComponent } from '../../ui/button.component';
-import { BadgeComponent } from '../../ui/badge.component';
-import { DropdownMenuComponent } from '../../ui/dropdown-menu.component';
+import { NgIf } from '@angular/common';
+import { Router } from '@angular/router';
 
 interface User {
   name: string;
@@ -17,22 +15,31 @@ interface User {
   standalone: true,
   imports: [
     CommonModule,
-    ButtonComponent,
-    BadgeComponent,
-    DropdownMenuComponent,
     NgIf,
-    NgClass,
-  ],
+],
   templateUrl: './navbar-private.component.html',
   styleUrls: ['./navbar-private.component.css']
 })
-export class NavbarPrivateComponent {
+export class NavbarPrivateComponent implements OnInit {
   @Input() user!: User;
-  notifications = signal(3); // Estado reactivo con señales
+  notifications = signal(3);
+  usuario = signal<{ username: string, rol: string } | null>(null);
+
+  constructor(private router: Router) {}
+
+  ngOnInit() {
+    const userData = localStorage.getItem('user_info');
+    if (userData) this.usuario.set(JSON.parse(userData));
+  }
 
   logout() {
     console.log('Cerrando sesión...');
-    // Aquí pondrías tu navegación o cierre de sesión real
+    this.cerrarSesion();
+  }
+
+  cerrarSesion() {
+    localStorage.clear();
+    this.router.navigate(['/']);
   }
 
   getInitials(name: string): string {
