@@ -27,19 +27,21 @@ export class AppComponent implements OnInit {
   isLoggedIn = signal<boolean>(false);
   showNavbarPublic = signal<boolean>(true);
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   ngOnInit() {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      this.currentRoute.set(event.url);
+      const url = event.urlAfterRedirects;
+
+      this.currentRoute.set(url);
 
       const token = localStorage.getItem('auth_token');
       this.isLoggedIn.set(!!token);
 
       const publicRoutes = ['/', '/login', '/register'];
-      const isPublicRoute = publicRoutes.some(route => event.url.startsWith(route));
+      const isPublicRoute = publicRoutes.some(route => url.startsWith(route));
 
       this.showNavbarPublic.set(!token && isPublicRoute);
     });
