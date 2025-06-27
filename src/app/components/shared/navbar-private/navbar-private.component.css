@@ -1,3 +1,11 @@
 :host {
   display: block;
 }
+.bg-blue-100    { background-color: #dbeafe !important; }
+.text-blue-800  { color: #1e40af !important; }
+.bg-green-100   { background-color: #d1fae5 !important; }
+.text-green-800 { color: #065f46 !important; }
+.bg-purple-100  { background-color: #ede9fe !important; }
+.text-purple-800{ color: #6d28d9 !important; }
+.bg-gray-100    { background-color: #f3f4f6 !important; }
+.text-gray-800  { color: #1f2937 !important; }
