@@ -25,7 +25,7 @@ export class NavbarPrivateComponent implements OnInit {
   constructor(
     private router: Router,
     private session: SessionService
-  ) {}
+  ) { }
 
   get usuario() {
     return this.session.user;
@@ -45,10 +45,10 @@ export class NavbarPrivateComponent implements OnInit {
   }
 
   getRoleColor(role: string): string {
-    switch (role.toLowerCase()) {
+    switch (role.toUpperCase()) {
       case 'VET':
         return 'bg-blue-100 text-blue-800';
-      case 'asistente':
+      case 'ASISTENTE':
         return 'bg-green-100 text-green-800';
       case 'ADMIN':
         return 'bg-purple-100 text-purple-800';
