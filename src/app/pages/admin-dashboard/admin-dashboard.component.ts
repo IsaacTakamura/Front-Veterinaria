@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgComponentOutlet } from '@angular/common';
 
 // Importa tus componentes standalone
 import { AdminSidebarComponent } from '../../components/shared/admin-sidebar/admin-sidebar.component';
@@ -16,7 +15,6 @@ import { MaintenanceSecurityComponent } from '../../components/admin/maintenance
   standalone: true,
   imports: [
     CommonModule,
-    NgComponentOutlet,
     AdminSidebarComponent,
     UserManagementComponent,
     CatalogManagementComponent,

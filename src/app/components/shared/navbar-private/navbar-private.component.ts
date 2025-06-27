@@ -1,13 +1,11 @@
-import { Component, Input, OnInit, Signal, computed, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 
 interface User {
-  name: string;
-  role: string;
-  email: string;
-  avatar: string;
+  username: string;
+  rol: string;
 }
 
 @Component({
@@ -21,20 +19,16 @@ interface User {
   styleUrls: ['./navbar-private.component.css']
 })
 export class NavbarPrivateComponent implements OnInit {
-  @Input() user!: User;
-  notifications = signal(3);
-  usuario = signal<{ username: string, rol: string } | null>(null);
+  usuario = signal<{ username: string; rol: string } | null>(null);
+  dropdownOpen = signal(false);
 
   constructor(private router: Router) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     const userData = localStorage.getItem('user_info');
-    if (userData) this.usuario.set(JSON.parse(userData));
-  }
-
-  logout() {
-    console.log('Cerrando sesión...');
-    this.cerrarSesion();
+    if (userData) {
+      this.usuario.set(JSON.parse(userData));
+    }
   }
 
   cerrarSesion() {
@@ -42,12 +36,8 @@ export class NavbarPrivateComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  getInitials(name: string): string {
-    return name
-      .split(' ')
-      .map(n => n[0])
-      .join('')
-      .toUpperCase();
+  toggleDropdown() {
+    this.dropdownOpen.set(!this.dropdownOpen());
   }
 
   getRoleColor(role: string): string {
