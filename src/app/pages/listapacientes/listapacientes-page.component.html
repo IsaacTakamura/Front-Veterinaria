@@ -9,42 +9,69 @@
   </header>
 
   <main class="content">
+    <!-- Sección Pacientes -->
     <section *ngIf="selected === 'pacientes'">
-      <h2>Lista de Pacientes</h2>
-      <div class="card">
-        <h3>Max <span class="status">Activo</span></h3>
-        <p><strong>Especie:</strong> Perro</p>
-        <p><strong>Raza:</strong> Golden Retriever</p>
-        <p><strong>Edad:</strong> 3 años</p>
-        <p><strong>Propietario:</strong> María González</p>
-        <p><strong>Teléfono:</strong> 987654321</p>
-        <p><strong>Última visita:</strong> 2024-01-15</p>
-        <p class="proxima">📅 Próxima cita: 2024-01-25</p>
+      <div class="section-container">
+        <div class="section-header">
+          <i class="fa-solid fa-heart"></i>
+          Lista de Pacientes
+        </div>
+
+        <div class="search-input">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" placeholder="Buscar por nombre de mascota o propietario..." />
+        </div>
+
+        <div class="card">
+          <h3>Max <span class="status">Activo</span></h3>
+          <p><strong>Especie:</strong> Perro</p>
+          <p><strong>Raza:</strong> Golden Retriever</p>
+          <p><strong>Edad:</strong> 3 años</p>
+          <p><strong>Propietario:</strong> María González</p>
+          <p><strong>Teléfono:</strong> 987654321</p>
+          <p><strong>Última visita:</strong> 2024-01-15</p>
+          <p class="proxima">📅 Próxima cita: 2024-01-25</p>
+        </div>
       </div>
     </section>
 
+    <!-- Sección Consulta -->
     <section *ngIf="selected === 'consulta'">
-      <h2>Nueva Consulta Médica</h2>
-      <label for="paciente">Seleccionar Paciente:</label>
-      <select id="paciente">
-        <option>Max - Golden Retriever (María González)</option>
-        <option>Luna - Persa (Carlos Rodríguez)</option>
-        <option>Rocky - Bulldog (Ana Martínez)</option>
-      </select>
+      <div class="section-container">
+        <div class="section-header">
+          <i class="fa-solid fa-notes-medical"></i>
+          Nueva Consulta Médica
+        </div>
+
+        <div class="form-group">
+          <label for="paciente"><strong>Seleccionar Paciente:</strong></label>
+          <select id="paciente">
+            <option>Max - Golden Retriever (María González)</option>
+            <option>Luna - Persa (Carlos Rodríguez)</option>
+            <option>Rocky - Bulldog (Ana Martínez)</option>
+          </select>
+        </div>
+      </div>
     </section>
 
+    <!-- Sección Seguimiento -->
     <section *ngIf="selected === 'seguimiento'">
-      <h2>Seguimiento de Tratamientos</h2>
-      <div class="card">
-        <p><strong>Nombre:</strong> Max</p>
-        <p><strong>Propietario:</strong> María González</p>
-        <p><strong>Tratamiento:</strong> Omeprazol 20mg cada 12h</p>
-        <p><strong>Inicio:</strong> 2024-01-15</p>
-        <p><strong>Fin:</strong> 2024-01-22</p>
-        <p><strong>Días restantes:</strong> 3 días</p>
-        <p class="proxima">📅 Próxima dosis: 2024-01-19 08:00</p>
-        <button>Ver Historial</button>
-        <button>Marcar Dosis</button>
+      <div class="section-container">
+        <div class="section-header">
+          <i class="fa-solid fa-notes-medical"></i>
+          Seguimiento de Tratamientos
+        </div>
+        <div class="card">
+          <p><strong>Nombre:</strong> Max</p>
+          <p><strong>Propietario:</strong> María González</p>
+          <p><strong>Tratamiento:</strong> Omeprazol 20mg cada 12h</p>
+          <p><strong>Inicio:</strong> 2024-01-15</p>
+          <p><strong>Fin:</strong> 2024-01-22</p>
+          <p><strong>Días restantes:</strong> 3 días</p>
+          <p class="proxima">📅 Próxima dosis: 2024-01-19 08:00</p>
+          <button>Ver Historial</button>
+          <button>Marcar Dosis</button>
+        </div>
       </div>
     </section>
   </main>

@@ -1,88 +1,208 @@
+/* General */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #f2fdfc;
+  font-family: 'Segoe UI', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Contenedor principal */
 .container {
-  font-family: Arial, sans-serif;
-  max-width: 900px;
-  margin: auto;
-  background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px #ccc;
-  overflow: hidden;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #f2fdfc;
 }
 
+/* Header */
 .header {
-  background: linear-gradient(to right, #00b4db, #0083b0);
+  background: linear-gradient(to right, #00b894, #0984e3);
   color: white;
-  padding: 20px;
-  text-align: center;
+  padding: 25px 40px;
+  text-align: left;
+  width: 100%;
 }
 
+.header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Navegación */
 nav {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
   margin-top: 10px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 nav button {
   background: transparent;
-  border: 2px solid white;
+  border: none;
   color: white;
-  padding: 8px 15px;
-  margin: 0 5px;
-  border-radius: 5px;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
   cursor: pointer;
 }
 
-nav button.active,
+nav button.active {
+  background-color: rgba(255, 255, 255, 0.25);
+  font-weight: 600;
+}
+
 nav button:hover {
-  background: white;
-  color: #0083b0;
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
+/* Contenido principal */
 .content {
-  padding: 20px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
+/* Sección contenedora */
+.section-container {
+  width: 100%;
+  padding: 20px;
+  background-color: white;
+  margin-top: 20px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+/* Cabecera de sección */
+.section-header {
+  background: linear-gradient(to right, #00b894, #0984e3);
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 14px 20px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Tarjeta paciente HORIZONTAL */
 .card {
-  background: #f9f9f9;
+  background: white;
+  border-left: 5px solid #00cec9;
+  border-radius: 10px;
   padding: 20px;
   margin-top: 20px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
 }
 
+.card h3 {
+  margin: 0;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card p {
+  margin: 0;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* Estado activo */
 .status {
-  background: #28a745;
+  background: #2ecc71;
   color: white;
-  padding: 3px 10px;
   font-size: 12px;
-  border-radius: 10px;
-  margin-left: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
 }
 
+/* Próxima cita */
 .proxima {
-  background: #e6f7ff;
+  background-color: #eaf6ff;
   padding: 10px;
   border-radius: 5px;
-  color: #007acc;
-  margin-top: 10px;
+  color: #0984e3;
   display: inline-block;
+  white-space: nowrap;
 }
 
-select {
-  padding: 10px;
-  border-radius: 5px;
-  width: 100%;
-  max-width: 400px;
+/* Buscador */
+.search-input {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-bottom: 20px;
+  max-width: 600px;
 }
 
+.search-input i {
+  margin-right: 8px;
+  color: #aaa;
+}
+
+.search-input input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  flex: 1;
+  background-color: transparent;
+}
+
+/* Botones generales */
 button {
   margin-top: 10px;
-  margin-right: 5px;
-  background: #1db9c3;
+  padding: 10px 16px;
   border: none;
-  padding: 10px 15px;
+  border-radius: 6px;
+  background-color: #00cec9;
   color: white;
-  border-radius: 5px;
+  font-weight: 500;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 button:hover {
-  background: #17a2b8;
+  background-color: #00b894;
+}
+
+.form-group {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+select {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  max-width: 100%;
+  background-color: #fefefe;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
