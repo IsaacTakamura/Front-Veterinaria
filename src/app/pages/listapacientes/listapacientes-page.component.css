@@ -1,90 +1,88 @@
-.navbar {
-  display: flex;
-  justify-content: center;
+.container {
+  font-family: Arial, sans-serif;
+  max-width: 900px;
+  margin: auto;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #ccc;
+  overflow: hidden;
+}
+
+.header {
   background: linear-gradient(to right, #00b4db, #0083b0);
-  padding: 15px;
-  border-radius: 0 0 10px 10px;
+  color: white;
+  padding: 20px;
+  text-align: center;
 }
 
-.navbar button {
-  margin: 0 10px;
-  padding: 10px 20px;
-  font-size: 16px;
-  color: #fff;
-  background-color: transparent;
-  border: 2px solid #fff;
-  border-radius: 8px;
+nav {
+  margin-top: 10px;
+}
+
+nav button {
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+  padding: 8px 15px;
+  margin: 0 5px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
 }
 
-.navbar button:hover {
-  background-color: #ffffff;
+nav button.active,
+nav button:hover {
+  background: white;
   color: #0083b0;
 }
 
 .content {
-  padding: 30px;
-  background-color: #f3faff;
-  border-radius: 10px;
-  margin: 20px;
+  padding: 20px;
 }
 
 .card {
-  background-color: #ffffff;
+  background: #f9f9f9;
   padding: 20px;
+  margin-top: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  max-width: 400px;
-  margin: auto;
+  border: 1px solid #ddd;
 }
 
-.proxima-cita {
-  background-color: #e6f7ff;
-  padding: 8px;
+.status {
+  background: #28a745;
+  color: white;
+  padding: 3px 10px;
+  font-size: 12px;
+  border-radius: 10px;
+  margin-left: 10px;
+}
+
+.proxima {
+  background: #e6f7ff;
+  padding: 10px;
   border-radius: 5px;
-  margin-top: 10px;
   color: #007acc;
+  margin-top: 10px;
+  display: inline-block;
 }
 
 select {
   padding: 10px;
   border-radius: 5px;
-  border: 1px solid #ccc;
-  margin-top: 10px;
-}
-
-.seguimiento {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 500px;
-  margin: auto;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.tratamiento p {
-  margin: 5px 0;
-}
-
-.proxima-dosis {
-  background-color: #eaf5ff;
-  padding: 8px;
-  border-radius: 5px;
-  color: #007acc;
-  margin-top: 10px;
+  width: 100%;
+  max-width: 400px;
 }
 
 button {
-  margin: 10px 5px 0 0;
-  padding: 8px 15px;
+  margin-top: 10px;
+  margin-right: 5px;
+  background: #1db9c3;
   border: none;
-  border-radius: 5px;
-  background-color: #1db9c3;
+  padding: 10px 15px;
   color: white;
+  border-radius: 5px;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #17a2b8;
+  background: #17a2b8;
 }

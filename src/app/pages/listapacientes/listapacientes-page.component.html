@@ -1,50 +1,51 @@
+<div class="container">
+  <header class="header">
+    <h1>Sistema Veterinario - Clínica Santa Anita</h1>
+    <nav>
+      <button [class.active]="selected === 'pacientes'" (click)="cambiarVista('pacientes')">Pacientes</button>
+      <button [class.active]="selected === 'consulta'" (click)="cambiarVista('consulta')">Nueva Consulta</button>
+      <button [class.active]="selected === 'seguimiento'" (click)="cambiarVista('seguimiento')">Seguimiento</button>
+    </nav>
+  </header>
 
+  <main class="content">
+    <section *ngIf="selected === 'pacientes'">
+      <h2>Lista de Pacientes</h2>
+      <div class="card">
+        <h3>Max <span class="status">Activo</span></h3>
+        <p><strong>Especie:</strong> Perro</p>
+        <p><strong>Raza:</strong> Golden Retriever</p>
+        <p><strong>Edad:</strong> 3 años</p>
+        <p><strong>Propietario:</strong> María González</p>
+        <p><strong>Teléfono:</strong> 987654321</p>
+        <p><strong>Última visita:</strong> 2024-01-15</p>
+        <p class="proxima">📅 Próxima cita: 2024-01-25</p>
+      </div>
+    </section>
 
+    <section *ngIf="selected === 'consulta'">
+      <h2>Nueva Consulta Médica</h2>
+      <label for="paciente">Seleccionar Paciente:</label>
+      <select id="paciente">
+        <option>Max - Golden Retriever (María González)</option>
+        <option>Luna - Persa (Carlos Rodríguez)</option>
+        <option>Rocky - Bulldog (Ana Martínez)</option>
+      </select>
+    </section>
 
-<nav class="navbar">
-  <button (click)="changeSection('pacientes')">Pacientes</button>
-  <button (click)="changeSection('nueva-consulta')">Nueva Consulta</button>
-  <button (click)="changeSection('seguimiento')">Seguimiento</button>
-</nav>
-
-<div class="content">
-  <div *ngIf="selectedSection === 'pacientes'">
-    <div class="card">
-      <h2>Max</h2>
-      <p><strong>Especie:</strong> Perro</p>
-      <p><strong>Raza:</strong> Golden Retriever</p>
-      <p><strong>Edad:</strong> 3 años</p>
-      <p><strong>Propietario:</strong> María González</p>
-      <p><strong>Teléfono:</strong> 987654321</p>
-      <p><strong>Última visita:</strong> 2024-01-15</p>
-      <p class="proxima-cita">📅 Próxima cita: 2024-01-25</p>
-    </div>
-  </div>
-
-  <div *ngIf="selectedSection === 'nueva-consulta'">
-    <h2>Nueva Consulta Médica</h2>
-    <label for="paciente">Seleccionar Paciente:</label>
-    <select id="paciente">
-      <option>Max - Golden Retriever (María González)</option>
-      <option>Luna - Persa (Carlos Rodríguez)</option>
-      <option>Rocky - Bulldog (Ana Martínez)</option>
-    </select>
-  </div>
-
-  <div *ngIf="selectedSection === 'seguimiento'">
-    <div class="seguimiento">
+    <section *ngIf="selected === 'seguimiento'">
       <h2>Seguimiento de Tratamientos</h2>
-      <div class="tratamiento">
+      <div class="card">
         <p><strong>Nombre:</strong> Max</p>
         <p><strong>Propietario:</strong> María González</p>
         <p><strong>Tratamiento:</strong> Omeprazol 20mg cada 12h</p>
         <p><strong>Inicio:</strong> 2024-01-15</p>
         <p><strong>Fin:</strong> 2024-01-22</p>
         <p><strong>Días restantes:</strong> 3 días</p>
-        <p class="proxima-dosis">📅 Próxima dosis: 2024-01-19 08:00</p>
+        <p class="proxima">📅 Próxima dosis: 2024-01-19 08:00</p>
         <button>Ver Historial</button>
         <button>Marcar Dosis</button>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 </div>
