@@ -1,18 +1,13 @@
-<!-- Mostrar navbar según login o ruta -->
-<ng-container *ngIf="!isLoginPage()">
-  <app-navbar-public *ngIf="!isLoggedIn()" />
-  <app-navbar-private *ngIf="isLoggedIn()" />
-</ng-container>
+<!-- Navbar según login -->
+<app-navbar-public *ngIf="showNavbarPublic()"></app-navbar-public>
+<app-navbar-private *ngIf="!showNavbarPublic()"></app-navbar-private>
 
-<!-- index -->
+<!-- Contenido principal -->
 <section class="mx-5 mt-2">
   <router-outlet></router-outlet>
 </section>
 
-<!-- Mostrar chat-bot solo en index -->
-<router-outlet></router-outlet>
-<app-chat-bot/>
-
-<!-- <footer>Soy un footer</footer> -->
+<!-- Chat-bot y footer globales -->
+<app-chat-bot *ngIf="currentRoute() === '/'"></app-chat-bot>
 <app-footer></app-footer>
 
