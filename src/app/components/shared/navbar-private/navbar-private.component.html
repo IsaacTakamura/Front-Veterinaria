@@ -17,7 +17,7 @@
     <div *ngIf="dropdownOpen()"
       class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
       <div class="px-4 py-2 text-sm border-b">
-        Rol: <div class="px-2 py-1 rounded text-xs font-medium" [ngClass]="getRoleColor(usuario?.rol || '')">
+        Rol: <div class="px-2 py-1 rounded text-xs font-medium" [ngClass]="usuario?.rol | roleBadgeColor">
           {{ usuario?.rol }}
         </div>
       </div>

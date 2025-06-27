@@ -2,7 +2,8 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIf } from '@angular/common';
 import { Router } from '@angular/router';
-import { SessionService } from '../../../core/services/session.service'; // Asegúrate de que la ruta sea correcta
+import { SessionService } from '../../../core/services/session.service';
+import { RoleBadgeColorPipe } from '../pipes/role-badge-color.pipe'; // Adjust the import path as necessary
 
 interface User {
   username: string;
@@ -15,6 +16,7 @@ interface User {
   imports: [
     CommonModule,
     NgIf,
+    RoleBadgeColorPipe
   ],
   templateUrl: './navbar-private.component.html',
   styleUrls: ['./navbar-private.component.css']
