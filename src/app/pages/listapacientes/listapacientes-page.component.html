@@ -1,0 +1,11 @@
+<nav class="navbar">
+  <button (click)="changeSection('pacientes')">Pacientes</button>
+  <button (click)="changeSection('nueva-consulta')">Nueva Consulta</button>
+  <button (click)="changeSection('seguimiento')">Seguimiento</button>
+</nav>
+
+<div class="content">
+  <app-pacientes *ngIf="selectedSection === 'pacientes'"></app-pacientes>
+  <app-nueva-consulta *ngIf="selectedSection === 'nueva-consulta'"></app-nueva-consulta>
+  <app-seguimiento *ngIf="selectedSection === 'seguimiento'"></app-seguimiento>
+</div>
