@@ -1,3 +1,6 @@
+
+
+
 <nav class="navbar">
   <button (click)="changeSection('pacientes')">Pacientes</button>
   <button (click)="changeSection('nueva-consulta')">Nueva Consulta</button>
@@ -5,7 +8,43 @@
 </nav>
 
 <div class="content">
-  <app-pacientes *ngIf="selectedSection === 'pacientes'"></app-pacientes>
-  <app-nueva-consulta *ngIf="selectedSection === 'nueva-consulta'"></app-nueva-consulta>
-  <app-seguimiento *ngIf="selectedSection === 'seguimiento'"></app-seguimiento>
+  <div *ngIf="selectedSection === 'pacientes'">
+    <div class="card">
+      <h2>Max</h2>
+      <p><strong>Especie:</strong> Perro</p>
+      <p><strong>Raza:</strong> Golden Retriever</p>
+      <p><strong>Edad:</strong> 3 años</p>
+      <p><strong>Propietario:</strong> María González</p>
+      <p><strong>Teléfono:</strong> 987654321</p>
+      <p><strong>Última visita:</strong> 2024-01-15</p>
+      <p class="proxima-cita">📅 Próxima cita: 2024-01-25</p>
+    </div>
+  </div>
+
+  <div *ngIf="selectedSection === 'nueva-consulta'">
+    <h2>Nueva Consulta Médica</h2>
+    <label for="paciente">Seleccionar Paciente:</label>
+    <select id="paciente">
+      <option>Max - Golden Retriever (María González)</option>
+      <option>Luna - Persa (Carlos Rodríguez)</option>
+      <option>Rocky - Bulldog (Ana Martínez)</option>
+    </select>
+  </div>
+
+  <div *ngIf="selectedSection === 'seguimiento'">
+    <div class="seguimiento">
+      <h2>Seguimiento de Tratamientos</h2>
+      <div class="tratamiento">
+        <p><strong>Nombre:</strong> Max</p>
+        <p><strong>Propietario:</strong> María González</p>
+        <p><strong>Tratamiento:</strong> Omeprazol 20mg cada 12h</p>
+        <p><strong>Inicio:</strong> 2024-01-15</p>
+        <p><strong>Fin:</strong> 2024-01-22</p>
+        <p><strong>Días restantes:</strong> 3 días</p>
+        <p class="proxima-dosis">📅 Próxima dosis: 2024-01-19 08:00</p>
+        <button>Ver Historial</button>
+        <button>Marcar Dosis</button>
+      </div>
+    </div>
+  </div>
 </div>

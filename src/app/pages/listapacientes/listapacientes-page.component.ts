@@ -1,26 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+
 @Component({
-  selector: 'app-root',
-  template: `<div>
-    <!-- TODO: Add your template HTML here -->
-    <h1>Lista de Pacientes</h1>
-    <button (click)="changeSection('pacientes')">Pacientes</button>
-    <button (click)="changeSection('otros')">Otros</button>
-    <div *ngIf="selectedSection === 'pacientes'">
-      <!-- Pacientes section content -->
-      <p>Sección de pacientes seleccionada.</p>
-    </div>
-    <div *ngIf="selectedSection === 'otros'">
-      <!-- Otros section content -->
-      <p>Otra sección seleccionada.</p>
-    </div>
-  </div>`,
+  selector: 'app-listapacientes-page',
+  templateUrl: './listapacientes-page.component.html',
   styleUrls: ['./listapacientes-page.component.css'],
   imports: [CommonModule]
 })
-export class ListaPacientesPageComponent {
+export class ListapacientesPageComponent {
   selectedSection = 'pacientes';
 
   changeSection(section: string) {
