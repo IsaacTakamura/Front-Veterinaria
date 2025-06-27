@@ -17,8 +17,12 @@ export const routes: Routes = [
   component: IndexPageComponent,
 },
 {
-    path: 'register',
-    component: RegisterPageComponent,
+  path: 'listapacientes',
+  component: ListaPacientesPageComponent,
+},
+{
+  path: 'register',
+  component: RegisterPageComponent,
   },
 {
   path: 'login',

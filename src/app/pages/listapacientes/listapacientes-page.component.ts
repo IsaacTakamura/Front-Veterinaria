@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,8 @@ import { Component } from '@angular/core';
       <p>Otra sección seleccionada.</p>
     </div>
   </div>`,
-  styleUrls: ['./listapacientes-page.component.css']
+  styleUrls: ['./listapacientes-page.component.css'],
+  imports: [CommonModule]
 })
 export class ListaPacientesPageComponent {
   selectedSection = 'pacientes';
