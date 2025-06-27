@@ -5,27 +5,27 @@
   <form (ngSubmit)="handleCreateUser($event)" class="space-y-4">
     <div>
       <label class="block text-sm font-medium text-gray-700">Nombre de Usuario</label>
-      <input type="text" [(ngModel)]="newUser().username" name="username" class="w-full border p-2 rounded" required />
+      <input type="text" [(ngModel)]="newUser.username" name="username" class="w-full border p-2 rounded" required />
     </div>
 
     <div>
       <label class="block text-sm font-medium text-gray-700">Contraseña</label>
       <input
-        [type]="showPassword() ? 'text' : 'password'"
-        [(ngModel)]="newUser().password"
+        [type]="showPassword ? 'text' : 'password'"
+        [(ngModel)]="newUser.password"
         name="password"
         class="w-full border p-2 rounded"
         required
       />
       <label class="inline-flex items-center mt-2 text-sm">
-        <input type="checkbox" (change)="showPassword.set(!showPassword())" class="mr-2" />
+        <input type="checkbox" (change)="showPassword = !showPassword" class="mr-2" />
         Mostrar contraseña
       </label>
     </div>
 
     <div>
       <label class="block text-sm font-medium text-gray-700">Rol</label>
-      <select [(ngModel)]="newUser().rol" name="rol" class="w-full border p-2 rounded">
+      <select [(ngModel)]="newUser.rol" name="rol" class="w-full border p-2 rounded">
         <option *ngFor="let rol of roles" [value]="rol.id">{{ rol.label }}</option>
       </select>
       <p class="text-sm text-gray-500 mt-1">{{ getRolDescripcion() }}</p>
@@ -54,7 +54,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let user of users()" class="border-t hover:bg-gray-50">
+      <tr *ngFor="let user of usuarios" class="border-t hover:bg-gray-50">
         <td class="p-2">{{ user.username }}</td>
         <td class="p-2">{{ user.rol }}</td>
         <td class="p-2">
@@ -64,10 +64,20 @@
         </td>
         <td class="p-2">{{ user.fechaCreacion }}</td>
         <td class="p-2">
-          <button (click)="toggleUserStatus(user.id)" class="text-blue-600 hover:underline text-sm">
-            Cambiar Estado
-          </button>
+         <!-- <button (click)="toggleUserStatus(user.username)" class="text-blue-600 hover:underline text-sm">
+          Cambiar Estado
+        </button> -->
+        <div *ngIf="activeTab === 'lista-usuarios'" class="p-6 bg-white rounded-xl shadow">
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">📋 Lista de Usuarios</h2>
+
+          <!-- Mensaje temporal -->
+          <p class="text-gray-500 text-sm mb-4">⚠️ La lista de usuarios aún no está disponible. Se activará cuando se conecte al backend.</p>
+
+          <!-- Aquí irá la tabla real cuando esté listo -->
+        </div>
+
         </td>
+
       </tr>
     </tbody>
   </table>

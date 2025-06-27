@@ -1,82 +1,121 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http'; // ✅ Necesario si el componente es standalone
+import { UserService } from '../../../core/services/user.service'; // ✅ Asegúrate de que la ruta es correcta
+ // ✅ sin .ts al final
 
+// ✅ Interface para usuarios recibidos o creados
 interface User {
-  id: number;
   username: string;
   rol: 'VET' | 'ASISTENTE' | 'ADMIN';
-  activo: boolean;
-  fechaCreacion: string;
-}
-
-interface NewUser {
-  username: string;
-  password: string;
-  rol: 'VET' | 'ASISTENTE' | 'ADMIN';
+  activo?: boolean;
+  fechaCreacion?: string;
 }
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    HttpClientModule // ✅ Habilita el uso de HttpClient en este componente standalone
+  ],
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.css']
 })
-export class UserManagementComponent {
+export class UserManagementComponent implements OnInit {
   @Input() activeTab!: string;
 
-  private _users = signal<User[]>([
-    { id: 1, username: 'dr.martinez', rol: 'VET', activo: true, fechaCreacion: '2024-01-15' },
-    { id: 2, username: 'asistente.ana', rol: 'ASISTENTE', activo: true, fechaCreacion: '2024-01-20' },
-    { id: 3, username: 'recep.carlos', rol: 'ASISTENTE', activo: false, fechaCreacion: '2024-02-01' }
-  ]);
-  users = this._users;
+  private userService = inject(UserService);
 
-  newUser = signal<NewUser>({
+  usuarios: User[] = [];
+
+  // Modelo del nuevo usuario que se va a crear
+  newUser: User & { password: string } = {
     username: '',
     password: '',
     rol: 'ASISTENTE'
-  });
+  };
 
-  showPassword = signal(false);
+  showPassword = false;
 
+  // Lista de roles con descripción
   roles = [
     { id: 'ADMIN', label: 'Administrador', desc: 'Acceso completo al sistema' },
     { id: 'VET', label: 'Veterinario', desc: 'Puede gestionar pacientes y consultas' },
     { id: 'ASISTENTE', label: 'Asistente', desc: 'Acceso limitado a citas y triaje' }
   ];
 
-  handleCreateUser(event: Event) {
+
+    // 🔜 Aquí podrías implementar la carga de usuarios con una llamada al backend
+    // this.userService.getUsuarios().subscribe(users => this.usuarios = users);
+    ngOnInit(): void {
+      // Cargar lista de usuarios si el endpoint está disponible
+      /*
+      this.userService.obtenerUsuarios().subscribe({
+        next: usuarios => this.usuarios = usuarios,
+        error: err => console.error('Error al obtener usuarios:', err)
+      });
+      */
+    }
+
+
+
+
+  /**
+   * Envía los datos del nuevo usuario al backend
+   */
+  handleCreateUser(event: Event): void {
     event.preventDefault();
 
-    const current = this.newUser();
-    const nuevo: User = {
-      id: this.users().length + 1,
-      username: current.username,
-      rol: current.rol,
-      activo: true,
-      fechaCreacion: new Date().toISOString().split('T')[0]
-    };
+    this.userService.registrarUsuario(this.newUser).subscribe({
+      next: (res: any) => {
+        alert('Usuario creado con éxito');
+        this.usuarios.push({
+          username: res.username,
+          rol: res.rol,
+          activo: true,
+          fechaCreacion: new Date().toISOString().split('T')[0]
+        });
 
-    this._users.set([...this.users(), nuevo]);
-
-    this.newUser.set({
-      username: '',
-      password: '',
-      rol: 'ASISTENTE'
+        // Limpiar formulario
+        this.newUser = {
+          username: '',
+          password: '',
+          rol: 'ASISTENTE'
+        };
+      },
+      error: (err: any) => {
+        console.error(err);
+        alert(err.error?.mensaje || 'Error al crear el usuario');
+      }
     });
   }
 
-  toggleUserStatus(id: number) {
-    const actualizados = this.users().map(user =>
-      user.id === id ? { ...user, activo: !user.activo } : user
-    );
-    this._users.set(actualizados);
+  /**
+   * Devuelve la descripción del rol actual seleccionado
+   */
+  getRolDescripcion(): string {
+    const actual = this.roles.find(r => r.id === this.newUser.rol);
+    return actual ? actual.desc : '';
   }
 
-  getRolDescripcion(): string {
-    const actualRol = this.roles.find(r => r.id === this.newUser().rol);
-    return actualRol ? actualRol.desc : '';
-  }
+ // Método para cambiar estado activo/inactivo de un usuario desde backend (futuro)
+/*
+toggleUserStatus(username: string): void {
+  this.userService.cambiarEstado(username).subscribe({
+    next: () => {
+      const user = this.usuarios.find(u => u.username === username);
+      if (user) user.activo = !user.activo;
+    },
+    error: err => {
+      console.error(err);
+      alert('No se pudo cambiar el estado del usuario.');
+    }
+  });
+}
+*/
+
+
 }
