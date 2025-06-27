@@ -1,3 +1,4 @@
+import { ListaPacientesPageComponent } from './pages/listapacientes/listapacientes-page.component';
 import { Routes } from '@angular/router';
 import { IndexPageComponent } from './pages/index/index-page.component';
 import { RecetaPageComponent } from './pages/receta/receta-page.component';
