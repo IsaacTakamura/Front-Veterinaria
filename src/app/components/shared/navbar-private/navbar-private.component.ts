@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIf } from '@angular/common';
 import { Router } from '@angular/router';
+import { SessionService } from '../../../core/services/session.service'; // Asegúrate de que la ruta sea correcta
 
 interface User {
   username: string;
@@ -14,25 +15,28 @@ interface User {
   imports: [
     CommonModule,
     NgIf,
-],
+  ],
   templateUrl: './navbar-private.component.html',
   styleUrls: ['./navbar-private.component.css']
 })
 export class NavbarPrivateComponent implements OnInit {
-  usuario = signal<{ username: string; rol: string } | null>(null);
   dropdownOpen = signal(false);
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private session: SessionService
+  ) {}
+
+  get usuario() {
+    return this.session.user;
+  }
 
   ngOnInit(): void {
-    const userData = localStorage.getItem('user_info');
-    if (userData) {
-      this.usuario.set(JSON.parse(userData));
-    }
+    // User data now handled by SessionService
   }
 
   cerrarSesion() {
-    localStorage.clear();
+    this.session.logout();
     this.router.navigate(['/']);
   }
 

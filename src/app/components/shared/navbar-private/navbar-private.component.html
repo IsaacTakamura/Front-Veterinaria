@@ -8,7 +8,7 @@
       (click)="toggleDropdown()"
       class="inline-flex justify-center items-center gap-2 bg-gray-100 px-4 py-2 rounded hover:bg-gray-200 transition"
     >
-      <span class="font-medium">{{ usuario()?.username }}</span>
+      <span class="font-medium">{{ usuario?.username }}</span>
       <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
         <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.08 1.04l-4.25 4.25a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
       </svg>
@@ -19,7 +19,7 @@
       class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50"
     >
       <div class="px-4 py-2 text-sm border-b">
-        Rol: <span [ngClass]="getRoleColor(usuario()?.rol || '')" class="font-medium px-2 py-1 rounded-full text-xs">{{ usuario()?.rol }}</span>
+        Rol: <span class="text-gray-500">{{ usuario?.rol }}</span>
       </div>
       <button
         (click)="cerrarSesion()"
