@@ -16,8 +16,14 @@ import { MaintenanceSecurityComponent } from '../../components/admin/maintenance
   standalone: true,
   imports: [
     CommonModule,
-    AdminSidebarComponent,
     NgComponentOutlet,
+    AdminSidebarComponent,
+    UserManagementComponent,
+    CatalogManagementComponent,
+    AppointmentSupervisionComponent,
+    ReportsAnalyticsComponent,
+    InventoryManagementComponent,
+    MaintenanceSecurityComponent,
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
