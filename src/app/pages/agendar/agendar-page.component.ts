@@ -12,8 +12,11 @@ import { FormsModule } from '@angular/forms';
 export class AgendarPageComponent {
   // Datos del propietario
   nombreCliente = '';
+  apellidoCliente = '';
+  direccion = '';
   telefono = '';
-  correo = '';
+  email = '';
+  ciudad = '';
 
   // Datos de la mascota
   nombreMascota = '';
@@ -56,8 +59,11 @@ export class AgendarPageComponent {
     console.log('📋 Datos de la cita agendada:');
     console.log({
       nombreCliente: this.nombreCliente,
+      apellidoCliente: this.apellidoCliente,
+      direccion: this.direccion,
       telefono: this.telefono,
-      correo: this.correo,
+      correo: this.email,
+      ciudad: this.ciudad,
       mascota: this.usarMascotaRegistrada ? this.mascotaSeleccionada : this.nombreMascota,
       especie: this.usarMascotaRegistrada ? '🐾 registrada' : this.especie,
       raza: this.usarMascotaRegistrada ? '🐾 registrada' : this.raza,
