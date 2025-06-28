@@ -18,7 +18,13 @@ export class AuthService {
   /**
    * Registra y luego hace login automático
    */
-  register(usuario: { username: string; password: string; rol: string }): Observable<any> {
+  register(usuario: {
+    username: string;
+    password: string;
+    rol: string;
+    estado?: string;
+    fechaCreacion?: string;
+  }): Observable<any> {
     return this.http.post<any>(`${this.api}/register`, usuario).pipe(
       switchMap(() => this.login(usuario.username, usuario.password)),
       catchError(err => throwError(() => new Error(err.error?.mensaje || 'Error al registrar')))
@@ -105,4 +111,9 @@ export class AuthService {
   getUserRol(): string | null {
     return localStorage.getItem(ROL_KEY);
   }
+
+  getAllUsuarios(): Observable<any[]> {
+  return this.http.get<any[]>('/api/v1/authentication/usuarios');
+}
+
 }
