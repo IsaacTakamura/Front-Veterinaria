@@ -33,6 +33,8 @@ export class AgendarCitaComponent {
 
   razas$: Observable<Raza[]>;
 
+  tiposServicio$: Observable<{ tipoServicioId: number; nombre: string }[]> = of([]);
+
   constructor(
     private fb: FormBuilder,
     private clienteService: ClienteService,
@@ -41,6 +43,10 @@ export class AgendarCitaComponent {
   ) {
     this.razas$ = this.mascotaService.listarRazas().pipe(
       map(res => res.data) // Aquí está bien
+    );
+
+    this.tiposServicio$ = this.citaService.listarTiposServicio().pipe(
+      map(res => res.data)
     );
 
     this.clienteForm = this.fb.group({
@@ -63,7 +69,8 @@ export class AgendarCitaComponent {
     this.citaForm = this.fb.group({
       fecha: ['', Validators.required],
       hora: ['', Validators.required],
-      motivo: ['', Validators.required]
+      motivo: ['', Validators.required],
+      tipoServicioId: [null, Validators.required],
     });
   }
 
@@ -110,7 +117,7 @@ export class AgendarCitaComponent {
 
     crearCliente$.pipe(
       switchMap(clienteRes => {
-        const clienteId = clienteRes.data.clienteId;
+        const clienteId = clienteRes.data.clienteId ?? 0;
         const mascotaData: Mascota = { ...this.mascotaForm.value, clienteId } as Mascota;
 
         const crearMascota$ = this.nuevaMascota()
@@ -119,10 +126,16 @@ export class AgendarCitaComponent {
 
         return crearMascota$.pipe(
           switchMap(mascotaRes => {
-            return this.citaService.agendar({
-              mascotaId: mascotaRes.data.mascotaId,
-              ...this.citaForm.value
-            });
+            // Ajusta estos valores según tu lógica o formulario
+            const citaPayload: Cita = {
+              fechaRegistro: new Date().toISOString(),
+              tipoServicioId: 1, // Cambia según tu lógica o selecciona en el formulario
+              mascotaId: mascotaRes.data.mascotaId ?? 0, // Provide a fallback value in case mascotaId is undefined
+              clienteId: clienteId,
+              veterinarioId: 1, // Cambia según tu lógica o selecciona en el formulario
+              motivo: this.citaForm.value.motivo
+            };
+            return this.citaService.agendar(citaPayload);
           })
         );
       })

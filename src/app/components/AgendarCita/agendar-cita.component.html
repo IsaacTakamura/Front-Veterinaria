@@ -77,8 +77,13 @@
     <form [formGroup]="citaForm" class="grid gap-4 border-t pt-4 mt-6">
       <input class="input" type="date" formControlName="fecha" />
       <input class="input" type="time" formControlName="hora" />
+      <select class="input" formControlName="tipoServicioId" required>
+        <option [ngValue]="null" disabled selected>Seleccione un tipo de servicio</option>
+        <option *ngFor="let tipo of tiposServicio$ | async" [ngValue]="tipo.tipoServicioId">
+          {{ tipo.nombre }}
+        </option>
+      </select>
       <textarea class="input resize-none" rows="3" formControlName="motivo" placeholder="Motivo de la cita"></textarea>
-
       <button type="button" class="btn bg-emerald-600 hover:bg-emerald-700 text-white font-medium" (click)="agendar()"
         [disabled]="isLoading()">
         {{ isLoading() ? 'Agendando...' : 'Agendar Cita' }}
