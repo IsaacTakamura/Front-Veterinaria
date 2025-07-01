@@ -13,11 +13,11 @@ export interface Cita {
   providedIn: 'root'
 })
 export class CitaService {
-  private baseUrl = '/api/v1/cita';
+  private baseUrl = '/api/v1/asistente';
 
   constructor(private http: HttpClient) {}
 
   agendar(cita: Cita): Observable<{ data: any }> {
-    return this.http.post<{ data: any }>(`${this.baseUrl}/registrar`, cita);
+    return this.http.post<{ data: any }>(`${this.baseUrl}/RegistrarCita`, cita);
   }
 }
