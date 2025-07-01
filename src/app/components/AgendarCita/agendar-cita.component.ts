@@ -9,6 +9,7 @@ import { switchMap, Observable, of, map } from 'rxjs';
 import { Cliente } from '../shared/interfaces/cliente.model';
 import { Mascota } from '../shared/interfaces/mascota.model';
 import { Cita } from '../shared/interfaces/cita.model';
+import { Raza } from '../shared/interfaces/Raza.model';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 @Component({
@@ -30,7 +31,7 @@ export class AgendarCitaComponent {
   mascotaForm: FormGroup;
   citaForm: FormGroup;
 
- razas$: Observable<{ razaId: number; nombre: string }[]>;
+  razas$: Observable<Raza[]>;
 
   constructor(
     private fb: FormBuilder,
@@ -39,10 +40,7 @@ export class AgendarCitaComponent {
     private citaService: CitaService
   ) {
     this.razas$ = this.mascotaService.listarRazas().pipe(
-      map(razas => razas.map((nombre, index) => ({
-        razaId: index + 1,
-        nombre
-      })))
+      map(res => res.data) // Aquí está bien
     );
 
     this.clienteForm = this.fb.group({
@@ -80,6 +78,18 @@ export class AgendarCitaComponent {
       this.mascotaEncontrada.set(res.data || null);
     });
   }
+
+  usarMascotaExistente() {
+    this.nuevaMascota.set(false); // para ocultar formulario nuevo
+  }
+
+
+  usarClienteExistente() {
+    this.nuevoCliente.set(false); // para ocultar formulario nuevo
+  }
+
+
+
 
   agendar() {
     if (!this.nuevoCliente() && !this.clienteEncontrado()) {

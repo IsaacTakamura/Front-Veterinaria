@@ -1,3 +1,4 @@
+<!-- agendar-cita.component.html -->
 <div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-8">
   <div class="max-w-5xl mx-auto bg-white shadow rounded-xl p-8">
     <h1 class="text-3xl font-bold text-gray-800 mb-2">Agendar Cita</h1>
@@ -33,7 +34,12 @@
         <input type="text" #clienteInput placeholder="Buscar cliente por nombre" class="input" />
         <button class="btn" type="button" (click)="buscarClientePorNombre(clienteInput.value)">Buscar</button>
         <div *ngIf="clienteEncontrado()" class="bg-green-100 text-green-800 px-3 py-2 rounded-md text-sm">
-          <strong>Cliente encontrado:</strong> {{ clienteEncontrado()?.nombre }} {{ clienteEncontrado()?.nombre }}
+          <strong>Cliente encontrado:</strong>
+          {{ clienteEncontrado()?.nombre }} {{ clienteEncontrado()?.apellido }}
+          <button type="button" class="ml-4 text-sm underline text-emerald-700 hover:text-emerald-900"
+            (click)="usarClienteExistente()">
+            Usar este cliente
+          </button>
         </div>
       </div>
     </ng-template>
@@ -44,8 +50,8 @@
         <input class="input" type="text" formControlName="nombre" placeholder="Nombre de la mascota" />
         <input class="input" type="number" formControlName="edad" placeholder="Edad (en años)" />
         <select class="input" formControlName="razaId" required>
-          <option value="" disabled selected>Seleccione una raza</option>
-          <option *ngFor="let raza of razas$ | async" [value]="raza.razaId">
+          <option [ngValue]="null" disabled selected>Seleccione una raza</option>
+          <option *ngFor="let raza of razas$ | async" [ngValue]="raza.razaId">
             {{ raza.nombre }}
           </option>
         </select>
@@ -56,8 +62,14 @@
         <input type="text" #mascotaInput placeholder="Buscar mascota por nombre" class="input" />
         <button class="btn" type="button" (click)="buscarMascotaPorNombre(mascotaInput.value)">Buscar</button>
         <div *ngIf="mascotaEncontrada()" class="bg-green-100 text-green-800 px-3 py-2 rounded-md text-sm">
-          <strong>Mascota encontrada:</strong> {{ mascotaEncontrada()?.nombre }} ({{ mascotaEncontrada()?.nombre }})
+          <strong>Mascota encontrada:</strong>
+          {{ mascotaEncontrada()?.nombre }}
+          <button type="button" class="ml-4 text-sm underline text-emerald-700 hover:text-emerald-900"
+            (click)="usarMascotaExistente()">
+            Usar esta mascota
+          </button>
         </div>
+
       </div>
     </ng-template>
 

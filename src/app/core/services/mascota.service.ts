@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Mascota } from '../../components/shared/interfaces/mascota.model'; // ✅ Esto está bien
+import { Raza } from '../../components/shared/interfaces/Raza.model'; // ✅ Esto está bien
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class MascotaService {
     return this.http.post<{ data: Mascota }>(`${this.baseUrl}/crearMascota`, mascota);
   }
 
-  listarRazas(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.baseUrl}/mascota/listarRazas`);
+  listarRazas(): Observable<{ data: Raza[] }> {
+    return this.http.get<{ data: Raza[] }>(`${this.baseUrl}/mascota/listarRazas`);
   }
 }
