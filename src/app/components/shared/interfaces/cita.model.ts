@@ -1,6 +1,9 @@
 export interface Cita {
-  fecha: string;
-  hora: string;
-  motivo: string;
+  citaId?: number;
+  fechaRegistro: string;
+  tipoServicioId: number;
   mascotaId: number;
+  clienteId: number;
+  veterinarioId: number;
+  motivo: string;
 }
