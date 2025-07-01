@@ -1,204 +1,66 @@
-.contenedor-cita {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  padding: 2rem;
-  background: #f9f9f9;
-  border-radius: 16px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+/* Container styles */
+.min-h-screen {
+  min-height: 100vh;
 }
 
-.cita-container {
-  background-color: #e8fff0; /* Verde pastel */
-  padding: 2rem;
-  border-radius: 1rem;
+.bg-gray-100 {
+  background-color: #f3f4f6;
 }
 
-/* Estilo general para inputs y textareas con fondo tenue */
-input::placeholder,
-textarea::placeholder,
-select::placeholder {
-  background-color: rgba(240, 240, 240, 0.7);
-  /* Fondo gris claro translúcido */
-  color: #c0c0c0;
-  /* Texto gris oscuro */
-  padding-left: 4px;
-  border-radius: 4px;
+.py-10 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
 }
 
-/* También puedes aplicar un estilo similar directamente al input para que se vea más suave */
-input,
-textarea,
-select {
-  background-color: rgba(240, 240, 240, 0.7);
-  border: 1px solid rgba(240, 240, 240, 0.7);
-  border-radius: 6px;
-  padding: 8px;
-  font-size: 14px;
-  width: 100%;
-  box-sizing: border-box;
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
-.grid-cita {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+/* Responsive padding */
+@media (min-width: 640px) {
+  .sm\:px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
 }
 
-.full-width {
-  grid-column: 1 / -1;
-  /* Ocupa ambas columnas */
+/* Layout styles */
+.max-w-6xl {
+  max-width: 72rem; /* 1152px */
 }
 
-/* Datos de cliente y mascota: lado a lado */
-.datos-superiores {
-  display: flex;
-  gap: 2rem;
-  justify-content: space-between;
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.ios-switch-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+.mb-6 {
+  margin-bottom: 1.5rem;
 }
 
-.ios-switch {
-  position: relative;
-  display: flex;
-  width: 280px;
-  height: 40px;
-  background-color: #e5e7eb;
-  /* gris claro */
-  border-radius: 9999px;
-  cursor: pointer;
-  overflow: hidden;
-  transition: background-color 0.3s ease;
+.mt-2 {
+  margin-top: 0.5rem;
 }
 
-.ios-switch .option {
-  flex: 1;
+/* Text styles */
+.text-center {
   text-align: center;
-  line-height: 40px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  z-index: 2;
-  color: #ffffff;
-  /* texto gris */
-  transition: color 0.3s ease;
 }
 
-.ios-switch .slider {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 136px;
-  height: 36px;
-  background: linear-gradient(to right, #45c353, #58e5c2);
-  /* verde claro */
-  border-radius: 9999px;
-  transition: left 0.3s ease;
-  z-index: 1;
+.text-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
 }
 
-.ios-switch.registrada .slider {
-  left: 142px;
-  background: linear-gradient(to right, #45c353, #58e5c2);
-  /* verde claro */
-}
-
-.ios-switch.registrada .option.nueva {
-  color: #ababad;
-  /* texto más apagado */
-}
-
-.ios-switch:not(.registrada) .option.registrada {
-  color: #ababad;
-}
-
-.columna {
-  flex: 1;
-  background-color: #ffffff;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
-}
-
-/* Detalles de cita ocupa todo el ancho */
-.detalles-cita {
-  background-color: #ffffff;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
-}
-
-/* Reglas comunes */
-.titulo-seccion {
-  font-size: 18px;
+.font-bold {
   font-weight: 700;
-  background: linear-gradient(to right, #46c355, #5f88e0);
-  /* celeste a azul */
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 0.6rem;
 }
 
-.form-group {
-  margin-bottom: 0.8rem;
+.text-gray-800 {
+  color: #1f2937;
 }
 
-label {
-  display: block;
-  font-weight: 500;
-  margin-bottom: 0.3rem;
-  font-size: 13px;
-  /* más pequeño */
-  color: #444;
-}
-
-input,
-select,
-textarea {
-  width: 100%;
-  padding: 0.4rem 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 13px;
-  /* más pequeño */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-
-textarea {
-  resize: vertical;
-  min-height: 60px;
-}
-
-.boton-container {
-  text-align: center;
-
-  margin-top: 1.5rem;
-}
-
-button {
-  background: linear-gradient(to right, #45c353, #2de1b4);
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 10px;
-  font-size: 14px;
-  /* más pequeño */
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-button:hover {
-  background-color: #059669;
-}
-
-
-select option {
-  color: #000 !important;
+.text-gray-600 {
+  color: #4b5563;
 }
