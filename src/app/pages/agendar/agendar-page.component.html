@@ -1,124 +1,117 @@
-<div class="cita-container">
+<div class="agendar-cita-container">
+  <!-- Título y descripción -->
+  <h1 class="text-3xl font-bold text-gray-800 mb-2">Agendar Cita</h1>
+  <p class="text-gray-500 mb-6">Complete el formulario para agendar una cita para su mascota</p>
 
-  <!-- 🔁 Switch estilo iOS para elegir mascota nueva o registrada -->
-  <div class="ios-switch-container">
-    <div class="ios-switch" [class.registrada]="usarMascotaRegistrada" (click)="toggleSwitch()">
-      <div class="option nueva">Nueva Mascota</div>
-      <div class="option registrada">Mascota Registrada</div>
-      <div class="slider"></div>
+  <div class="superior">
+    <!-- Lado izquierdo: Cliente -->
+    <div class="lado-izquierdo">
+      <h2 class="text-xl font-semibold mb-4">Información del Cliente</h2>
+      <!-- 🔘 Switch Cliente -->
+      <div class="mb-4 flex items-center gap-4">
+        <label for="toggle-cliente" class="text-sm text-gray-700">Nuevo Cliente</label>
+        <label class="switch">
+          <input id="toggle-cliente" type="checkbox" [checked]="nuevoCliente()"
+            (change)="nuevoCliente.set(!nuevoCliente())" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <!-- 🧍‍♀️ Formulario Cliente -->
+      <div *ngIf="nuevoCliente(); else buscarCliente">
+        <form [formGroup]="clienteForm" class="grid gap-4 mb-6">
+          <input class="input" type="text" formControlName="nombre" placeholder="Nombre" />
+          <input class="input" type="text" formControlName="apellido" placeholder="Apellido" />
+          <input class="input" type="text" formControlName="direccion" placeholder="Dirección" />
+          <input class="input" type="tel" formControlName="telefono" placeholder="Teléfono" />
+          <input class="input" type="email" formControlName="email" placeholder="Correo electrónico" />
+          <input class="input" type="text" formControlName="ciudad" placeholder="Ciudad" />
+        </form>
+      </div>
+      <ng-template #buscarCliente>
+        <div class="mb-4 space-y-2">
+          <input type="text" #clienteInput placeholder="Buscar cliente por nombre" class="input" />
+          <button class="btn" type="button" (click)="buscarClientePorNombre(clienteInput.value)">Buscar</button>
+          <div *ngIf="clienteEncontrado()" class="bg-green-100 text-green-800 px-3 py-2 rounded-md text-sm">
+            <strong>Cliente encontrado:</strong>
+            {{ clienteEncontrado()?.nombre }} {{ clienteEncontrado()?.apellido }}
+            <button type="button" class="ml-4 text-sm underline text-emerald-700 hover:text-emerald-900"
+              (click)="usarClienteExistente()">
+              Usar este cliente
+            </button>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Lado derecho: Mascota -->
+    <div class="lado-derecho">
+      <h2 class="text-xl font-semibold mb-4">Información de la Mascota</h2>
+      <!-- 🔘 Switch Mascota -->
+      <div class="mb-4 flex items-center gap-4">
+        <label for="toggle-mascota" class="text-sm text-gray-700">Nueva Mascota</label>
+        <label class="switch">
+          <input id="toggle-mascota" type="checkbox" [checked]="nuevaMascota()"
+            (change)="nuevaMascota.set(!nuevaMascota())" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <!-- 🐾 Formulario Mascota -->
+      <div *ngIf="nuevaMascota(); else buscarMascota">
+        <form [formGroup]="mascotaForm" class="grid gap-4 mb-6">
+          <input class="input" type="text" formControlName="nombre" placeholder="Nombre de la mascota" />
+          <input class="input" type="number" formControlName="edad" placeholder="Edad (en años)" />
+          <select class="input" formControlName="razaId" required>
+            <option [ngValue]="null" disabled selected>Seleccione una raza</option>
+            <option *ngFor="let raza of razas$ | async" [ngValue]="raza.razaId">
+              {{ raza.nombre }}
+            </option>
+          </select>
+        </form>
+      </div>
+      <ng-template #buscarMascota>
+        <div class="mb-4 space-y-2">
+          <input type="text" #mascotaInput placeholder="Buscar mascota por nombre" class="input" />
+          <button class="btn" type="button" (click)="buscarMascotaPorNombre(mascotaInput.value)">Buscar</button>
+          <div *ngIf="mascotaEncontrada()" class="bg-green-100 text-green-800 px-3 py-2 rounded-md text-sm">
+            <strong>Mascota encontrada:</strong>
+            {{ mascotaEncontrada()?.nombre }}
+            <button type="button" class="ml-4 text-sm underline text-emerald-700 hover:text-emerald-900"
+              (click)="usarMascotaExistente()">
+              Usar esta mascota
+            </button>
+          </div>
+        </div>
+      </ng-template>
     </div>
   </div>
 
-  <!-- 📄 Formulario general -->
-  <form>
-    <div class="contenedor-cita">
-      <!-- Parte superior: Cliente y Mascota -->
-      <div class="datos-superiores">
-        <!-- Cliente -->
-        <div class="columna">
-          <h3 class="titulo-seccion gradiante">Datos del Propietario</h3>
-          <div class="form-group">
-            <label>Nombre del Cliente:</label>
-            <input type="text" [(ngModel)]="nombreCliente" name="nombreCliente" class="form-control"
-              placeholder="Ingrese el nombre del cliente">
-          </div>
-          <div class="form-group">
-            <label>Teléfono:</label>
-            <input type="tel" [(ngModel)]="telefono" name="telefono" class="form-control"
-              placeholder="Ingrese el teléfono del cliente">
-          </div>
-          <div class="form-group">
-            <label>Correo Electrónico:</label>
-            <input type="email" [(ngModel)]="correo" name="correo" class="form-control"
-              placeholder="Ingrese el correo del cliente">
-          </div>
-        </div>
-
-        <!-- Mascota -->
-        <div class="columna">
-          <h3 class="titulo-seccion gradiante">Datos de la Mascota</h3>
-
-          <!-- Nueva Mascota -->
-          <div [hidden]="usarMascotaRegistrada">
-            <div class="form-group">
-              <label>Nombre de la Mascota:</label>
-              <input type="text" [(ngModel)]="nombreMascota" name="nombreMascota" class="form-control"
-                placeholder="Ingrese el nombre de la mascota">
-            </div>
-            <div class="form-group">
-              <label>Especie:</label>
-              <input type="text" [(ngModel)]="especie" name="especie" class="form-control"
-                placeholder="Ingrese la especie de la mascota">
-            </div>
-            <div class="form-group">
-              <label>Raza:</label>
-              <input type="text" [(ngModel)]="raza" name="raza" class="form-control"
-                placeholder="Ingrese la raza de la mascota">
-            </div>
-            <div class="form-group">
-              <label>Edad de la Mascota:</label>
-              <input type="number" [(ngModel)]="edadMascota" name="edadMascota" class="form-control"
-                placeholder="Ingrese la edad de la mascota">
-            </div>
-          </div>
-
-          <!-- Mascota Registrada -->
-          <div [hidden]="!usarMascotaRegistrada">
-            <div class="form-group">
-              <label>Seleccionar Mascota Registrada:</label>
-              <select [(ngModel)]="mascotaSeleccionada" name="mascotaSeleccionada" class="form-control">
-                <option disabled value="">Selecciona una mascota</option>
-                <option *ngFor="let mascota of mascotasRegistradas" [value]="mascota">
-                  {{ mascota }}
-                </option>
-              </select>
-            </div>
-          </div>
-        </div>
+  <!-- Inferior: Formulario de Cita -->
+  <div class="inferior">
+    <h2 class="text-xl font-semibold mb-4">Información de la Cita</h2>
+    <!-- 📅 Formulario de Cita -->
+    <form [formGroup]="citaForm" class="grid gap-4 border-t pt-4">
+      <!-- 🩺 Veterinario disponible -->
+      <select class="input" formControlName="veterinarioId" required>
+        <option [ngValue]="null" disabled selected>Seleccione un veterinario disponible</option>
+        <option *ngFor="let vet of veterinarios" [ngValue]="vet.veterinarioId">
+          {{ vet.nombre }}
+        </option>
+      </select>
+      <div class="grid grid-cols-2 gap-4">
+        <input class="input" type="date" formControlName="fecha" />
+        <input class="input" type="time" formControlName="hora" />
       </div>
-
-      <!-- Parte inferior: Detalles de la cita -->
-      <div class="detalles-cita">
-        <h3 class="titulo-seccion">Detalles de la Cita</h3>
-
-        <div class="grid-cita">
-          <div class="form-group">
-            <label>Fecha:</label>
-            <input type="date" [(ngModel)]="fecha" name="fecha" class="form-control">
-          </div>
-          <div class="form-group">
-            <label>Tipo de Servicio:</label>
-            <select [(ngModel)]="tipoServicio" name="tipoServicio" class="form-control">
-              <option value="">Selecciona un servicio</option>
-              <option value="Consulta">Consulta</option>
-              <option value="Vacunación">Vacunación</option>
-              <option value="Desparasitación">Desparasitación</option>
-              <option value="Control">Control</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Horario:</label>
-            <input type="time" [(ngModel)]="horario" name="horario" class="form-control">
-          </div>
-          <div class="form-group">
-            <label>Veterinario (opcional):</label>
-            <select [(ngModel)]="veterinario" name="veterinario" class="form-control">
-              <option value="">Selecciona un veterinario</option>
-              <option value="Dr. Jose Hurtado">Dr. Jose Hurtado</option>
-              <option value="Dr. Juan Chavez">Dr. Juan Chavez</option>
-              <option value="Dr. Isaac Takamura">Dr. Isaac Takamura</option>
-            </select>
-          </div>
-          <div class="form-group full-width">
-            <label>Motivo de la Consulta:</label>
-            <textarea [(ngModel)]="motivoConsulta" name="motivoConsulta" class="form-control"></textarea>
-          </div>
-        </div>
-
-        <div class="boton-container">
-          <button type="button" (click)="agendarCita()">Agendar Cita</button>
-        </div>
-      </div>
-    </div>
-  </form>
+      <select class="input" formControlName="tipoServicioId" required>
+        <option [ngValue]="null" disabled selected>Seleccione un tipo de servicio</option>
+        <option *ngFor="let tipo of tiposServicio$ | async" [ngValue]="tipo.tipoServicioId">
+          {{ tipo.nombre }}
+        </option>
+      </select>
+      <textarea class="input resize-none" rows="3" formControlName="motivo" placeholder="Motivo de la cita"></textarea>
+      <button type="button" class="btn bg-emerald-600 hover:bg-emerald-700 text-white font-medium" (click)="agendar()"
+        [disabled]="isLoading()">
+        {{ isLoading() ? 'Agendando...' : 'Agendar Cita' }}
+      </button>
+    </form>
+  </div>
 </div>

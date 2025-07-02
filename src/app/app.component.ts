@@ -7,6 +7,7 @@ import { RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { ChatBotComponent } from './components/shared/chat-bot/chat-bot.component';
+import { SessionService } from '../app/core/services/session.service';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +28,10 @@ export class AppComponent implements OnInit {
   isLoggedIn = signal<boolean>(false);
   showNavbarPublic = signal<boolean>(true);
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private session: SessionService
+  ) { }
 
   ngOnInit() {
     this.router.events.pipe(
@@ -37,7 +41,7 @@ export class AppComponent implements OnInit {
 
       this.currentRoute.set(url);
 
-      const token = localStorage.getItem('auth_token');
+      const token = this.session.token;
       this.isLoggedIn.set(!!token);
 
       const publicRoutes = ['/', '/login', '/register'];
