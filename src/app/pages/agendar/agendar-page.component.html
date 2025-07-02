@@ -90,6 +90,13 @@
     <h2 class="text-xl font-semibold mb-4">Información de la Cita</h2>
     <!-- 📅 Formulario de Cita -->
     <form [formGroup]="citaForm" class="grid gap-4 border-t pt-4">
+      <!-- 🩺 Veterinario disponible -->
+      <select class="input" formControlName="veterinarioId" required>
+        <option [ngValue]="null" disabled selected>Seleccione un veterinario disponible</option>
+        <option *ngFor="let vet of veterinarios" [ngValue]="vet.veterinarioId">
+          {{ vet.nombre }}
+        </option>
+      </select>
       <div class="grid grid-cols-2 gap-4">
         <input class="input" type="date" formControlName="fecha" />
         <input class="input" type="time" formControlName="hora" />

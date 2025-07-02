@@ -1,16 +1,21 @@
-// agendar-cita.component.ts
-import { Component, computed, signal } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ClienteService } from '../../core/services/cliente.service';
-import { MascotaService } from '../../core/services/mascota.service';
-import { CitaService } from '../../core/services/cita.service';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { switchMap, Observable, of, map } from 'rxjs';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+
+// Services
+import { ClienteService } from '../../core/services/cliente.service';
+import { CitaService } from '../../core/services/cita.service';
+import { MascotaService } from '../../core/services/mascota.service';
+import { VeterinarioService } from '../../core/services/veterinario.service';
+
+// Models
+import { Cita } from '../../components/shared/interfaces/cita.model';
 import { Cliente } from '../../components/shared/interfaces/cliente.model';
 import { Mascota } from '../../components/shared/interfaces/mascota.model';
-import { Cita } from '../../components/shared/interfaces/cita.model';
 import { Raza } from '../../components/shared/interfaces/Raza.model';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+
+// RxJS
+import { map, Observable, of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-agendar-cita',
@@ -19,7 +24,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule]
 })
-export class AgendarPageComponent {
+export class AgendarPageComponent implements OnInit {
   isLoading = signal(false);
   nuevoCliente = signal(true);
   nuevaMascota = signal(true);
@@ -32,22 +37,18 @@ export class AgendarPageComponent {
   citaForm: FormGroup;
 
   razas$: Observable<Raza[]>;
-
   tiposServicio$: Observable<{ tipoServicioId: number; nombre: string }[]> = of([]);
+  veterinarios: any[] = [];
 
   constructor(
     private fb: FormBuilder,
     private clienteService: ClienteService,
     private mascotaService: MascotaService,
-    private citaService: CitaService
+    private citaService: CitaService,
+    private veterinarioService: VeterinarioService
   ) {
-    this.razas$ = this.mascotaService.listarRazas().pipe(
-      map(res => res.data) // Aquí está bien
-    );
-
-    this.tiposServicio$ = this.citaService.listarTiposServicio().pipe(
-      map(res => res.data)
-    );
+    this.razas$ = this.mascotaService.listarRazas().pipe(map(res => res.data));
+    this.tiposServicio$ = this.citaService.listarTiposServicio().pipe(map(res => res.data));
 
     this.clienteForm = this.fb.group({
       nombre: ['', Validators.required],
@@ -62,7 +63,7 @@ export class AgendarPageComponent {
       nombre: ['', Validators.required],
       edad: [null, [Validators.required, Validators.min(0)]],
       estado: ['VIVO', Validators.required],
-      razaId: [null, Validators.required], // ✅
+      razaId: [null, Validators.required],
       clienteId: ['']
     });
 
@@ -71,6 +72,13 @@ export class AgendarPageComponent {
       hora: ['', Validators.required],
       motivo: ['', Validators.required],
       tipoServicioId: [null, Validators.required],
+      veterinarioId: [null, Validators.required] // 🎯 agregado al formulario
+    });
+  }
+
+  ngOnInit(): void {
+    this.veterinarioService.listarVeterinarios().subscribe(data => {
+      this.veterinarios = data;
     });
   }
 
@@ -86,17 +94,13 @@ export class AgendarPageComponent {
     });
   }
 
-  usarMascotaExistente() {
-    this.nuevaMascota.set(false); // para ocultar formulario nuevo
-  }
-
-
   usarClienteExistente() {
-    this.nuevoCliente.set(false); // para ocultar formulario nuevo
+    this.nuevoCliente.set(false);
   }
 
-
-
+  usarMascotaExistente() {
+    this.nuevaMascota.set(false);
+  }
 
   agendar() {
     if (!this.nuevoCliente() && !this.clienteEncontrado()) {
@@ -118,7 +122,10 @@ export class AgendarPageComponent {
     crearCliente$.pipe(
       switchMap(clienteRes => {
         const clienteId = clienteRes.data.clienteId ?? 0;
-        const mascotaData: Mascota = { ...this.mascotaForm.value, clienteId } as Mascota;
+        const mascotaData: Mascota = {
+          ...this.mascotaForm.value,
+          clienteId
+        } as Mascota;
 
         const crearMascota$ = this.nuevaMascota()
           ? this.mascotaService.crear(mascotaData)
@@ -126,13 +133,12 @@ export class AgendarPageComponent {
 
         return crearMascota$.pipe(
           switchMap(mascotaRes => {
-            // Ajusta estos valores según tu lógica o formulario
             const citaPayload: Cita = {
               fechaRegistro: new Date().toISOString(),
-              tipoServicioId: 1, // Cambia según tu lógica o selecciona en el formulario
-              mascotaId: mascotaRes.data.mascotaId ?? 0, // Provide a fallback value in case mascotaId is undefined
-              clienteId: clienteId,
-              veterinarioId: 1, // Cambia según tu lógica o selecciona en el formulario
+              tipoServicioId: this.citaForm.value.tipoServicioId,
+              mascotaId: mascotaRes.data.mascotaId ?? 0,
+              clienteId,
+              veterinarioId: this.citaForm.value.veterinarioId, // 🧠 tomado del form
               motivo: this.citaForm.value.motivo
             };
             return this.citaService.agendar(citaPayload);
