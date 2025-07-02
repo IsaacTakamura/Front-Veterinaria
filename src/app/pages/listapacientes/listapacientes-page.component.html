@@ -24,7 +24,7 @@
         </div>
 
         <div class="card" *ngFor="let p of pacientes">
-          <h3> 🔗 {{ p.nombre }} <span class="status">{{ p.estado }}</span></h3>
+          <h3>🔗 {{ p.nombre }} <span class="status">{{ p.estado }}</span></h3>
           <p><strong>Especie:</strong> {{ p.especie }}</p>
           <p><strong>Raza:</strong> {{ p.raza }}</p>
           <p><strong>Edad:</strong> {{ p.edad }}</p>
@@ -46,11 +46,53 @@
 
         <div class="form-group">
           <label for="paciente"><strong>Seleccionar Paciente:</strong></label>
-          <select id="paciente">
-            <option *ngFor="let p of pacientes">
+          <select id="paciente" [(ngModel)]="pacienteSeleccionado" (ngModelChange)="seleccionarPaciente($event)">
+            <option [ngValue]="null">-- Selecciona un paciente --</option>
+            <option *ngFor="let p of pacientes" [ngValue]="p">
               {{ p.nombre }} - {{ p.raza }} ({{ p.propietario }})
             </option>
           </select>
+        </div>
+
+        <!-- Vista detallada -->
+        <div class="detalle-container" *ngIf="pacienteSeleccionado">
+          <div class="navegacion">
+            <ul>
+              <li [class.active]="subvista === 'info'" (click)="cambiarSubvista('info')">📄 Info del Paciente</li>
+              <li [class.active]="subvista === 'alergias'" (click)="cambiarSubvista('alergias')">🌡️ Alergias</li>
+              <li [class.active]="subvista === 'ultima'" (click)="cambiarSubvista('ultima')">📋 Última Consulta</li>
+              <li [class.active]="subvista === 'nueva'" (click)="cambiarSubvista('nueva')">📝 Nueva Consulta</li>
+            </ul>
+          </div>
+
+          <div class="subvista">
+            <div *ngIf="subvista === 'info'">
+              <h3>📄 Información del Paciente</h3>
+              <p><strong>Nombre:</strong> {{ pacienteSeleccionado.nombre }}</p>
+              <p><strong>Especie:</strong> {{ pacienteSeleccionado.especie }}</p>
+              <p><strong>Raza:</strong> {{ pacienteSeleccionado.raza }}</p>
+              <p><strong>Edad:</strong> {{ pacienteSeleccionado.edad }}</p>
+              <p><strong>Propietario:</strong> {{ pacienteSeleccionado.propietario }}</p>
+              <p><strong>Teléfono:</strong> {{ pacienteSeleccionado.telefono }}</p>
+            </div>
+
+            <div *ngIf="subvista === 'alergias'">
+              <h3>🌡️ Alergias</h3>
+              <p>No se han registrado alergias aún.</p>
+            </div>
+
+            <div *ngIf="subvista === 'ultima'">
+              <h3>📋 Última Consulta</h3>
+              <p><strong>Fecha:</strong> {{ pacienteSeleccionado.ultimaVisita }}</p>
+              <p><strong>Observaciones:</strong> Control de rutina sin anomalías.</p>
+            </div>
+
+            <div *ngIf="subvista === 'nueva'">
+              <h3>📝 Registrar Nueva Consulta</h3>
+              <textarea rows="5" placeholder="Escribe aquí los hallazgos..."></textarea>
+              <button class="primario">Guardar Consulta</button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

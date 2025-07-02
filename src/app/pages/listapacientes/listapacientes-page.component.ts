@@ -14,6 +14,9 @@ export class ListapacientesPageComponent {
   selected = 'pacientes';
   busqueda = '';
 
+  pacienteSeleccionado: any = null;
+  subvista: string = 'info'; // <- renombrado aquí
+
   pacientes = [
     {
       nombre: 'Max',
@@ -60,7 +63,6 @@ export class ListapacientesPageComponent {
       diasRestantes: 1,
       proximaDosis: '2024-01-19 14:00',
     },
-
     {
       paciente: 'Rocky',
       propietario: 'Ana Martínez',
@@ -71,52 +73,57 @@ export class ListapacientesPageComponent {
       diasRestantes: 0,
       proximaDosis: null,
     },
-
   ];
 
   cambiarVista(vista: string) {
     this.selected = vista;
+    if (vista !== 'consulta') {
+      this.pacienteSeleccionado = null;
+      this.subvista = 'info';
+    }
+  }
+
+  seleccionarPaciente(paciente: any) {
+    this.pacienteSeleccionado = paciente;
+    this.subvista = 'info'; // al seleccionar, vista inicial
+  }
+
+  cambiarSubvista(vista: string) {
+    this.subvista = vista;
   }
 
   getIconClass(status: string): string {
     switch (status) {
-      case 'Activo':
-        return 'fa-pills';
-      case 'Próximo a vencer':
-        return 'fa-triangle-exclamation';
-      case 'Completado':
-        return 'fa-check-circle';
-      default:
-        return 'fa-clock';
+      case 'Activo': return 'fa-pills';
+      case 'Próximo a vencer': return 'fa-triangle-exclamation';
+      case 'Completado': return 'fa-check-circle';
+      default: return 'fa-clock';
     }
   }
 
   getEmojiForStatus(status: string): string {
-  switch (status) {
-    case 'Activo':
-      return '🟢'; // o '🔗'
-    case 'Próximo a vencer':
-      return '⚠️';
-    case 'Completado':
-      return '✅';
-    case 'Vencido':
-      return '⛔';
-    default:
-      return '❓';
+    switch (status) {
+      case 'Activo': return '🟢';
+      case 'Próximo a vencer': return '⚠️';
+      case 'Completado': return '✅';
+      case 'Vencido': return '⛔';
+      default: return '❓';
+    }
   }
-}
-
 
   getStatusClass(status: string): string {
     switch (status) {
-      case 'Activo':
-        return 'activo';
-      case 'Próximo a vencer':
-        return 'proximo';
-      case 'Completado':
-        return 'completado';
-      default:
-        return 'inactivo';
+      case 'Activo': return 'activo';
+      case 'Próximo a vencer': return 'proximo';
+      case 'Completado': return 'completado';
+      default: return 'inactivo';
+    }
+  }
+
+  seleccionarPacientePorNombre(nombre: string) {
+    const paciente = this.pacientes.find(p => p.nombre === nombre);
+    if (paciente) {
+      this.seleccionarPaciente(paciente);
     }
   }
 }
