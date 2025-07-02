@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class VeterinarioService {
-  private url = 'http://localhost:8080/api/v1/veterinarios'; // ajusta a tu ruta real
+  private url = 'http://localhost:8080/api/v1/asistente/listarVeterinarios'; // ajusta a tu ruta real
 
   constructor(private http: HttpClient) {}
 
