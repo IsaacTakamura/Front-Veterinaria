@@ -22,10 +22,12 @@ export class RegisterFormComponent {
 
   constructor(private fb: FormBuilder, private authService: AuthService) {
     this.form = this.fb.group({
-      username: [{ value: '', disabled: false }, Validators.required],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      rol: ['', Validators.required],
-    });
+    username: ['', Validators.required],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    rol: ['', Validators.required],
+    estado: ['ACTIVO'], // default value
+    fechaCreacion: [new Date().toISOString()] // formato ISO
+  });
   }
 
   togglePasswordVisibility() {
@@ -56,8 +58,9 @@ export class RegisterFormComponent {
     this.isLoading.set(true);
 
     try {
-      const { username, password, rol } = this.form.value;
-      const result = await this.authService.register({ username, password, rol }).toPromise();
+      const { username, password, rol, estado, fechaCreacion } = this.form.value;
+      await this.authService.register({ username, password, rol, estado, fechaCreacion }).toPromise();
+
       this.message.set({ type: 'success', text: 'Usuario registrado exitosamente' });
       this.form.reset();
     } catch (error) {
