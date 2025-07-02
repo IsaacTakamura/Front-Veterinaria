@@ -16,6 +16,6 @@ export class CitaService {
   }
 
   listarTiposServicio(): Observable<{ data: { tipoServicioId: number; nombre: string }[] }> {
-    return this.http.get<{ data: { tipoServicioId: number; nombre: string }[] }>(`${this.baseUrl}/listarTiposServicio`);
+    return this.http.get<{ data: { tipoServicioId: number; nombre: string }[] }>(`${this.baseUrl}/listarTiposServicios`);
   }
 }
