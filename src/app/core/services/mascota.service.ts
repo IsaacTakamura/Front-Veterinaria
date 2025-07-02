@@ -1,17 +1,26 @@
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { Observable, switchMap } from 'rxjs';
+import { Observable } from 'rxjs';
+import { Mascota } from '../../components/shared/interfaces/mascota.model'; // ✅ Esto está bien
+import { Raza } from '../../components/shared/interfaces/Raza.model'; // ✅ Esto está bien
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class MascotaService {
-  private http = inject(HttpClient);
   private baseUrl = '/api/v1/asistente';
 
-  buscarMascotaPorNombre(nombre: string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/mascota/nombre/${nombre}`);
+  constructor(private http: HttpClient) {}
+
+  buscarPorNombre(nombre: string): Observable<{ data: Mascota }> {
+    return this.http.get<{ data: Mascota }>(`${this.baseUrl}/nombre/${nombre}`);
   }
 
-  obtenerClientePorId(clienteId: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/cliente/${clienteId}`);
+  crear(mascota: Mascota): Observable<{ data: Mascota }> {
+    return this.http.post<{ data: Mascota }>(`${this.baseUrl}/crearMascota`, mascota);
+  }
+
+  listarRazas(): Observable<{ data: Raza[] }> {
+    return this.http.get<{ data: Raza[] }>(`${this.baseUrl}/mascota/listarRazas`);
   }
 }

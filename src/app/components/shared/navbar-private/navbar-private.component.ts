@@ -2,6 +2,8 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIf } from '@angular/common';
 import { Router } from '@angular/router';
+import { SessionService } from '../../../core/services/session.service';
+import { RoleBadgeColorPipe } from '../pipes/role-badge-color.pipe'; // Adjust the import path as necessary
 
 interface User {
   username: string;
@@ -14,25 +16,29 @@ interface User {
   imports: [
     CommonModule,
     NgIf,
-],
+    RoleBadgeColorPipe
+  ],
   templateUrl: './navbar-private.component.html',
   styleUrls: ['./navbar-private.component.css']
 })
 export class NavbarPrivateComponent implements OnInit {
-  usuario = signal<{ username: string; rol: string } | null>(null);
   dropdownOpen = signal(false);
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private session: SessionService
+  ) { }
+
+  get usuario() {
+    return this.session.user;
+  }
 
   ngOnInit(): void {
-    const userData = localStorage.getItem('user_info');
-    if (userData) {
-      this.usuario.set(JSON.parse(userData));
-    }
+    // User data now handled by SessionService
   }
 
   cerrarSesion() {
-    localStorage.clear();
+    this.session.logout();
     this.router.navigate(['/']);
   }
 
@@ -41,12 +47,12 @@ export class NavbarPrivateComponent implements OnInit {
   }
 
   getRoleColor(role: string): string {
-    switch (role.toLowerCase()) {
-      case 'veterinario':
+    switch (role.toUpperCase()) {
+      case 'VET':
         return 'bg-blue-100 text-blue-800';
-      case 'asistente':
+      case 'ASISTENTE':
         return 'bg-green-100 text-green-800';
-      case 'recepcionista':
+      case 'ADMIN':
         return 'bg-purple-100 text-purple-800';
       default:
         return 'bg-gray-100 text-gray-800';

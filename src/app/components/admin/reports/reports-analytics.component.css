@@ -36,7 +36,6 @@
 .text-purple-600 { color: #a21caf; }
 .grid { display: grid; }
 .grid-cols-1 { grid-template-columns: 1fr; }
-.md\\:grid-cols-3 { /* pon media queries si usas tailwind real */ }
 .gap-4 { gap: 1rem; }
 .mb-6 { margin-bottom: 1.5rem; }
 .flex { display: flex; }

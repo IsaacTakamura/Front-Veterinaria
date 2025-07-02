@@ -1,0 +1,153 @@
+<div class="container">
+  <header class="header">
+    <h1>Sistema Veterinario - Clínica Santa Anita</h1>
+    <nav>
+      <button [class.active]="selected === 'pacientes'" (click)="cambiarVista('pacientes')">Pacientes</button>
+      <button [class.active]="selected === 'consulta'" (click)="cambiarVista('consulta')">Nueva Consulta</button>
+      <button [class.active]="selected === 'seguimiento'" (click)="cambiarVista('seguimiento')">Seguimiento</button>
+    </nav>
+  </header>
+
+  <main class="content">
+
+    <!-- PACIENTES -->
+    <section *ngIf="selected === 'pacientes'">
+      <div class="section-container">
+        <div class="section-header">
+          <i class="fa-solid fa-heart"></i>
+          Lista de Pacientes
+        </div>
+
+        <div class="form-group">
+          <label for="busqueda"><strong>Buscar Paciente:</strong></label>
+          <input id="busqueda" type="text" [(ngModel)]="busqueda"
+            placeholder="Buscar por nombre de mascota o propietario..." class="busqueda-estilizada" />
+        </div>
+
+        <div class="card" *ngFor="let p of pacientesFiltrados">
+          <h3>🔗 {{ p.nombre }} <span class="status">{{ p.estado }}</span></h3>
+          <p><strong>Especie:</strong> {{ p.especie }}</p>
+          <p><strong>Raza:</strong> {{ p.raza }}</p>
+          <p><strong>Edad:</strong> {{ p.edad }}</p>
+          <p><strong>Propietario:</strong> {{ p.propietario }}</p>
+          <p><strong>Teléfono:</strong> {{ p.telefono }}</p>
+          <p><strong>Última visita:</strong> {{ p.ultimaVisita }}</p>
+          <p class="proxima">📅 Próxima cita: {{ p.proximaCita }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONSULTA -->
+    <section *ngIf="selected === 'consulta'">
+      <div class="section-container">
+        <div class="section-header">
+          <i class="fa-solid fa-notes-medical"></i>
+          Nueva Consulta Médica
+        </div>
+
+        <div class="form-group">
+          <label for="paciente"><strong>Seleccionar Paciente:</strong></label>
+          <select id="paciente" [(ngModel)]="pacienteSeleccionado" (ngModelChange)="seleccionarPaciente($event)">
+            <option [ngValue]="null">-- Selecciona un paciente --</option>
+            <option *ngFor="let p of pacientes" [ngValue]="p">
+              {{ p.nombre }} - {{ p.raza }} ({{ p.propietario }})
+            </option>
+          </select>
+        </div>
+
+        <!-- Vista detallada -->
+        <div class="detalle-container" *ngIf="pacienteSeleccionado">
+          <div class="navegacion">
+            <ul>
+              <li [class.active]="subvista === 'info'" (click)="cambiarSubvista('info')">📄 Info del Paciente</li>
+              <li [class.active]="subvista === 'alergias'" (click)="cambiarSubvista('alergias')">🌡️ Alergias</li>
+              <li [class.active]="subvista === 'ultima'" (click)="cambiarSubvista('ultima')">📋 Última Consulta</li>
+              <li [class.active]="subvista === 'nueva'" (click)="cambiarSubvista('nueva')">📝 Nueva Consulta</li>
+            </ul>
+          </div>
+
+          <div class="subvista">
+            <div *ngIf="subvista === 'info'">
+              <h3>📄 Información del Paciente</h3>
+              <p><strong>Nombre:</strong> {{ pacienteSeleccionado.nombre }}</p>
+              <p><strong>Especie:</strong> {{ pacienteSeleccionado.especie }}</p>
+              <p><strong>Raza:</strong> {{ pacienteSeleccionado.raza }}</p>
+              <p><strong>Edad:</strong> {{ pacienteSeleccionado.edad }}</p>
+              <p><strong>Propietario:</strong> {{ pacienteSeleccionado.propietario }}</p>
+              <p><strong>Teléfono:</strong> {{ pacienteSeleccionado.telefono }}</p>
+            </div>
+
+            <div *ngIf="subvista === 'alergias'">
+              <h3>🌡️ Alergias</h3>
+              <p>No se han registrado alergias aún.</p>
+            </div>
+
+            <div *ngIf="subvista === 'ultima'">
+              <h3>📋 Última Consulta</h3>
+              <p><strong>Fecha:</strong> {{ pacienteSeleccionado.ultimaVisita }}</p>
+              <p><strong>Observaciones:</strong> Control de rutina sin anomalías.</p>
+            </div>
+
+            <div *ngIf="subvista === 'nueva'">
+              <h3>📝 Registrar Nueva Consulta</h3>
+              <textarea rows="5" placeholder="Escribe aquí los hallazgos..."></textarea>
+              <button class="primario">Guardar Consulta</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEGUIMIENTO -->
+    <section *ngIf="selected === 'seguimiento'">
+      <div class="section-container seguimiento">
+        <div class="seguimiento-title">
+          <i class="fa-solid fa-calendar-days"></i> Seguimiento de Tratamientos
+        </div>
+
+        <div class="card seguimiento-card" *ngFor="let t of tratamientos">
+          <div class="seguimiento-header">
+            <div class="info">
+              <i class="fa-solid fa-link" style="color: #00b894;"></i>
+              <div>
+                <h3>{{ getEmojiForStatus(t.status) }} {{ t.paciente }}</h3>
+                <p class="owner">Propietario: {{ t.propietario }}</p>
+              </div>
+            </div>
+            <span class="status seguimiento-status" [ngClass]="getStatusClass(t.status)">{{ t.status }}</span>
+          </div>
+
+          <div class="tratamiento-box">
+            <h4><i class="fa-solid fa-prescription-bottle-medical"></i> Tratamiento</h4>
+            <p>{{ t.tratamiento }}</p>
+          </div>
+
+          <div class="fechas">
+            <div>
+              <p class="label"><i class="fa-solid fa-calendar-day"></i> Fecha de inicio</p>
+              <p>{{ t.fechaInicio }}</p>
+            </div>
+            <div>
+              <p class="label"><i class="fa-solid fa-calendar-check"></i> Fecha de fin</p>
+              <p>{{ t.fechaFin }}</p>
+            </div>
+            <div>
+              <p class="label"><i class="fa-regular fa-clock"></i> Días restantes</p>
+              <p>{{ t.diasRestantes }} días</p>
+            </div>
+          </div>
+
+          <div class="proxima proxima-dosis" *ngIf="t.proximaDosis">
+            <i class="fa-regular fa-calendar-days"></i> Próxima dosis: {{ t.proximaDosis }}
+          </div>
+
+          <div class="seguimiento-actions">
+            <button class="secundario">Ver Historial</button>
+            <button class="primario" *ngIf="t.status === 'Activo'">Marcar Dosis</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>

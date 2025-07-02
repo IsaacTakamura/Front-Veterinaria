@@ -42,9 +42,11 @@
 }
 .from-green-500 {
   /* handled by gradient */
+  background-color: #22c55e;
 }
 .to-blue-500 {
   /* handled by gradient */
+  background-color: #3b82f6;
 }
 .rounded-lg {
   border-radius: 0.5rem;

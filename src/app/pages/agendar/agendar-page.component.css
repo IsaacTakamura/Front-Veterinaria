@@ -1,204 +1,431 @@
-.contenedor-cita {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  padding: 2rem;
-  background: #f9f9f9;
-  border-radius: 16px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+/* Layout and container styles */
+.min-h-screen {
+  min-height: 100vh;
 }
 
-.cita-container {
-  background-color: #e8fff0; /* Verde pastel */
-  padding: 2rem;
-  border-radius: 1rem;
+.bg-gray-50 {
+  background-color: #f9fafb;
 }
 
-/* Estilo general para inputs y textareas con fondo tenue */
-input::placeholder,
-textarea::placeholder,
-select::placeholder {
-  background-color: rgba(240, 240, 240, 0.7);
-  /* Fondo gris claro translúcido */
-  color: #c0c0c0;
-  /* Texto gris oscuro */
-  padding-left: 4px;
-  border-radius: 4px;
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 }
 
-/* También puedes aplicar un estilo similar directamente al input para que se vea más suave */
-input,
-textarea,
-select {
-  background-color: rgba(240, 240, 240, 0.7);
-  border: 1px solid rgba(240, 240, 240, 0.7);
-  border-radius: 6px;
-  padding: 8px;
-  font-size: 14px;
-  width: 100%;
-  box-sizing: border-box;
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
-.grid-cita {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+@media (min-width: 640px) {
+  .sm\:px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
 }
 
-.full-width {
-  grid-column: 1 / -1;
-  /* Ocupa ambas columnas */
+.max-w-5xl {
+  max-width: 64rem;
 }
 
-/* Datos de cliente y mascota: lado a lado */
-.datos-superiores {
-  display: flex;
-  gap: 2rem;
-  justify-content: space-between;
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.ios-switch-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.ios-switch {
-  position: relative;
-  display: flex;
-  width: 280px;
-  height: 40px;
-  background-color: #e5e7eb;
-  /* gris claro */
-  border-radius: 9999px;
-  cursor: pointer;
-  overflow: hidden;
-  transition: background-color 0.3s ease;
-}
-
-.ios-switch .option {
-  flex: 1;
-  text-align: center;
-  line-height: 40px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  z-index: 2;
-  color: #ffffff;
-  /* texto gris */
-  transition: color 0.3s ease;
-}
-
-.ios-switch .slider {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 136px;
-  height: 36px;
-  background: linear-gradient(to right, #45c353, #58e5c2);
-  /* verde claro */
-  border-radius: 9999px;
-  transition: left 0.3s ease;
-  z-index: 1;
-}
-
-.ios-switch.registrada .slider {
-  left: 142px;
-  background: linear-gradient(to right, #45c353, #58e5c2);
-  /* verde claro */
-}
-
-.ios-switch.registrada .option.nueva {
-  color: #ababad;
-  /* texto más apagado */
-}
-
-.ios-switch:not(.registrada) .option.registrada {
-  color: #ababad;
-}
-
-.columna {
-  flex: 1;
+.bg-white {
   background-color: #ffffff;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Detalles de cita ocupa todo el ancho */
-.detalles-cita {
-  background-color: #ffffff;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+.shadow {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-/* Reglas comunes */
-.titulo-seccion {
-  font-size: 18px;
+.rounded-xl {
+  border-radius: 0.75rem;
+}
+
+.p-8 {
+  padding: 2rem;
+}
+
+/* Typography */
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.font-bold {
   font-weight: 700;
-  background: linear-gradient(to right, #46c355, #5f88e0);
-  /* celeste a azul */
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 0.6rem;
 }
 
-.form-group {
-  margin-bottom: 0.8rem;
+.text-gray-800 {
+  color: #1f2937;
 }
 
-label {
-  display: block;
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.text-gray-500 {
+  color: #6b7280;
+}
+
+.font-medium {
   font-weight: 500;
-  margin-bottom: 0.3rem;
-  font-size: 13px;
-  /* más pequeño */
-  color: #444;
 }
 
-input,
-select,
-textarea {
+/* Form elements already in your CSS */
+/* Additional classes */
+.resize-none {
+  resize: none;
+}
+
+.input {
   width: 100%;
-  padding: 0.4rem 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 13px;
-  /* más pequeño */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
 }
 
-
-textarea {
-  resize: vertical;
-  min-height: 60px;
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.5);
 }
 
-.boton-container {
-  text-align: center;
+.btn {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
 
+.btn:hover {
+  background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.btn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+/* Fondo gris claro */
+.bg-gray-50 {
+  background-color: #f9fafb;
+}
+
+/* Sombra */
+.shadow {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Bordes redondeados grandes */
+.rounded-xl {
+  border-radius: 0.75rem;
+}
+
+/* Padding */
+.p-8 {
+  padding: 2rem;
+}
+
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.sm\:px-8 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+.mt-6 {
   margin-top: 1.5rem;
 }
 
-button {
-  background: linear-gradient(to right, #45c353, #2de1b4);
+.pt-4 {
+  padding-top: 1rem;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.grid {
+  display: grid;
+}
+
+.max-w-5xl {
+  max-width: 64rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Tipografía */
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-gray-800 {
+  color: #1f2937;
+}
+
+.text-gray-500 {
+  color: #6b7280;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+/* Botón */
+.btn {
+  padding: 0.5rem 1rem;
+  background-color: #059669;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 10px;
-  font-size: 14px;
-  /* más pequeño */
-  font-weight: 600;
+  border-radius: 0.375rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background 0.2s;
 }
 
-button:hover {
-  background-color: #059669;
+.btn:hover {
+  background-color: #047857;
 }
 
+/* Input */
+.input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+}
 
-select option {
-  color: #000 !important;
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #34d399;
+}
+
+/* Otros */
+.resize-none {
+  resize: none;
+}
+
+.bg-white {
+  background: #fff;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.space-y-2>*+* {
+  margin-top: 0.5rem;
+}
+
+.text-green-100 {
+  background: #d1fae5;
+}
+
+.text-green-800 {
+  color: #065f46;
+}
+
+.bg-green-100 {
+  background: #d1fae5;
+}
+
+.rounded-md {
+  border-radius: 0.375rem;
+}
+
+.text-emerald-700 {
+  color: #047857;
+}
+
+.text-emerald-900 {
+  color: #065f46;
+}
+
+.bg-emerald-600 {
+  background: #059669;
+}
+
+.bg-emerald-700 {
+  background: #047857;
+}
+
+.text-white {
+  color: #fff;
+}
+
+.ml-4 {
+  margin-left: 1rem;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.border-t {
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Contenedor principal */
+.agendar-cita-container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  background: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 80vh;
+  justify-content: center;
+}
+
+/* Parte superior: dos columnas */
+.superior {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Lado izquierdo y derecho */
+.lado-izquierdo,
+.lado-derecho {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Parte inferior: formulario de cita */
+.inferior {
+  width: 100%;
+}
+
+/* Ajuste para que todo quepa sin scroll vertical en la mayoría de pantallas */
+@media (max-width: 1100px) {
+  .agendar-cita-container {
+    max-width: 98vw;
+    padding: 1rem;
+  }
+
+  .superior {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+/* Opcional: reduce el tamaño de los inputs y botones para ahorrar espacio */
+.input,
+.btn,
+textarea {
+  font-size: 0.95rem;
+  padding: 0.4rem 0.75rem;
+}
+
+/* Switch tipo iOS */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 24px;
+  width: 24px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input:checked+.slider {
+  background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+}
+
+input:focus+.slider {
+  box-shadow: 0 0 1px #10b981;
+}
+
+input:checked+.slider:before {
+  transform: translateX(22px);
 }
