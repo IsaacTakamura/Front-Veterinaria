@@ -13,9 +13,8 @@ import { FormsModule } from '@angular/forms';
 export class ListapacientesPageComponent {
   selected = 'pacientes';
   busqueda = '';
-
   pacienteSeleccionado: any = null;
-  subvista: string = 'info'; // <- renombrado aquí
+  subvista: string = 'info';
 
   pacientes = [
     {
@@ -85,7 +84,7 @@ export class ListapacientesPageComponent {
 
   seleccionarPaciente(paciente: any) {
     this.pacienteSeleccionado = paciente;
-    this.subvista = 'info'; // al seleccionar, vista inicial
+    this.subvista = 'info';
   }
 
   cambiarSubvista(vista: string) {
@@ -120,11 +119,24 @@ export class ListapacientesPageComponent {
     }
   }
 
+  // Buscar por nombre y seleccionar paciente
   seleccionarPacientePorNombre(nombre: string) {
     const paciente = this.pacientes.find(p => p.nombre === nombre);
     if (paciente) {
       this.seleccionarPaciente(paciente);
     }
+  }
+
+  // Para filtrar la lista de pacientes en base a la búsqueda
+  get pacientesFiltrados() {
+    if (!this.busqueda.trim()) {
+      return this.pacientes;
+    }
+    const query = this.busqueda.toLowerCase();
+    return this.pacientes.filter(p =>
+      p.nombre.toLowerCase().includes(query) ||
+      p.propietario.toLowerCase().includes(query)
+    );
   }
 }
 

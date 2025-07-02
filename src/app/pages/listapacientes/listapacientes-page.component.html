@@ -18,12 +18,13 @@
           Lista de Pacientes
         </div>
 
-        <div class="search-input">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" placeholder="Buscar por nombre de mascota o propietario..." [(ngModel)]="busqueda" />
+        <div class="form-group">
+          <label for="busqueda"><strong>Buscar Paciente:</strong></label>
+          <input id="busqueda" type="text" [(ngModel)]="busqueda"
+            placeholder="Buscar por nombre de mascota o propietario..." class="busqueda-estilizada" />
         </div>
 
-        <div class="card" *ngFor="let p of pacientes">
+        <div class="card" *ngFor="let p of pacientesFiltrados">
           <h3>🔗 {{ p.nombre }} <span class="status">{{ p.estado }}</span></h3>
           <p><strong>Especie:</strong> {{ p.especie }}</p>
           <p><strong>Raza:</strong> {{ p.raza }}</p>
