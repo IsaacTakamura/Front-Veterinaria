@@ -1,0 +1,155 @@
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; justify-content: center; align-items: center;
+}
+
+.modal-card {
+  background: white; padding: 20px; border-radius: 8px; width: 400px;
+}
+
+ul {
+  list-style: none;
+  max-height: 300px;
+  overflow: auto;
+  padding: 0;
+  margin: 0;
+}
+
+.cliente-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background-color: white;
+  transition: background-color 0.2s;
+}
+
+.cliente-item:hover {
+  background-color: #f9fafb;
+}
+
+.cliente-info {
+  flex: 1;
+}
+
+.cliente-detalles {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.btn-seleccionar {
+  background-color: #3b82f6;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  min-width: 90px;
+}
+
+.btn-seleccionar:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* Estilos para el botón principal */
+.btn {
+  background-color: #10b981 !important;
+  color: white !important;
+  padding: 0.75rem 1.5rem !important;
+  border: none !important;
+  border-radius: 0.375rem !important;
+  cursor: pointer !important;
+  font-weight: 500 !important;
+  transition: background-color 0.2s !important;
+}
+
+.btn:hover {
+  background-color: #059669 !important;
+}
+
+/* Estilos para el botón cerrar */
+.btn-cerrar {
+  background-color: #6b7280 !important;
+  color: white !important;
+  padding: 0.75rem 1.5rem !important;
+  border: none !important;
+  border-radius: 0.375rem !important;
+  cursor: pointer !important;
+  font-weight: 500 !important;
+  width: 100% !important;
+  margin-top: 1rem !important;
+}
+
+.btn-cerrar:hover {
+  background-color: #4b5563 !important;
+}
+
+/* Mejorar el input de búsqueda */
+input[type="text"] {
+  width: 100% !important;
+  padding: 0.75rem !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 0.375rem !important;
+  margin-bottom: 1rem !important;
+  font-size: 1rem !important;
+}
+
+input[type="text"]:focus {
+  outline: none !important;
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+.space-y-2 > * + * {
+  margin-top: 0.5rem;
+}
+
+.border {
+  border: 1px solid #e5e7eb;
+}
+
+.rounded-md {
+  border-radius: 0.375rem;
+}
+
+.hover\:bg-gray-50:hover {
+  background-color: #f9fafb;
+}
+
+.p-3 {
+  padding: 0.75rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-gray-600 {
+  color: #4b5563;
+}
+
+.no-resultados {
+  text-align: center;
+  padding: 20px;
+  color: #6b7280;
+  font-style: italic;
+}

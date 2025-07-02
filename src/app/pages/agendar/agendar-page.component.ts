@@ -15,6 +15,9 @@ import { Mascota } from '../../components/shared/interfaces/mascota.model';
 import { Raza } from '../../components/shared/interfaces/Raza.model';
 import { Veterinario } from '../../components/shared/interfaces/Veterinario.model';
 
+//components
+import { ClienteSelectorComponent } from '../../components/agendar/cliente-selector/cliente-selector.component';
+
 // RxJS
 import { map, Observable, of, switchMap } from 'rxjs';
 
@@ -23,7 +26,7 @@ import { map, Observable, of, switchMap } from 'rxjs';
   templateUrl: './agendar-page.component.html',
   styleUrls: ['./agendar-page.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule]
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, ClienteSelectorComponent]
 })
 export class AgendarPageComponent implements OnInit {
   isLoading = signal(false);
@@ -82,6 +85,11 @@ export class AgendarPageComponent implements OnInit {
       this.veterinarios = res.data;
     });
 
+  }
+
+  onClienteSeleccionado(cliente: Cliente) {
+    this.clienteEncontrado.set(cliente);
+    this.nuevoCliente.set(false);
   }
 
   buscarClientePorNombre(nombre: string) {

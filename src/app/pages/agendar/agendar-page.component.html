@@ -28,17 +28,10 @@
         </form>
       </div>
       <ng-template #buscarCliente>
-        <div class="mb-4 space-y-2">
-          <input type="text" #clienteInput placeholder="Buscar cliente por nombre" class="input" />
-          <button class="btn" type="button" (click)="buscarClientePorNombre(clienteInput.value)">Buscar</button>
-          <div *ngIf="clienteEncontrado()" class="bg-green-100 text-green-800 px-3 py-2 rounded-md text-sm">
-            <strong>Cliente encontrado:</strong>
-            {{ clienteEncontrado()?.nombre }} {{ clienteEncontrado()?.apellido }}
-            <button type="button" class="ml-4 text-sm underline text-emerald-700 hover:text-emerald-900"
-              (click)="usarClienteExistente()">
-              Usar este cliente
-            </button>
-          </div>
+        <app-cliente-selector (clienteSeleccionado)="onClienteSeleccionado($event)"></app-cliente-selector>
+        <div *ngIf="clienteEncontrado()" class="bg-green-100 text-green-800 px-3 py-2 rounded-md text-sm mt-4">
+          <strong>Cliente seleccionado:</strong>
+          {{ clienteEncontrado()?.nombre }} {{ clienteEncontrado()?.apellido }}
         </div>
       </ng-template>
     </div>
