@@ -1,4 +1,16 @@
 <div class="agendar-cita-container">
+  <!-- Sistema de avisos -->
+  <div *ngIf="mostrarAviso()" class="aviso-container" [ngClass]="{'aviso-exito': tipoAviso() === 'exito', 'aviso-error': tipoAviso() === 'error'}">
+    <div class="aviso-contenido">
+      <div class="aviso-icono">
+        <span *ngIf="tipoAviso() === 'exito'">✅</span>
+        <span *ngIf="tipoAviso() === 'error'">❌</span>
+      </div>
+      <div class="aviso-mensaje">{{ mensajeAviso() }}</div>
+      <button class="aviso-cerrar" (click)="cerrarAviso()">×</button>
+    </div>
+  </div>
+
   <!-- Título y descripción -->
   <h1 class="text-3xl font-bold text-gray-800 mb-2">Agendar Cita</h1>
   <p class="text-gray-500 mb-6">Complete el formulario para agendar una cita para su mascota</p>

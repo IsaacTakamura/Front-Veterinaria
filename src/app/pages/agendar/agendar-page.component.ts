@@ -36,6 +36,11 @@ export class AgendarPageComponent implements OnInit {
   clienteEncontrado = signal<Cliente | null>(null);
   mascotaEncontrada = signal<Mascota | null>(null);
 
+  // Signals para avisos
+  mostrarAviso = signal(false);
+  tipoAviso = signal<'exito' | 'error'>('exito');
+  mensajeAviso = signal('');
+
   clienteForm: FormGroup;
   mascotaForm: FormGroup;
   citaForm: FormGroup;
@@ -112,14 +117,77 @@ export class AgendarPageComponent implements OnInit {
     this.nuevaMascota.set(false);
   }
 
+  // Métodos para avisos
+  mostrarExito(mensaje: string) {
+    this.mensajeAviso.set(mensaje);
+    this.tipoAviso.set('exito');
+    this.mostrarAviso.set(true);
+    
+    // Auto-ocultar después de 5 segundos
+    setTimeout(() => {
+      this.mostrarAviso.set(false);
+    }, 5000);
+  }
+
+  mostrarError(mensaje: string) {
+    this.mensajeAviso.set(mensaje);
+    this.tipoAviso.set('error');
+    this.mostrarAviso.set(true);
+    
+    // Auto-ocultar después de 8 segundos
+    setTimeout(() => {
+      this.mostrarAviso.set(false);
+    }, 8000);
+  }
+
+  cerrarAviso() {
+    this.mostrarAviso.set(false);
+  }
+
+  // Método para limpiar formularios
+  limpiarFormularios() {
+    // Resetear formularios
+    this.clienteForm.reset();
+    this.mascotaForm.reset();
+    this.citaForm.reset();
+    
+    // Resetear estados
+    this.nuevoCliente.set(true);
+    this.nuevaMascota.set(true);
+    this.clienteEncontrado.set(null);
+    this.mascotaEncontrada.set(null);
+    
+    // Establecer valores por defecto
+    this.mascotaForm.patchValue({
+      estado: 'VIVO'
+    });
+  }
+
   agendar() {
+    // Validaciones más específicas
     if (!this.nuevoCliente() && !this.clienteEncontrado()) {
-      alert('Seleccione un cliente existente');
+      this.mostrarError('Por favor, seleccione un cliente existente o active "Nuevo Cliente"');
       return;
     }
 
     if (!this.nuevaMascota() && !this.mascotaEncontrada()) {
-      alert('Seleccione una mascota existente');
+      this.mostrarError('Por favor, seleccione una mascota existente o active "Nueva Mascota"');
+      return;
+    }
+
+    // Validar formularios requeridos
+    if (this.nuevoCliente() && !this.clienteForm.valid) {
+      this.mostrarError('Por favor, complete todos los campos requeridos del cliente');
+      return;
+    }
+
+    if (this.nuevaMascota() && !this.mascotaForm.valid) {
+      this.mostrarError('Por favor, complete todos los campos requeridos de la mascota');
+      return;
+    }
+
+    if (!this.citaForm.valid) {
+      this.mostrarError('Por favor, complete todos los campos requeridos de la cita');
       return;
     }
 
@@ -158,11 +226,12 @@ export class AgendarPageComponent implements OnInit {
     ).subscribe({
       next: () => {
         this.isLoading.set(false);
-        alert('Cita registrada con éxito');
+        this.mostrarExito('Cita registrada con éxito');
+        this.limpiarFormularios();
       },
       error: err => {
         this.isLoading.set(false);
-        alert('Error al agendar cita');
+        this.mostrarError('Error al agendar cita');
         console.error(err);
       }
     });
