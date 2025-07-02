@@ -17,6 +17,7 @@ import { Veterinario } from '../../components/shared/interfaces/Veterinario.mode
 
 //components
 import { ClienteSelectorComponent } from '../../components/agendar/cliente-selector/cliente-selector.component';
+import { MascotaSelectorComponent } from '../../components/agendar/mascota-selector/mascota-selector.component';
 
 // RxJS
 import { map, Observable, of, switchMap } from 'rxjs';
@@ -26,7 +27,7 @@ import { map, Observable, of, switchMap } from 'rxjs';
   templateUrl: './agendar-page.component.html',
   styleUrls: ['./agendar-page.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, ClienteSelectorComponent]
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, ClienteSelectorComponent, MascotaSelectorComponent]
 })
 export class AgendarPageComponent implements OnInit {
   isLoading = signal(false);
@@ -97,6 +98,11 @@ export class AgendarPageComponent implements OnInit {
     this.nuevoCliente.set(false);
   }
 
+  onMascotaSeleccionada(mascota: Mascota) {
+    this.mascotaEncontrada.set(mascota);
+    this.nuevaMascota.set(false);
+  }
+
   buscarClientePorNombre(nombre: string) {
     this.clienteService.buscarPorNombre(nombre).subscribe(res => {
       this.clienteEncontrado.set(res.data?.[0] || null);
@@ -122,7 +128,7 @@ export class AgendarPageComponent implements OnInit {
     this.mensajeAviso.set(mensaje);
     this.tipoAviso.set('exito');
     this.mostrarAviso.set(true);
-    
+
     // Auto-ocultar después de 5 segundos
     setTimeout(() => {
       this.mostrarAviso.set(false);
@@ -133,7 +139,7 @@ export class AgendarPageComponent implements OnInit {
     this.mensajeAviso.set(mensaje);
     this.tipoAviso.set('error');
     this.mostrarAviso.set(true);
-    
+
     // Auto-ocultar después de 8 segundos
     setTimeout(() => {
       this.mostrarAviso.set(false);
@@ -150,13 +156,13 @@ export class AgendarPageComponent implements OnInit {
     this.clienteForm.reset();
     this.mascotaForm.reset();
     this.citaForm.reset();
-    
+
     // Resetear estados
     this.nuevoCliente.set(true);
     this.nuevaMascota.set(true);
     this.clienteEncontrado.set(null);
     this.mascotaEncontrada.set(null);
-    
+
     // Establecer valores por defecto
     this.mascotaForm.patchValue({
       estado: 'VIVO'

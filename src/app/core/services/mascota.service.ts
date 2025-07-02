@@ -13,7 +13,7 @@ export class MascotaService {
   constructor(private http: HttpClient) {}
 
   buscarPorNombre(nombre: string): Observable<{ data: Mascota }> {
-    return this.http.get<{ data: Mascota }>(`${this.baseUrl}/nombre/${nombre}`);
+    return this.http.get<{ data: Mascota }>(`${this.baseUrl}/mascota/nombre/${nombre}`);
   }
 
   crear(mascota: Mascota): Observable<{ data: Mascota }> {

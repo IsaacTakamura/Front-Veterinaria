@@ -74,17 +74,11 @@
         </form>
       </div>
       <ng-template #buscarMascota>
-        <div class="mb-4 space-y-2">
-          <input type="text" #mascotaInput placeholder="Buscar mascota por nombre" class="input" />
-          <button class="btn" type="button" (click)="buscarMascotaPorNombre(mascotaInput.value)">Buscar</button>
-          <div *ngIf="mascotaEncontrada()" class="bg-green-100 text-green-800 px-3 py-2 rounded-md text-sm">
-            <strong>Mascota encontrada:</strong>
-            {{ mascotaEncontrada()?.nombre }}
-            <button type="button" class="ml-4 text-sm underline text-emerald-700 hover:text-emerald-900"
-              (click)="usarMascotaExistente()">
-              Usar esta mascota
-            </button>
-          </div>
+        <app-mascota-selector (mascotaSeleccionada)="onMascotaSeleccionada($event)"></app-mascota-selector>
+        <div *ngIf="mascotaEncontrada()" class="bg-green-100 text-green-800 px-3 py-2 rounded-md text-sm mt-4">
+          <strong>Mascota seleccionada:</strong>
+          {{ mascotaEncontrada()?.nombre }}
+          <span *ngIf="mascotaEncontrada()?.edad"> - {{ mascotaEncontrada()?.edad }} años</span>
         </div>
       </ng-template>
     </div>
