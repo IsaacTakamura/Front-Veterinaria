@@ -1,3 +1,4 @@
+import { ListapacientesPageComponent } from './pages/listapacientes/listapacientes-page.component';
 import { Routes } from '@angular/router';
 import { IndexPageComponent } from './pages/index/index-page.component';
 import { RecetaPageComponent } from './pages/receta/receta-page.component';
@@ -16,8 +17,12 @@ export const routes: Routes = [
   component: IndexPageComponent,
 },
 {
-    path: 'register',
-    component: RegisterPageComponent,
+  path: 'listapacientes',
+  component: ListapacientesPageComponent,
+},
+{
+  path: 'register',
+  component: RegisterPageComponent,
   },
 {
   path: 'login',
