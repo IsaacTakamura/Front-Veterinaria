@@ -13,6 +13,7 @@ import { Cita } from '../../components/shared/interfaces/cita.model';
 import { Cliente } from '../../components/shared/interfaces/cliente.model';
 import { Mascota } from '../../components/shared/interfaces/mascota.model';
 import { Raza } from '../../components/shared/interfaces/Raza.model';
+import { Veterinario } from '../../components/shared/interfaces/Veterinario.model';
 
 // RxJS
 import { map, Observable, of, switchMap } from 'rxjs';
@@ -77,9 +78,10 @@ export class AgendarPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.veterinarioService.listarVeterinarios().subscribe(data => {
-      this.veterinarios = data;
+    this.veterinarioService.listarVeterinarios().subscribe(res => {
+      this.veterinarios = res.data;
     });
+
   }
 
   buscarClientePorNombre(nombre: string) {

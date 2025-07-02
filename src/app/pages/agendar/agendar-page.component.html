@@ -94,9 +94,10 @@
       <select class="input" formControlName="veterinarioId" required>
         <option [ngValue]="null" disabled selected>Seleccione un veterinario disponible</option>
         <option *ngFor="let vet of veterinarios" [ngValue]="vet.veterinarioId">
-          {{ vet.nombre }}
+          {{ vet.nombre }} {{ vet.apellido }}
         </option>
       </select>
+
       <div class="grid grid-cols-2 gap-4">
         <input class="input" type="date" formControlName="fecha" />
         <input class="input" type="time" formControlName="hora" />
