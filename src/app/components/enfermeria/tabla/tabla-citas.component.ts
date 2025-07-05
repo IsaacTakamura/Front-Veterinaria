@@ -1,5 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { CitaService } from '../../../core/services/cita.service';
 
 @Component({
   selector: 'app-tabla-citas',
@@ -8,11 +9,28 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   standalone: true
 })
-export class TablaCitasComponent {
-  @Input() citas: any[] = [];
+
+export class TablaCitasComponent implements OnInit {
+  @Input() citas: any[] | null = null;
   @Output() onTriaje = new EventEmitter<any>();
   @Output() onHistorial = new EventEmitter<any>();
   @Output() onDetalles = new EventEmitter<any>();
+
+  allCitas: any[] = [];
+
+  constructor(private citaService: CitaService) { }
+
+  ngOnInit(): void {
+    if (this.citas === null) {
+      this.citaService.listarCitas().subscribe(data => {
+        this.allCitas = data;
+      });
+    }
+  }
+
+  get citasToShow(): any[] {
+    return this.citas !== null ? this.citas : this.allCitas;
+  }
 
   getBadgeColor(estado: string): string {
     switch (estado) {
@@ -42,5 +60,9 @@ export class TablaCitasComponent {
       default:
         return estado;
     }
+  }
+
+  trackByCitaId(index: number, cita: any): any {
+    return cita.citaId || cita.id || index;
   }
 }
