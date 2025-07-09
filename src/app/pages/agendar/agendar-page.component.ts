@@ -82,7 +82,8 @@ export class AgendarPageComponent implements OnInit {
       hora: ['', Validators.required],
       motivo: ['', Validators.required],
       tipoServicioId: [null, Validators.required],
-      veterinarioId: [null, Validators.required] // 🎯 agregado al formulario
+      veterinarioId: [null, Validators.required],
+      estadoCita: ['PENDIENTE', Validators.required]
     });
   }
 
@@ -218,12 +219,14 @@ export class AgendarPageComponent implements OnInit {
         return crearMascota$.pipe(
           switchMap(mascotaRes => {
             const citaPayload: Cita = {
+              citaId: 0, // o undefined si el backend lo ignora
               fechaRegistro: new Date().toISOString(),
               tipoServicioId: this.citaForm.value.tipoServicioId,
               mascotaId: mascotaRes.data.mascotaId ?? 0,
               clienteId,
               veterinarioId: this.citaForm.value.veterinarioId, // 🧠 tomado del form
-              motivo: this.citaForm.value.motivo
+              motivo: this.citaForm.value.motivo,
+              estadoCita: this.citaForm.value.estadoCita || 'PENDIENTE', // 🧠 tomado del form
             };
             return this.citaService.agendar(citaPayload);
           })
