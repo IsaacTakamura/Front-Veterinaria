@@ -15,7 +15,7 @@ import { CitasProgramadasComponent } from '../../components/enfermeria/citas-pro
   imports: [CitasHoyComponent, CitasProgramadasComponent]
 })
 export class EnfermeraPageComponent {
-  citasHoy = signal<Cita[]>([]);
+  citasDeHoy: Cita[] = [];
   citasProgramadas = signal<Cita[]>([]);
   citaSeleccionada = signal<Cita | null>(null);
   historialClinico = signal<any[]>([]);

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Cita } from '../../components/shared/interfaces/cita.model'; // ✅ Esto está bien
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -25,13 +26,9 @@ export class CitaService {
   }
 
   // Ahora listarCitasHoy obtiene la fecha de hoy y llama al endpoint de fecha
-  listarCitasHoy(): Observable<Cita[]> {
-    const hoy = new Date();
-    const yyyy = hoy.getFullYear();
-    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-    const dd = String(hoy.getDate()).padStart(2, '0');
-    const fecha = `${yyyy}-${mm}-${dd}`;
-    return this.listarCitasPorFecha(fecha);
+  obtenerCitasDeHoy(): Observable<Cita[]> {
+    return this.http.get<{ codigo: number; message: string; data: Cita[] }>(`${this.baseUrl}/citas/hoy`)
+      .pipe(map(res => res.data));
   }
 
   listarCitasPorFecha(fecha: string): Observable<Cita[]> {
