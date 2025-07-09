@@ -23,4 +23,8 @@ export class MascotaService {
   listarRazas(): Observable<{ data: Raza[] }> {
     return this.http.get<{ data: Raza[] }>(`${this.baseUrl}/mascota/listarRazas`);
   }
+
+  listarMascotaPorId(id: number): Observable<{ data: Mascota }> {
+    return this.http.get<{ data: Mascota }>(`${this.baseUrl}/mascota/${id}`);
+  }
 }

@@ -18,4 +18,12 @@ export class ClienteService {
   crear(cliente: Cliente): Observable<{ data: Cliente }> {
     return this.http.post<{ data: Cliente }>(`${this.baseUrl}/crearCliente`, cliente);
   }
+
+  listarClientes(): Observable<{ data: Cliente[] }> {
+    return this.http.get<{ data: Cliente[] }>(`${this.baseUrl}/listarClientes`);
+  }
+
+  listarClientePorId(id: number): Observable<{ data: Cliente }> {
+    return this.http.get<{ data: Cliente }>(`${this.baseUrl}/cliente/${id}`);
+  }
 }
