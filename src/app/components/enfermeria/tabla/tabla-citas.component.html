@@ -38,16 +38,38 @@
             </td>
             <td class="p-4 text-right">
               <div class="flex justify-end gap-2">
+                <!-- Botón Triaje -->
                 <button
-                  class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10"
-                  (click)="emitirSeleccion(cita)"
-                  title="Seleccionar cita"
+                  class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-blue-500 text-blue-600 bg-white hover:bg-blue-50 h-10 w-10"
+                  (click)="emitirTriaje(cita)"
+                  title="Abrir Triaje"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-                    <circle cx="12" cy="12" r="3"/>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                   </svg>
-                  <span class="sr-only">Seleccionar cita</span>
+                  <span class="sr-only">Abrir Triaje</span>
+                </button>
+                <!-- Botón Historial -->
+                <button
+                  class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-green-500 text-green-600 bg-white hover:bg-green-50 h-10 w-10"
+                  (click)="emitirHistorial(cita)"
+                  title="Ver Historial"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span class="sr-only">Ver Historial</span>
+                </button>
+                <!-- Botón Detalles -->
+                <button
+                  class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-gray-400 text-gray-700 bg-white hover:bg-gray-100 h-10 w-10"
+                  (click)="emitirDetalles(cita)"
+                  title="Ver Detalles"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0A9 9 0 11 3 12a9 9 0 0118 0z" />
+                  </svg>
+                  <span class="sr-only">Ver Detalles</span>
                 </button>
               </div>
             </td>

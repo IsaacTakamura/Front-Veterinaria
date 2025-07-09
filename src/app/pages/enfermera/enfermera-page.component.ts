@@ -31,8 +31,8 @@ export class EnfermeraPageComponent {
   }
 
   cargarCitas() {
-    this.citaService.listarCitasHoy().subscribe(data => this.citasHoy.set(data));
-    this.citaService.listarCitasProgramadas().subscribe(data => this.citasProgramadas.set(data));
+    this.citaService.obtenerCitasDeHoy().subscribe((data: Cita[]) => this.citasDeHoy = data);
+    this.citaService.listarCitasProgramadas().subscribe((data: Cita[]) => this.citasProgramadas.set(data));
   }
 
   seleccionarCita(cita: Cita) {

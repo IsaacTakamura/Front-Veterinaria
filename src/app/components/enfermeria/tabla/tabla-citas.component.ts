@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule, NgClass, NgIf, NgFor } from '@angular/common';
-import { Cita } from '../../shared/interfaces/cita.model';
 import { EstadoCitaColorPipe } from '../../shared/pipes/estado-cita-color.pipe';
-import { CitaTabla } from '../../shared/interfaces/CitaTabla.model';
+import { CitaTabla } from '../../shared/interfaces/cita-tabla.model';
 
 @Component({
   selector: 'app-tabla-citas',
@@ -12,10 +11,18 @@ import { CitaTabla } from '../../shared/interfaces/CitaTabla.model';
 })
 export class TablaCitasComponent {
   @Input() citas: CitaTabla[] = [];
-  @Output() seleccionarCita = new EventEmitter<Cita>();
+  @Output() onTriaje = new EventEmitter<CitaTabla>();
+  @Output() onHistorial = new EventEmitter<CitaTabla>();
+  @Output() onDetalles = new EventEmitter<CitaTabla>();
 
-  emitirSeleccion(cita: Cita) {
-    this.seleccionarCita.emit(cita);
+  emitirTriaje(cita: CitaTabla) {
+    this.onTriaje.emit(cita);
+  }
+  emitirHistorial(cita: CitaTabla) {
+    this.onHistorial.emit(cita);
+  }
+  emitirDetalles(cita: CitaTabla) {
+    this.onDetalles.emit(cita);
   }
 
   getEstadoTexto(estado: string): string {

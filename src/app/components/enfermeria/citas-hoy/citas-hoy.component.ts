@@ -5,68 +5,79 @@ import { TablaCitasComponent } from '../tabla/tabla-citas.component';
 import { TriajeModalComponent } from '../triaje/triaje-modal.component';
 import { HistorialModalComponent } from '../historial/historial-modal.component';
 import { DetallesCitaModalComponent } from '../detalles-cita/detalles-cita-modal.component';
+// Datos de ejemplo para las citas de hoy (CitaTabla[])
+import { CitaTabla } from '../../shared/interfaces/cita-tabla.model';
 
-// Datos de ejemplo para las citas de hoy
-const CITAS_HOY = [
+const CITAS_HOY: CitaTabla[] = [
   {
-    id: "1",
-    hora: "09:00",
-    paciente: "Max",
-    especie: "Perro",
-    raza: "Labrador",
-    edad: "3 años",
-    propietario: "Juan Pérez",
-    telefono: "987654321",
-    motivo: "Vacunación",
-    estado: "pendiente",
+    citaId: 1,
+    fechaRegistro: '2024-06-01T09:00:00',
+    tipoServicioId: 1,
+    mascotaId: 101,
+    clienteId: 201,
+    veterinarioId: 301,
+    motivo: 'Vacunación',
+    estadoCita: 'PENDIENTE',
+    paciente: 'Max',
+    especie: 'Perro',
+    raza: 'Labrador',
+    propietario: 'Juan Pérez',
   },
   {
-    id: "2",
-    hora: "09:30",
-    paciente: "Luna",
-    especie: "Gato",
-    raza: "Siamés",
-    edad: "2 años",
-    propietario: "María García",
-    telefono: "987123456",
-    motivo: "Control",
-    estado: "en-triaje",
+    citaId: 2,
+    fechaRegistro: '2024-06-01T09:30:00',
+    tipoServicioId: 2,
+    mascotaId: 102,
+    clienteId: 202,
+    veterinarioId: 302,
+    motivo: 'Control',
+    estadoCita: 'TRIAJE',
+    paciente: 'Luna',
+    especie: 'Gato',
+    raza: 'Siamés',
+    propietario: 'María García',
   },
   {
-    id: "3",
-    hora: "10:00",
-    paciente: "Rocky",
-    especie: "Perro",
-    raza: "Bulldog",
-    edad: "5 años",
-    propietario: "Carlos López",
-    telefono: "912345678",
-    motivo: "Consulta general",
-    estado: "con-veterinario",
+    citaId: 3,
+    fechaRegistro: '2024-06-01T10:00:00',
+    tipoServicioId: 1,
+    mascotaId: 103,
+    clienteId: 203,
+    veterinarioId: 303,
+    motivo: 'Consulta general',
+    estadoCita: 'CONVETERINARIO',
+    paciente: 'Rocky',
+    especie: 'Perro',
+    raza: 'Bulldog',
+    propietario: 'Carlos López',
   },
   {
-    id: "4",
-    hora: "10:30",
-    paciente: "Michi",
-    especie: "Gato",
-    raza: "Persa",
-    edad: "1 año",
-    propietario: "Ana Martínez",
-    telefono: "945678123",
-    motivo: "Desparasitación",
-    estado: "completada",
+    citaId: 4,
+    fechaRegistro: '2024-06-01T10:30:00',
+    tipoServicioId: 3,
+    mascotaId: 104,
+    clienteId: 204,
+    veterinarioId: 304,
+    motivo: 'Desparasitación',
+    estadoCita: 'COMPLETADA',
+    paciente: 'Michi',
+    especie: 'Gato',
+    raza: 'Persa',
+    propietario: 'Ana Martínez',
   },
   {
-    id: "5",
-    hora: "11:00",
-    paciente: "Toby",
-    especie: "Perro",
-    raza: "Poodle",
-    edad: "4 años",
-    propietario: "Pedro Sánchez",
-    telefono: "978123456",
-    motivo: "Vacunación",
-    estado: "pendiente",
+    citaId: 5,
+    fechaRegistro: '2024-06-01T11:00:00',
+    tipoServicioId: 1,
+    mascotaId: 105,
+    clienteId: 205,
+    veterinarioId: 305,
+    motivo: 'Vacunación',
+    estadoCita: 'PENDIENTE',
+    paciente: 'Toby',
+    especie: 'Perro',
+    raza: 'Poodle',
+    propietario: 'Pedro Sánchez',
   },
 ];
 
@@ -103,19 +114,19 @@ export class CitasHoyComponent {
   });
 
   pendientes = computed(() =>
-    CITAS_HOY.filter(cita => cita.estado === "pendiente").length
+    CITAS_HOY.filter(cita => cita.estadoCita === 'PENDIENTE').length
   );
 
   enTriaje = computed(() =>
-    CITAS_HOY.filter(cita => cita.estado === "en-triaje").length
+    CITAS_HOY.filter(cita => cita.estadoCita === 'TRIAJE').length
   );
 
   conVeterinario = computed(() =>
-    CITAS_HOY.filter(cita => cita.estado === "con-veterinario").length
+    CITAS_HOY.filter(cita => cita.estadoCita === 'CONVETERINARIO').length
   );
 
   completadas = computed(() =>
-    CITAS_HOY.filter(cita => cita.estado === "completada").length
+    CITAS_HOY.filter(cita => cita.estadoCita === 'COMPLETADA').length
   );
 
   // Métodos para abrir modales
