@@ -14,13 +14,13 @@
     <section *ngIf="selected === 'pacientes'">
       <div class="section-container">
         <div class="section-header">
-          <i class="fa-solid fa-heart"></i>
-          Lista de Pacientes (Mascotas)
+          <i class="fa-solid fa-heart"></i> Lista de Pacientes (Mascotas)
         </div>
 
         <div class="form-group">
           <label for="busqueda"><strong>Buscar Paciente:</strong></label>
-          <input id="busqueda" type="text" [(ngModel)]="busqueda" placeholder="Buscar por nombre, propietario o raza..." class="busqueda-estilizada" />
+          <input id="busqueda" type="text" [(ngModel)]="busqueda"
+            placeholder="Buscar por nombre, propietario o raza..." class="busqueda-estilizada" />
         </div>
 
         <div *ngIf="pacientesFiltrados.length === 0">
@@ -41,8 +41,7 @@
     <section *ngIf="selected === 'consulta'">
       <div class="section-container">
         <div class="section-header">
-          <i class="fa-solid fa-notes-medical"></i>
-          Nueva Consulta Médica
+          <i class="fa-solid fa-notes-medical"></i> Nueva Consulta Médica
         </div>
 
         <div class="form-group">
@@ -55,7 +54,6 @@
           </select>
         </div>
 
-        <!-- Vista detallada -->
         <div class="detalle-container" *ngIf="pacienteSeleccionado">
           <div class="navegacion">
             <ul>
@@ -142,6 +140,5 @@
         </div>
       </div>
     </section>
-
   </main>
 </div>

@@ -11,10 +11,10 @@ export class ClienteService {
 
   constructor(private http: HttpClient) {}
 
-  // ✅ Nuevo método requerido por ListapacientesPageComponent
-  obtenerClientes(): Observable<Cliente[]> {
-    return this.http.get<Cliente[]>(`${this.baseUrl}/cliente`);
-  }
+  // ⚠️ 🔒 Este endpoint está protegido. Coméntalo hasta tener autenticación (JWT o login)
+  // obtenerClientes(): Observable<Cliente[]> {
+  //   return this.http.get<Cliente[]>(`${this.baseUrl}/cliente`);
+  // }
 
   // 🔎 Búsqueda por nombre (ya existente)
   buscarPorNombre(nombre: string): Observable<{ data: Cliente[] }> {

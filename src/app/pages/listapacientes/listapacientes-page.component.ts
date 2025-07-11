@@ -5,7 +5,6 @@ import { Tratamiento } from 'src/app/components/shared/interfaces/tratamiento.mo
 import { Paciente } from 'src/app/components/shared/interfaces/paciente.model';
 import { MascotaService } from 'src/app/core/services/mascota.service';
 
-
 @Component({
   selector: 'app-listapacientes-page',
   standalone: true,
@@ -15,19 +14,23 @@ import { MascotaService } from 'src/app/core/services/mascota.service';
 })
 export class ListapacientesPageComponent implements OnInit {
   pacientes = signal<Paciente[]>([]);
-  tratamientos = signal<Tratamiento[]>([]); // No se tiene el backend xd
+  tratamientos = signal<Tratamiento[]>([]);
   busqueda: string = '';
   selected: 'pacientes' | 'consulta' | 'seguimiento' = 'pacientes';
   pacienteSeleccionado: Paciente | null = null;
   subvista: 'info' | 'alergias' | 'nueva' = 'info';
 
-constructor(private mascotaService: MascotaService) {}
-
+  constructor(private mascotaService: MascotaService) {}
 
   ngOnInit(): void {
     this.mascotaService.listarPacientes().subscribe({
-      next: (data) => this.pacientes.set(data),
-      error: (err) => console.error('Error al obtener pacientes', err)
+      next: (data) => {
+        console.log('✅ Pacientes obtenidos:', data);
+        this.pacientes.set(data);
+      },
+      error: (err) => {
+        console.error('❌ Error al obtener pacientes', err);
+      }
     });
   }
 
