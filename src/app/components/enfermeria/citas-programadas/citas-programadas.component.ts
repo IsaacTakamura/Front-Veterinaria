@@ -5,76 +5,8 @@ import { TablaCitasComponent } from '../tabla/tabla-citas.component';
 import { TriajeModalComponent } from '../triaje/triaje-modal.component';
 import { HistorialModalComponent } from '../historial/historial-modal.component';
 import { DetallesCitaModalComponent } from '../detalles-cita/detalles-cita-modal.component';
-
-// Datos de ejemplo para las citas programadas
-const CITAS_PROGRAMADAS: Record<string, any[]> = {
-  "2025-05-23": [
-    {
-      id: "6",
-      hora: "09:00",
-      paciente: "Pelusa",
-      especie: "Perro",
-      raza: "Pomerania",
-      edad: "2 años",
-      propietario: "Laura Jiménez",
-      telefono: "987654321",
-      motivo: "Vacunación",
-      estado: "pendiente",
-    },
-    {
-      id: "7",
-      hora: "10:30",
-      paciente: "Simba",
-      especie: "Gato",
-      raza: "Angora",
-      edad: "3 años",
-      propietario: "Roberto Díaz",
-      telefono: "912345678",
-      motivo: "Control",
-      estado: "pendiente",
-    },
-  ],
-  "2025-05-24": [
-    {
-      id: "8",
-      hora: "11:00",
-      paciente: "Lola",
-      especie: "Perro",
-      raza: "Beagle",
-      edad: "4 años",
-      propietario: "Carmen Ruiz",
-      telefono: "945678123",
-      motivo: "Consulta general",
-      estado: "pendiente",
-    },
-  ],
-  "2025-05-25": [
-    {
-      id: "9",
-      hora: "09:30",
-      paciente: "Nala",
-      especie: "Gato",
-      raza: "Común europeo",
-      edad: "1 año",
-      propietario: "Miguel Torres",
-      telefono: "978123456",
-      motivo: "Desparasitación",
-      estado: "pendiente",
-    },
-    {
-      id: "10",
-      hora: "12:00",
-      paciente: "Rex",
-      especie: "Perro",
-      raza: "Pastor Alemán",
-      edad: "5 años",
-      propietario: "Sofía Morales",
-      telefono: "987123456",
-      motivo: "Vacunación",
-      estado: "pendiente",
-    },
-  ],
-};
+import { CitaService } from '../../../core/services/cita.service';
+import { CitaTabla } from '../../shared/interfaces/cita-tabla.model';
 
 @Component({
   selector: 'app-citas-programadas',
@@ -99,35 +31,50 @@ export class CitasProgramadasComponent {
   modalHistorialAbierto = signal(false);
   modalDetallesAbierto = signal(false);
 
-  // Computed properties
-  citasDelDia = computed(() => {
-    const fechaStr = this.formatDate(this.fechaSeleccionada());
-    return CITAS_PROGRAMADAS[fechaStr] || [];
-  });
+  citasDelDia = signal<CitaTabla[]>([]);
+  fechasConCitas = signal<string[]>([]);
 
+  constructor(private citaService: CitaService) {
+    this.cargarFechasConCitas();
+    this.cargarCitasDelDia(this.formatDate(this.fechaSeleccionada()));
+  }
+
+  // Cargar citas del día seleccionado
+  cargarCitasDelDia(fechaStr: string) {
+    this.citaService.listarCitasPorFecha(fechaStr).subscribe((resp: any) => {
+      this.citasDelDia.set(resp.data as CitaTabla[]);
+    });
+  }
+
+  // Cargar fechas que tienen citas (puedes optimizar esto con un endpoint que devuelva solo las fechas)
+  cargarFechasConCitas() {
+    const year = this.fechaActual.getFullYear();
+    const month = (this.fechaActual.getMonth() + 1).toString().padStart(2, '0');
+    this.citaService.listarCitasPorFecha(`${year}-${month}-01`).subscribe((resp: any) => {
+      const fechas = Array.from(new Set(resp.data.map((c: any) => c.fechaRegistro.substring(0, 10)))) as string[];
+      this.fechasConCitas.set(fechas);
+    });
+  }
+
+  // Computed para la tabla
+  getCitasDelDia() {
+    return this.citasDelDia();
+  }
+
+  // Computed para el calendario
   diasDelMes = computed(() => {
     const year = this.fechaActual.getFullYear();
     const month = this.fechaActual.getMonth();
-
-    // Primer día del mes
     const firstDay = new Date(year, month, 1);
-    // Último día del mes
     const lastDay = new Date(year, month + 1, 0);
-
-    // Días del mes anterior para completar la primera semana
     const days: (Date | null)[] = [];
     const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
-
-    // Agregar días vacíos para alinear el primer día
     for (let i = 0; i < startDay; i++) {
       days.push(null);
     }
-
-    // Agregar todos los días del mes
     for (let i = 1; i <= lastDay.getDate(); i++) {
       days.push(new Date(year, month, i));
     }
-
     return days;
   });
 
@@ -143,7 +90,7 @@ export class CitasProgramadasComponent {
   tieneCitas(fecha: Date | null): boolean {
     if (!fecha) return false;
     const fechaStr = this.formatDate(fecha);
-    return !!CITAS_PROGRAMADAS[fechaStr]?.length;
+    return this.fechasConCitas().includes(fechaStr);
   }
 
   // Verificar si una fecha es la seleccionada
@@ -154,6 +101,7 @@ export class CitasProgramadasComponent {
   // Seleccionar una fecha
   seleccionarFecha(fecha: Date): void {
     this.fechaSeleccionada.set(fecha);
+    this.cargarCitasDelDia(this.formatDate(fecha));
   }
 
   // Cambiar de mes
@@ -163,6 +111,8 @@ export class CitasProgramadasComponent {
       this.fechaActual.getMonth() + delta,
       1
     );
+    this.cargarFechasConCitas();
+    this.cargarCitasDelDia(this.formatDate(this.fechaSeleccionada()));
   }
 
   // Abrir modales

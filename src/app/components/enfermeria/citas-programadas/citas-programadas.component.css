@@ -1,0 +1,22 @@
+/* Evita que la tabla se desborde horizontalmente */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Opcional: Asegura que la tabla ocupe el 100% del contenedor */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Opcional: Ajusta el tamaño mínimo de las celdas para evitar desbordes */
+th, td {
+  min-width: 120px;
+  word-break: break-word;
+}
+
+/* Opcional: Oculta el scroll horizontal si no es necesario */
+.table-responsive::-webkit-scrollbar {
+  height: 6px;
+}
