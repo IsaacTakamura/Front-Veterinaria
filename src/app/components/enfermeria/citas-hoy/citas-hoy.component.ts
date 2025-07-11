@@ -39,7 +39,7 @@ export class CitasHoyComponent implements OnInit {
   modalDetallesAbierto = signal(false);
 
   // Datos de citas de hoy
-  citasDeHoy: CitaTabla[] = [];
+  citasDeHoy = signal<CitaTabla[]>([]);
 
   constructor(
     private citaService: CitaService,
@@ -50,7 +50,7 @@ export class CitasHoyComponent implements OnInit {
   ngOnInit(): void {
     this.citaService.obtenerCitasDeHoy().subscribe((citas: any[]) => {
       if (!citas || citas.length === 0) {
-        this.citasDeHoy = [];
+        this.citasDeHoy.set([]);
         return;
       }
       // Para cada cita, obtenemos los datos enriquecidos
@@ -62,7 +62,7 @@ export class CitasHoyComponent implements OnInit {
         forkJoin([...mascotaRequests, ...clienteRequests]).subscribe(respuestas => {
           const mascotas = respuestas.slice(0, citas.length).map((r: any) => r.data as Mascota);
           const clientes = respuestas.slice(citas.length).map((r: any) => r.data as Cliente);
-          this.citasDeHoy = citas.map((cita, i) => {
+          const enriquecidas = citas.map((cita, i) => {
             const mascota = mascotas[i];
             const cliente = clientes[i];
             const raza = razas.find(r => r.razaId === mascota.razaId);
@@ -74,6 +74,7 @@ export class CitasHoyComponent implements OnInit {
               propietario: cliente?.nombre + (cliente?.apellido ? ' ' + cliente.apellido : ''),
             };
           });
+          this.citasDeHoy.set(enriquecidas);
         });
       });
     });
@@ -82,27 +83,27 @@ export class CitasHoyComponent implements OnInit {
   // Computed properties
   citasFiltradas = computed(() => {
     const term = this.searchTerm().toLowerCase();
-    if (!term) return this.citasDeHoy;
-    return this.citasDeHoy.filter((cita: CitaTabla) =>
+    if (!term) return this.citasDeHoy();
+    return this.citasDeHoy().filter((cita: CitaTabla) =>
       cita.paciente.toLowerCase().includes(term) ||
       cita.propietario.toLowerCase().includes(term)
     );
   });
 
   pendientes = computed(() =>
-    this.citasDeHoy.filter((cita: CitaTabla) => cita.estadoCita === 'PENDIENTE').length
+    this.citasDeHoy().filter((cita: CitaTabla) => cita.estadoCita === 'PENDIENTE').length
   );
 
   enTriaje = computed(() =>
-    this.citasDeHoy.filter((cita: CitaTabla) => cita.estadoCita === 'TRIAJE').length
+    this.citasDeHoy().filter((cita: CitaTabla) => cita.estadoCita === 'TRIAJE').length
   );
 
   conVeterinario = computed(() =>
-    this.citasDeHoy.filter((cita: CitaTabla) => cita.estadoCita === 'CONVETERINARIO').length
+    this.citasDeHoy().filter((cita: CitaTabla) => cita.estadoCita === 'CONVETERINARIO').length
   );
 
   completadas = computed(() =>
-    this.citasDeHoy.filter((cita: CitaTabla) => cita.estadoCita === 'COMPLETADA').length
+    this.citasDeHoy().filter((cita: CitaTabla) => cita.estadoCita === 'COMPLETADA').length
   );
 
   // Métodos para abrir modales
