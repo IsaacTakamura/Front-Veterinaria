@@ -1,9 +1,11 @@
+// src/app/core/services/mascota.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Mascota } from '../../components/shared/interfaces/mascota.model';
 import { Raza } from '../../components/shared/interfaces/Raza.model';
 import { Paciente } from 'src/app/components/shared/interfaces/paciente.model';
+import { AuthService } from 'src/app/core/services/auth.service'; // ✅ Importa correctamente
 
 @Injectable({
   providedIn: 'root'
@@ -11,25 +13,39 @@ import { Paciente } from 'src/app/components/shared/interfaces/paciente.model';
 export class MascotaService {
   private baseUrl = '/api/v1/asistente';
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) {}
 
-  // 🔍 Buscar mascota por nombre
-  buscarPorNombre(nombre: string): Observable<{ data: Mascota }> {
-    return this.http.get<{ data: Mascota }>(`${this.baseUrl}/nombre/${nombre}`);
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken();
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
   }
 
-  // ➕ Crear una nueva mascota
-  crear(mascota: Mascota): Observable<{ data: Mascota }> {
-    return this.http.post<{ data: Mascota }>(`${this.baseUrl}/crearMascota`, mascota);
-  }
-
-  // 📋 Listar razas disponibles
-  listarRazas(): Observable<{ data: Raza[] }> {
-    return this.http.get<{ data: Raza[] }>(`${this.baseUrl}/mascota/listarRazas`);
-  }
-
-  // ✅ Obtener lista de pacientes (mascotas con raza, especie y propietario)
   listarPacientes(): Observable<Paciente[]> {
-    return this.http.get<Paciente[]>(`${this.baseUrl}/listarMascota`);
+    return this.http.get<Paciente[]>(`${this.baseUrl}/mascotas`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  buscarPorNombre(nombre: string): Observable<{ data: Mascota }> {
+    return this.http.get<{ data: Mascota }>(`${this.baseUrl}/nombre/${nombre}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  crear(mascota: Mascota): Observable<{ data: Mascota }> {
+    return this.http.post<{ data: Mascota }>(`${this.baseUrl}/crearMascota`, mascota, {
+      headers: this.getHeaders()
+    });
+  }
+
+  listarRazas(): Observable<{ data: Raza[] }> {
+    return this.http.get<{ data: Raza[] }>(`${this.baseUrl}/mascota/listarRazas`, {
+      headers: this.getHeaders()
+    });
   }
 }
