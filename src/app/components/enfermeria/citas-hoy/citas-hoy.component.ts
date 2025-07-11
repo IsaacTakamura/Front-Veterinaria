@@ -121,4 +121,12 @@ export class CitasHoyComponent implements OnInit {
     this.citaSeleccionada.set(cita);
     this.modalDetallesAbierto.set(true);
   }
+
+  // Método para manejar cuando se crea un triaje
+  onTriajeCreado(triaje: any): void {
+    console.log('Triaje creado:', triaje);
+    // Aquí podrías actualizar el estado de la cita o recargar los datos
+    // Por ejemplo, cambiar el estado de la cita a "en-triaje"
+    this.ngOnInit(); // Recargar datos
+  }
 }

@@ -130,4 +130,11 @@ export class CitasProgramadasComponent {
     this.citaSeleccionada.set(cita);
     this.modalDetallesAbierto.set(true);
   }
+
+  // Método para manejar cuando se crea un triaje
+  onTriajeCreado(triaje: any): void {
+    console.log('Triaje creado:', triaje);
+    // Recargar las citas del día para reflejar los cambios
+    this.cargarCitasDelDia(this.formatDate(this.fechaSeleccionada()));
+  }
 }

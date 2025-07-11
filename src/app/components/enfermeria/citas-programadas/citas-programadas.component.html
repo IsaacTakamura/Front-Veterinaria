@@ -73,7 +73,7 @@
   <!-- Modales -->
   @if (citaSeleccionada()) {
   <app-triaje-modal [isOpen]="modalTriajeAbierto()" [cita]="citaSeleccionada()"
-    (closeModal)="modalTriajeAbierto.set(false)"></app-triaje-modal>
+    (closeModal)="modalTriajeAbierto.set(false)" (triajeCreado)="onTriajeCreado($event)"></app-triaje-modal>
   <app-historial-modal [isOpenValue]="modalHistorialAbierto()" [citaData]="citaSeleccionada()"
     (onClose)="modalHistorialAbierto.set(false)" />
   <app-detalles-cita-modal [isOpenValue]="modalDetallesAbierto()" [citaData]="citaSeleccionada()"

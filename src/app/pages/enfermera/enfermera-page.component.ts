@@ -49,7 +49,7 @@ export class EnfermeraPageComponent {
   }
 
   registrarTriaje(triaje: any) {
-    this.triajeService.registrarTriaje(triaje).subscribe(() => {
+    this.triajeService.crearTriaje(triaje).subscribe(() => {
       // refrescar historial clínico si es necesario
     });
   }
