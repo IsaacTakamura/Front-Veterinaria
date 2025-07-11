@@ -11,8 +11,8 @@ export class TriajeService {
   constructor(private http: HttpClient) { }
 
   crearTriaje(triaje: Triaje): Observable<Triaje> {
-    // POST /api/v1/asistente/CrearTriaje
-    return this.http.post<Triaje>(`${this.api}/CrearTriaje`, triaje);
+    // POST /api/v1/asistente/crearTriaje
+    return this.http.post<Triaje>(`${this.api}/crearTriaje`, triaje);
     /* Ejemplo de objeto Triaje:
     {
   "triajeId": 0,
