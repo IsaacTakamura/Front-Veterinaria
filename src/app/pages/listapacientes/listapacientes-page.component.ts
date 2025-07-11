@@ -1,70 +1,58 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ClienteService } from 'src/app/core/services/cliente.service';
-import { Cliente } from 'src/app/components/shared/interfaces/cliente.model';
+import { Tratamiento } from 'src/app/components/shared/interfaces/tratamiento.model';
+import { Paciente } from 'src/app/components/shared/interfaces/paciente.model';
+import { MascotaService } from 'src/app/core/services/mascota.service';
+
 
 @Component({
   selector: 'app-listapacientes-page',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  providers: [ClienteService],
   templateUrl: './listapacientes-page.component.html',
   styleUrls: ['./listapacientes-page.component.css']
 })
 export class ListapacientesPageComponent implements OnInit {
-  selected = 'pacientes';
-  busqueda = '';
-  pacienteSeleccionado: Cliente | null = null;
-  subvista: string = 'info';
+  pacientes = signal<Paciente[]>([]);
+  tratamientos = signal<Tratamiento[]>([]); // No se tiene el backend xd
+  busqueda: string = '';
+  selected: 'pacientes' | 'consulta' | 'seguimiento' = 'pacientes';
+  pacienteSeleccionado: Paciente | null = null;
+  subvista: 'info' | 'alergias' | 'nueva' = 'info';
 
-  pacientes = signal<Cliente[]>([]);
-  loading = signal<boolean>(false);
+constructor(private mascotaService: MascotaService) {}
 
-  constructor(private clienteService: ClienteService) {}
 
   ngOnInit(): void {
-    this.loading.set(true);
-    this.clienteService.obtenerClientes().subscribe({
-      next: (data: Cliente[]) => {
-        this.pacientes.set(data);
-        this.loading.set(false);
-      },
-      error: (err: unknown) => {
-        if (err instanceof Error) {
-          console.error('Error al cargar pacientes:', err.message);
-        } else {
-          console.error('Error desconocido al cargar pacientes', err);
-        }
-        this.loading.set(false);
-      }
+    this.mascotaService.listarPacientes().subscribe({
+      next: (data) => this.pacientes.set(data),
+      error: (err) => console.error('Error al obtener pacientes', err)
     });
   }
 
-  cambiarVista(vista: string): void {
-    this.selected = vista;
-    if (vista !== 'consulta') {
-      this.pacienteSeleccionado = null;
-      this.subvista = 'info';
-    }
-  }
-
-  seleccionarPaciente(paciente: Cliente): void {
-    this.pacienteSeleccionado = paciente;
+  cambiarVista(v: 'pacientes' | 'consulta' | 'seguimiento') {
+    this.selected = v;
+    this.pacienteSeleccionado = null;
     this.subvista = 'info';
   }
 
-  cambiarSubvista(vista: string): void {
-    this.subvista = vista;
+  cambiarSubvista(v: 'info' | 'alergias' | 'nueva') {
+    this.subvista = v;
   }
 
-  getIconClass(status: string): string {
-    switch (status) {
-      case 'Activo': return 'fa-pills';
-      case 'Próximo a vencer': return 'fa-triangle-exclamation';
-      case 'Completado': return 'fa-check-circle';
-      default: return 'fa-clock';
-    }
+  seleccionarPaciente(p: Paciente) {
+    this.pacienteSeleccionado = p;
+    this.subvista = 'info';
+  }
+
+  get pacientesFiltrados(): Paciente[] {
+    const q = this.busqueda.trim().toLowerCase();
+    return this.pacientes().filter(p =>
+      p.nombre.toLowerCase().includes(q) ||
+      p.raza.toLowerCase().includes(q) ||
+      p.propietario.toLowerCase().includes(q)
+    );
   }
 
   getEmojiForStatus(status: string): string {
@@ -82,22 +70,8 @@ export class ListapacientesPageComponent implements OnInit {
       case 'Activo': return 'activo';
       case 'Próximo a vencer': return 'proximo';
       case 'Completado': return 'completado';
-      default: return 'inactivo';
+      case 'Vencido': return 'vencido';
+      default: return 'desconocido';
     }
-  }
-
-  seleccionarPacientePorNombre(nombre: string): void {
-    const paciente = this.pacientes().find(p => p.nombre.toLowerCase() === nombre.toLowerCase());
-    if (paciente) {
-      this.seleccionarPaciente(paciente);
-    }
-  }
-
-  get pacientesFiltrados(): Cliente[] {
-    const query = this.busqueda.trim().toLowerCase();
-    return this.pacientes().filter(p =>
-      p.nombre.toLowerCase().includes(query) ||
-      p.email?.toLowerCase().includes(query)
-    );
   }
 }
