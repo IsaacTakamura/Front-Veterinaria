@@ -58,8 +58,10 @@
     </div>
     <div class="p-4">
       @if (citasDelDia().length > 0) {
-      <app-tabla-citas [citas]="citasDelDia()" (onTriaje)="abrirModalTriaje($event)"
+      <div class="tabla-container">
+        <app-tabla-citas [citas]="citasDelDia()" (onTriaje)="abrirModalTriaje($event)"
         (onHistorial)="abrirModalHistorial($event)" (onDetalles)="abrirModalDetalles($event)" />
+      </div>
       } @else {
       <p class="text-center py-6 text-gray-500">
         No hay citas programadas para este día.
