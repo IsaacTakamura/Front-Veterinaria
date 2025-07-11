@@ -1,80 +1,47 @@
-import { Component } from '@angular/core';
-import { bootstrapApplication } from '@angular/platform-browser';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ClienteService } from 'src/app/core/services/cliente.service';
+import { Cliente } from 'src/app/components/shared/interfaces/cliente.model';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-listapacientes-page',
   standalone: true,
   imports: [CommonModule, FormsModule],
+  providers: [ClienteService],
   templateUrl: './listapacientes-page.component.html',
   styleUrls: ['./listapacientes-page.component.css']
 })
-export class ListapacientesPageComponent {
+export class ListapacientesPageComponent implements OnInit {
   selected = 'pacientes';
   busqueda = '';
-  pacienteSeleccionado: any = null;
+  pacienteSeleccionado: Cliente | null = null;
   subvista: string = 'info';
 
-  pacientes = [
-    {
-      nombre: 'Max',
-      especie: 'Perro',
-      raza: 'Golden Retriever',
-      edad: '3 años',
-      propietario: 'María González',
-      telefono: '987654321',
-      ultimaVisita: '2024-01-15',
-      proximaCita: '2024-01-25',
-      estado: 'Activo',
-    },
-    {
-      nombre: 'Luna',
-      especie: 'Gato',
-      raza: 'Persa',
-      edad: '2 años',
-      propietario: 'Carlos Rodríguez',
-      telefono: '987654322',
-      ultimaVisita: '2024-01-10',
-      proximaCita: '2024-01-20',
-      estado: 'Inactivo',
-    },
-  ];
+  pacientes = signal<Cliente[]>([]);
+  loading = signal<boolean>(false);
 
-  tratamientos = [
-    {
-      paciente: 'Max',
-      propietario: 'María González',
-      tratamiento: 'Omeprazol 20mg cada 12h',
-      fechaInicio: '2024-01-15',
-      fechaFin: '2024-01-22',
-      status: 'Activo',
-      diasRestantes: 3,
-      proximaDosis: '2024-01-19 08:00',
-    },
-    {
-      paciente: 'Luna',
-      propietario: 'Carlos Rodríguez',
-      tratamiento: 'Antibiótico - Amoxicilina 250mg cada 8h',
-      fechaInicio: '2024-01-10',
-      fechaFin: '2024-01-20',
-      status: 'Próximo a vencer',
-      diasRestantes: 1,
-      proximaDosis: '2024-01-19 14:00',
-    },
-    {
-      paciente: 'Rocky',
-      propietario: 'Ana Martínez',
-      tratamiento: 'Control post-vacunación',
-      fechaInicio: '2024-01-10',
-      fechaFin: '2024-01-17',
-      status: 'Completado',
-      diasRestantes: 0,
-      proximaDosis: null,
-    },
-  ];
+  constructor(private clienteService: ClienteService) {}
 
-  cambiarVista(vista: string) {
+  ngOnInit(): void {
+    this.loading.set(true);
+    this.clienteService.obtenerClientes().subscribe({
+      next: (data: Cliente[]) => {
+        this.pacientes.set(data);
+        this.loading.set(false);
+      },
+      error: (err: unknown) => {
+        if (err instanceof Error) {
+          console.error('Error al cargar pacientes:', err.message);
+        } else {
+          console.error('Error desconocido al cargar pacientes', err);
+        }
+        this.loading.set(false);
+      }
+    });
+  }
+
+  cambiarVista(vista: string): void {
     this.selected = vista;
     if (vista !== 'consulta') {
       this.pacienteSeleccionado = null;
@@ -82,12 +49,12 @@ export class ListapacientesPageComponent {
     }
   }
 
-  seleccionarPaciente(paciente: any) {
+  seleccionarPaciente(paciente: Cliente): void {
     this.pacienteSeleccionado = paciente;
     this.subvista = 'info';
   }
 
-  cambiarSubvista(vista: string) {
+  cambiarSubvista(vista: string): void {
     this.subvista = vista;
   }
 
@@ -119,27 +86,18 @@ export class ListapacientesPageComponent {
     }
   }
 
-  // Buscar por nombre y seleccionar paciente
-  seleccionarPacientePorNombre(nombre: string) {
-    const paciente = this.pacientes.find(p => p.nombre === nombre);
+  seleccionarPacientePorNombre(nombre: string): void {
+    const paciente = this.pacientes().find(p => p.nombre.toLowerCase() === nombre.toLowerCase());
     if (paciente) {
       this.seleccionarPaciente(paciente);
     }
   }
 
-  // Para filtrar la lista de pacientes en base a la búsqueda
-  get pacientesFiltrados() {
-    if (!this.busqueda.trim()) {
-      return this.pacientes;
-    }
-    const query = this.busqueda.toLowerCase();
-    return this.pacientes.filter(p =>
+  get pacientesFiltrados(): Cliente[] {
+    const query = this.busqueda.trim().toLowerCase();
+    return this.pacientes().filter(p =>
       p.nombre.toLowerCase().includes(query) ||
-      p.propietario.toLowerCase().includes(query)
+      p.email?.toLowerCase().includes(query)
     );
   }
 }
-
-// ¡ESTE ES TU PUNTO DE ENTRADA!
-bootstrapApplication(ListapacientesPageComponent)
-  .catch(err => console.error(err));
