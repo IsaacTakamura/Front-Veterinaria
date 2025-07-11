@@ -1,5 +1,5 @@
 // citas-hoy.component.ts
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TablaCitasComponent } from '../tabla/tabla-citas.component';
 import { TriajeModalComponent } from '../triaje/triaje-modal.component';
@@ -7,79 +7,15 @@ import { HistorialModalComponent } from '../historial/historial-modal.component'
 import { DetallesCitaModalComponent } from '../detalles-cita/detalles-cita-modal.component';
 // Datos de ejemplo para las citas de hoy (CitaTabla[])
 import { CitaTabla } from '../../shared/interfaces/cita-tabla.model';
+import { CitaService } from '../../../core/services/cita.service';
+import { MascotaService } from '../../../core/services/mascota.service';
+import { ClienteService } from '../../../core/services/cliente.service';
+import { Mascota } from '../../shared/interfaces/mascota.model';
+import { Cliente } from '../../shared/interfaces/cliente.model';
+import { Raza } from '../../shared/interfaces/Raza.model';
+import { forkJoin } from 'rxjs';
 
-const CITAS_HOY: CitaTabla[] = [
-  {
-    citaId: 1,
-    fechaRegistro: '2024-06-01T09:00:00',
-    tipoServicioId: 1,
-    mascotaId: 101,
-    clienteId: 201,
-    veterinarioId: 301,
-    motivo: 'Vacunación',
-    estadoCita: 'PENDIENTE',
-    paciente: 'Max',
-    especie: 'Perro',
-    raza: 'Labrador',
-    propietario: 'Juan Pérez',
-  },
-  {
-    citaId: 2,
-    fechaRegistro: '2024-06-01T09:30:00',
-    tipoServicioId: 2,
-    mascotaId: 102,
-    clienteId: 202,
-    veterinarioId: 302,
-    motivo: 'Control',
-    estadoCita: 'TRIAJE',
-    paciente: 'Luna',
-    especie: 'Gato',
-    raza: 'Siamés',
-    propietario: 'María García',
-  },
-  {
-    citaId: 3,
-    fechaRegistro: '2024-06-01T10:00:00',
-    tipoServicioId: 1,
-    mascotaId: 103,
-    clienteId: 203,
-    veterinarioId: 303,
-    motivo: 'Consulta general',
-    estadoCita: 'CONVETERINARIO',
-    paciente: 'Rocky',
-    especie: 'Perro',
-    raza: 'Bulldog',
-    propietario: 'Carlos López',
-  },
-  {
-    citaId: 4,
-    fechaRegistro: '2024-06-01T10:30:00',
-    tipoServicioId: 3,
-    mascotaId: 104,
-    clienteId: 204,
-    veterinarioId: 304,
-    motivo: 'Desparasitación',
-    estadoCita: 'COMPLETADA',
-    paciente: 'Michi',
-    especie: 'Gato',
-    raza: 'Persa',
-    propietario: 'Ana Martínez',
-  },
-  {
-    citaId: 5,
-    fechaRegistro: '2024-06-01T11:00:00',
-    tipoServicioId: 1,
-    mascotaId: 105,
-    clienteId: 205,
-    veterinarioId: 305,
-    motivo: 'Vacunación',
-    estadoCita: 'PENDIENTE',
-    paciente: 'Toby',
-    especie: 'Perro',
-    raza: 'Poodle',
-    propietario: 'Pedro Sánchez',
-  },
-];
+
 
 @Component({
   selector: 'app-citas-hoy',
@@ -94,7 +30,7 @@ const CITAS_HOY: CitaTabla[] = [
   templateUrl: './citas-hoy.component.html',
   styleUrls: ['./citas-hoy.component.css'],
 })
-export class CitasHoyComponent {
+export class CitasHoyComponent implements OnInit {
   // Señales para el estado
   searchTerm = signal('');
   citaSeleccionada = signal<any>(null);
@@ -102,31 +38,71 @@ export class CitasHoyComponent {
   modalHistorialAbierto = signal(false);
   modalDetallesAbierto = signal(false);
 
+  // Datos de citas de hoy
+  citasDeHoy: CitaTabla[] = [];
+
+  constructor(
+    private citaService: CitaService,
+    private mascotaService: MascotaService,
+    private clienteService: ClienteService
+  ) {}
+
+  ngOnInit(): void {
+    this.citaService.obtenerCitasDeHoy().subscribe((citas: any[]) => {
+      if (!citas || citas.length === 0) {
+        this.citasDeHoy = [];
+        return;
+      }
+      // Para cada cita, obtenemos los datos enriquecidos
+      const mascotaRequests = citas.map(c => this.mascotaService.listarMascotaPorId(c.mascotaId));
+      const clienteRequests = citas.map(c => this.clienteService.listarClientePorId(c.clienteId));
+      // Obtenemos todas las razas una sola vez
+      this.mascotaService.listarRazas().subscribe(razasResp => {
+        const razas: Raza[] = razasResp.data;
+        forkJoin([...mascotaRequests, ...clienteRequests]).subscribe(respuestas => {
+          const mascotas = respuestas.slice(0, citas.length).map((r: any) => r.data as Mascota);
+          const clientes = respuestas.slice(citas.length).map((r: any) => r.data as Cliente);
+          this.citasDeHoy = citas.map((cita, i) => {
+            const mascota = mascotas[i];
+            const cliente = clientes[i];
+            const raza = razas.find(r => r.razaId === mascota.razaId);
+            return {
+              ...cita,
+              paciente: mascota?.nombre || '',
+              especie: raza ? (raza.especieId === 1 ? 'Perro' : 'Gato') : '',
+              raza: raza?.nombre || '',
+              propietario: cliente?.nombre + (cliente?.apellido ? ' ' + cliente.apellido : ''),
+            };
+          });
+        });
+      });
+    });
+  }
+
   // Computed properties
   citasFiltradas = computed(() => {
     const term = this.searchTerm().toLowerCase();
-    if (!term) return CITAS_HOY;
-
-    return CITAS_HOY.filter(cita =>
+    if (!term) return this.citasDeHoy;
+    return this.citasDeHoy.filter((cita: CitaTabla) =>
       cita.paciente.toLowerCase().includes(term) ||
       cita.propietario.toLowerCase().includes(term)
     );
   });
 
   pendientes = computed(() =>
-    CITAS_HOY.filter(cita => cita.estadoCita === 'PENDIENTE').length
+    this.citasDeHoy.filter((cita: CitaTabla) => cita.estadoCita === 'PENDIENTE').length
   );
 
   enTriaje = computed(() =>
-    CITAS_HOY.filter(cita => cita.estadoCita === 'TRIAJE').length
+    this.citasDeHoy.filter((cita: CitaTabla) => cita.estadoCita === 'TRIAJE').length
   );
 
   conVeterinario = computed(() =>
-    CITAS_HOY.filter(cita => cita.estadoCita === 'CONVETERINARIO').length
+    this.citasDeHoy.filter((cita: CitaTabla) => cita.estadoCita === 'CONVETERINARIO').length
   );
 
   completadas = computed(() =>
-    CITAS_HOY.filter(cita => cita.estadoCita === 'COMPLETADA').length
+    this.citasDeHoy.filter((cita: CitaTabla) => cita.estadoCita === 'COMPLETADA').length
   );
 
   // Métodos para abrir modales
