@@ -1,9 +1,11 @@
 export interface Cliente {
   clienteId?: number;
   nombre: string;
-  apellido?: string;
+  apellido: string;
   direccion?: string;
   telefono?: string;
-  email?: string;
+  email: string;
   ciudad?: string;
+
+
 }

@@ -1,103 +1,61 @@
-import { Component } from '@angular/core';
-import { bootstrapApplication } from '@angular/platform-browser';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Tratamiento } from 'src/app/components/shared/interfaces/tratamiento.model';
+import { Paciente } from 'src/app/components/shared/interfaces/paciente.model';
+import { MascotaService } from 'src/app/core/services/mascota.service';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-listapacientes-page',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './listapacientes-page.component.html',
   styleUrls: ['./listapacientes-page.component.css']
 })
-export class ListapacientesPageComponent {
-  selected = 'pacientes';
-  busqueda = '';
-  pacienteSeleccionado: any = null;
-  subvista: string = 'info';
+export class ListapacientesPageComponent implements OnInit {
+  pacientes = signal<Paciente[]>([]);
+  tratamientos = signal<Tratamiento[]>([]);
+  busqueda: string = '';
+  selected: 'pacientes' | 'consulta' | 'seguimiento' = 'pacientes';
+  pacienteSeleccionado: Paciente | null = null;
+  subvista: 'info' | 'alergias' | 'nueva' = 'info';
 
-  pacientes = [
-    {
-      nombre: 'Max',
-      especie: 'Perro',
-      raza: 'Golden Retriever',
-      edad: '3 años',
-      propietario: 'María González',
-      telefono: '987654321',
-      ultimaVisita: '2024-01-15',
-      proximaCita: '2024-01-25',
-      estado: 'Activo',
-    },
-    {
-      nombre: 'Luna',
-      especie: 'Gato',
-      raza: 'Persa',
-      edad: '2 años',
-      propietario: 'Carlos Rodríguez',
-      telefono: '987654322',
-      ultimaVisita: '2024-01-10',
-      proximaCita: '2024-01-20',
-      estado: 'Inactivo',
-    },
-  ];
+  constructor(private mascotaService: MascotaService) {}
 
-  tratamientos = [
-    {
-      paciente: 'Max',
-      propietario: 'María González',
-      tratamiento: 'Omeprazol 20mg cada 12h',
-      fechaInicio: '2024-01-15',
-      fechaFin: '2024-01-22',
-      status: 'Activo',
-      diasRestantes: 3,
-      proximaDosis: '2024-01-19 08:00',
-    },
-    {
-      paciente: 'Luna',
-      propietario: 'Carlos Rodríguez',
-      tratamiento: 'Antibiótico - Amoxicilina 250mg cada 8h',
-      fechaInicio: '2024-01-10',
-      fechaFin: '2024-01-20',
-      status: 'Próximo a vencer',
-      diasRestantes: 1,
-      proximaDosis: '2024-01-19 14:00',
-    },
-    {
-      paciente: 'Rocky',
-      propietario: 'Ana Martínez',
-      tratamiento: 'Control post-vacunación',
-      fechaInicio: '2024-01-10',
-      fechaFin: '2024-01-17',
-      status: 'Completado',
-      diasRestantes: 0,
-      proximaDosis: null,
-    },
-  ];
-
-  cambiarVista(vista: string) {
-    this.selected = vista;
-    if (vista !== 'consulta') {
-      this.pacienteSeleccionado = null;
-      this.subvista = 'info';
-    }
+  ngOnInit(): void {
+    this.mascotaService.listarPacientes().subscribe({
+      next: (data) => {
+        console.log('✅ Pacientes obtenidos:', data);
+        this.pacientes.set(data);
+      },
+      error: (err) => {
+        console.error('❌ Error al obtener pacientes', err);
+      }
+    });
   }
 
-  seleccionarPaciente(paciente: any) {
-    this.pacienteSeleccionado = paciente;
+  cambiarVista(v: 'pacientes' | 'consulta' | 'seguimiento') {
+    this.selected = v;
+    this.pacienteSeleccionado = null;
     this.subvista = 'info';
   }
 
-  cambiarSubvista(vista: string) {
-    this.subvista = vista;
+  cambiarSubvista(v: 'info' | 'alergias' | 'nueva') {
+    this.subvista = v;
   }
 
-  getIconClass(status: string): string {
-    switch (status) {
-      case 'Activo': return 'fa-pills';
-      case 'Próximo a vencer': return 'fa-triangle-exclamation';
-      case 'Completado': return 'fa-check-circle';
-      default: return 'fa-clock';
-    }
+  seleccionarPaciente(p: Paciente) {
+    this.pacienteSeleccionado = p;
+    this.subvista = 'info';
+  }
+
+  get pacientesFiltrados(): Paciente[] {
+    const q = this.busqueda.trim().toLowerCase();
+    return this.pacientes().filter(p =>
+      p.nombre.toLowerCase().includes(q) ||
+      p.raza.toLowerCase().includes(q) ||
+      p.propietario.toLowerCase().includes(q)
+    );
   }
 
   getEmojiForStatus(status: string): string {
@@ -115,31 +73,8 @@ export class ListapacientesPageComponent {
       case 'Activo': return 'activo';
       case 'Próximo a vencer': return 'proximo';
       case 'Completado': return 'completado';
-      default: return 'inactivo';
+      case 'Vencido': return 'vencido';
+      default: return 'desconocido';
     }
-  }
-
-  // Buscar por nombre y seleccionar paciente
-  seleccionarPacientePorNombre(nombre: string) {
-    const paciente = this.pacientes.find(p => p.nombre === nombre);
-    if (paciente) {
-      this.seleccionarPaciente(paciente);
-    }
-  }
-
-  // Para filtrar la lista de pacientes en base a la búsqueda
-  get pacientesFiltrados() {
-    if (!this.busqueda.trim()) {
-      return this.pacientes;
-    }
-    const query = this.busqueda.toLowerCase();
-    return this.pacientes.filter(p =>
-      p.nombre.toLowerCase().includes(query) ||
-      p.propietario.toLowerCase().includes(query)
-    );
   }
 }
-
-// ¡ESTE ES TU PUNTO DE ENTRADA!
-bootstrapApplication(ListapacientesPageComponent)
-  .catch(err => console.error(err));
