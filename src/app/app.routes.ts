@@ -8,14 +8,16 @@ import { RegisterPageComponent } from './pages/register/register-page.component'
 import { VeterinarioPageComponent } from './pages/veterinario/veterinario-page.component';
 import { AdminIndexPageComponent } from './pages/admin-index/admin-index-page.component';
 import { AgendarPageComponent } from './pages/agendar/agendar-page.component';
+import { authGuard } from './core/guard/auth.guard';
 
 export const routes: Routes = [
 
 
-{
-  path: '',
-  component: IndexPageComponent,
-},
+  {
+    path: '',
+    loadComponent: () =>
+      import('./pages/index/index-page.component').then((m) => m.IndexPageComponent),
+  },
 {
   path: 'listapacientes',
   component: ListapacientesPageComponent,
@@ -24,28 +26,43 @@ export const routes: Routes = [
   path: 'register',
   component: RegisterPageComponent,
   },
-{
-  path: 'login',
-  component: LoginComponentPageComponent,
-},
+ {
+    path: 'login',
+    loadComponent: () =>
+      import('./pages/login/login-page.component').then((m) => m.LoginComponentPageComponent),
+  },
 {
   path: 'receta',
   component: RecetaPageComponent,
 },
-{
-  path: 'enfermera',
-  component: EnfermeraPageComponent,
-},
-{
- path: 'veterinario',
- component: VeterinarioPageComponent,
-},
-{
-  path: 'admin',
-  component: AdminIndexPageComponent,
-},
+ {
+    path: 'enfermera',
+    canActivate: [authGuard],
+    data: { roles: ['ASISTENTE'] },
+    loadComponent: () =>
+      import('./pages/enfermera/enfermera-page.component').then((m) => m.EnfermeraPageComponent),
+  },
+ {
+    path: 'veterinario',
+    canActivate: [authGuard],
+    data: { roles: ['VET'] },
+    loadComponent: () =>
+      import('./pages/veterinario/veterinario-page.component').then((m) => m.VeterinarioPageComponent),
+  },
+  {
+    path: 'admin',
+    canActivate: [authGuard],
+    data: { roles: ['ADMIN'] },
+    loadComponent: () =>
+      import('./pages/admin-dashboard/admin-dashboard.component').then((m) => m.AdminDashboardComponent),
+  }
+,
 {
   path: 'agendar',
   component: AgendarPageComponent,
-}
+},
+{
+    path: '**',
+    redirectTo: '',
+  },
 ];
