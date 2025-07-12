@@ -38,38 +38,38 @@
             </td>
             <td class="p-4 text-right">
               <div class="flex justify-end gap-2">
-                <!-- Botón Triaje -->
+                <!-- Botón Triaje - Estetoscopio -->
                 <button
                   class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-blue-500 text-blue-600 bg-white hover:bg-blue-50 h-10 w-10"
                   (click)="emitirTriaje(cita)"
-                  title="Abrir Triaje"
+                  title="Realizar Triaje"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                  </svg>
-                  <span class="sr-only">Abrir Triaje</span>
+                  <app-icon-stethoscope size="16" color="currentColor"></app-icon-stethoscope>
+                  <span class="sr-only">Realizar Triaje</span>
                 </button>
-                <!-- Botón Historial -->
+                <!-- Botón Historial - Documento con Cruz Médica -->
                 <button
                   class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-green-500 text-green-600 bg-white hover:bg-green-50 h-10 w-10"
                   (click)="emitirHistorial(cita)"
-                  title="Ver Historial"
+                  title="Ver Historial Médico"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <rect x="4" y="3" width="16" height="18" rx="2" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 0v4m0-4h4m-4 0H8" />
                   </svg>
-                  <span class="sr-only">Ver Historial</span>
+                  <span class="sr-only">Ver Historial Médico</span>
                 </button>
-                <!-- Botón Detalles -->
+                <!-- Botón Detalles - Documentos Apilados -->
                 <button
                   class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-gray-400 text-gray-700 bg-white hover:bg-gray-100 h-10 w-10"
                   (click)="emitirDetalles(cita)"
-                  title="Ver Detalles"
+                  title="Ver Detalles de la Cita"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0A9 9 0 11 3 12a9 9 0 0118 0z" />
+                    <rect x="7" y="7" width="13" height="13" rx="2" />
+                    <rect x="3" y="3" width="13" height="13" rx="2" />
                   </svg>
-                  <span class="sr-only">Ver Detalles</span>
+                  <span class="sr-only">Ver Detalles de la Cita</span>
                 </button>
               </div>
             </td>
