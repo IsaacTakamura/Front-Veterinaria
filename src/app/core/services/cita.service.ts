@@ -51,4 +51,9 @@ export class CitaService {
   obtenerDetalleCita(id: number): Observable<Cita> {
     return this.http.get<Cita>(`${this.baseUrl}/Cita/cliente/${id}`);
   }
+
+  //! Método para cambiar el estado de una cita, falta probarlo
+  cambiarEstadoCita(id: number, estado: string): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/estado/${id}`, { estado });
+  }
 }
