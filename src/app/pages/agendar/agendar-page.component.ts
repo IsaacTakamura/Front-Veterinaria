@@ -219,7 +219,7 @@ export class AgendarPageComponent implements OnInit {
         return crearMascota$.pipe(
           switchMap(mascotaRes => {
             const citaPayload: Cita = {
-              citaId: 0, // o undefined si el backend lo ignora
+              // No enviar citaId para que el backend lo genere automáticamente
               fechaRegistro: new Date().toISOString(),
               tipoServicioId: this.citaForm.value.tipoServicioId,
               mascotaId: mascotaRes.data.mascotaId ?? 0,
@@ -228,6 +228,8 @@ export class AgendarPageComponent implements OnInit {
               motivo: this.citaForm.value.motivo,
               estadoCita: this.citaForm.value.estadoCita || 'PENDIENTE', // 🧠 tomado del form
             };
+
+            console.log('Datos de la cita a enviar:', citaPayload);
             return this.citaService.agendar(citaPayload);
           })
         );
@@ -240,8 +242,16 @@ export class AgendarPageComponent implements OnInit {
       },
       error: err => {
         this.isLoading.set(false);
-        this.mostrarError('Error al agendar cita');
-        console.error(err);
+        console.error('Error completo:', err);
+
+        // Mostrar mensaje más específico
+        if (err.status === 500) {
+          this.mostrarError('Error interno del servidor. Verifique que todos los datos sean correctos.');
+        } else if (err.status === 404) {
+          this.mostrarError('Endpoint no encontrado. Contacte al administrador.');
+        } else {
+          this.mostrarError(`Error al agendar cita: ${err.message || 'Error desconocido'}`);
+        }
       }
     });
   }

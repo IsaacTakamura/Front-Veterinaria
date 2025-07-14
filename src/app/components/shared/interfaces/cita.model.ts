@@ -1,5 +1,5 @@
 export interface Cita {
-  citaId: number;
+  citaId?: number; // Opcional para permitir creación sin ID
   fechaRegistro: string;
   tipoServicioId: number;
   mascotaId: number;

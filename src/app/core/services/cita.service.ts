@@ -13,7 +13,20 @@ export class CitaService {
   constructor(private http: HttpClient) { }
 
   agendar(cita: Cita): Observable<{ data: any }> {
+    // Probar con diferentes endpoints
     return this.http.post<{ data: any }>(`${this.baseUrl}/RegistrarCita`, cita);
+    /* Ejemplo de lo que espera:
+        {
+  "citaId": 0,
+  "fechaRegistro": "2025-07-14T23:04:57.880Z",
+  "tipoServicioId": 0,
+  "mascotaId": 0,
+  "clienteId": 0,
+  "veterinarioId": 0,
+  "motivo": "string",
+  "estadoCita": "PENDIENTE"
+}
+    */
   }
 
   listarTiposServicio(): Observable<{ data: { tipoServicioId: number; nombre: string }[] }> {
