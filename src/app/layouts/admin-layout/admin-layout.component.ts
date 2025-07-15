@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { AdminSidebarComponent } from '../../components/shared/admin-sidebar/admin-sidebar.component';
 import { NavbarPrivateComponent } from '../../components/shared/navbar-private/navbar-private.component';
+import { SidebarStateService } from './sidebar-state.service';
 
 @Component({
   selector: 'app-admin-layout',
@@ -39,12 +40,16 @@ import { NavbarPrivateComponent } from '../../components/shared/navbar-private/n
       height: calc(100vh - 64px);
       z-index: 10;
     }
-  `]
+  `],
+  providers: [SidebarStateService]
 })
 export class AdminLayoutComponent {
-  activeSection = 'lista-usuarios';
+  constructor(public sidebarState: SidebarStateService) {}
 
+  get activeSection() {
+    return this.sidebarState.activeSection();
+  }
   setActiveSection(section: string) {
-    this.activeSection = section;
+    this.sidebarState.activeSection.set(section);
   }
 }

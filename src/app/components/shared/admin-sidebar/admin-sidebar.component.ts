@@ -37,7 +37,6 @@ export class AdminSidebarComponent {
       items: [
         { id: "crear-usuario", title: "Crear Usuario", icon: "userplus" },
         { id: "lista-usuarios", title: "Lista de Usuarios", icon: "users" },
-        { id: "roles-permisos", title: "Roles y Permisos", icon: "shield" },
       ],
     },
     {
@@ -48,7 +47,6 @@ export class AdminSidebarComponent {
         { id: "especies-razas", title: "Especies y Razas", icon: "database" },
         { id: "vacunas", title: "Vacunas", icon: "shield" },
         { id: "servicios", title: "Servicios", icon: "settings" },
-        { id: "tarifas", title: "Tarifas", icon: "barchart" },
       ],
     },
     {
@@ -58,7 +56,6 @@ export class AdminSidebarComponent {
       items: [
         { id: "todas-citas", title: "Todas las Citas", icon: "calendar" },
         { id: "reprogramar", title: "Reprogramar Citas", icon: "clock" },
-        { id: "franjas-horarias", title: "Gestión de Horarios", icon: "clock" },
       ],
     },
     {
@@ -69,17 +66,6 @@ export class AdminSidebarComponent {
         { id: "atencion-diaria", title: "Atención Diaria", icon: "filetext" },
         { id: "reprogramaciones", title: "Reprogramaciones", icon: "barchart" },
         { id: "facturacion", title: "Facturación", icon: "barchart" },
-        { id: "uso-insumos", title: "Uso de Insumos", icon: "package" },
-      ],
-    },
-    {
-      id: "inventario",
-      title: "Inventario y Proveedores",
-      icon: "package",
-      items: [
-        { id: "stock-medicamentos", title: "Stock Medicamentos", icon: "package" },
-        { id: "proveedores", title: "Proveedores", icon: "truck" },
-        { id: "ordenes-compra", title: "Órdenes de Compra", icon: "filetext" },
       ],
     },
     {
