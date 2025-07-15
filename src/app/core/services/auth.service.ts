@@ -115,5 +115,10 @@ export class AuthService {
   getAllUsuarios(): Observable<any[]> {
   return this.http.get<any[]>('/api/v1/authentication/usuarios');
 }
+// Obtiene la información del usuario por su nombre de usuario
+getUserInfo(username: string) {
+  return this.http.get<any>(`/api/v1/authentication/usuario/${username}`);
+}
+
 
 }

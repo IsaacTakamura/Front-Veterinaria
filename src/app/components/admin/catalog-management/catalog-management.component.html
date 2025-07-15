@@ -1,143 +1,370 @@
-<!-- ESPECIES Y RAZAS -->
-<div *ngIf="activeTab === 'especies-razas'">
-  <div class="bg-white rounded-lg shadow">
-    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-      <h2 class="text-xl font-semibold flex items-center">
-        <!-- Database SVG -->
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-             viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
-        Especies y Razas
-      </h2>
-      <button class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center">
-        <!-- Plus SVG -->
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-             viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Agregar Especie
-      </button>
-    </div>
-    <div class="p-6">
-      <div *ngFor="let especie of especies" class="mb-6 p-4 border border-gray-200 rounded-lg">
-        <div class="flex justify-between items-center mb-3">
-          <h3 class="text-lg font-medium">{{ especie.nombre }}</h3>
-          <div class="space-x-2">
-            <button class="text-blue-600 hover:text-blue-800">
-              <!-- Edit SVG -->
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                   viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
-            </button>
-            <button class="text-red-600 hover:text-red-800">
-              <!-- Trash SVG -->
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                   viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-            </button>
-          </div>
-        </div>
-        <div class="flex flex-wrap gap-2">
-          <span *ngFor="let raza of especie.razas" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
-            {{ raza }}
-          </span>
-          <button class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm hover:bg-green-200">
-            + Agregar Raza
-          </button>
-        </div>
+<!-- BOTONES DE DEBUG (temporal) -->
+<div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+  <h3 class="text-sm font-medium text-yellow-800 mb-2">🔧 Herramientas de Debug</h3>
+  <div class="flex gap-2 flex-wrap">
+    <button (click)="debugAutenticacionCompleta()" class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600">
+      🔍 Debug Autenticación
+    </button>
+    <button (click)="resetearSesion()" class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600">
+      🔧 Resetear Sesión
+    </button>
+    <button (click)="probarCreacionEspeciePasoAPaso()" class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600">
+      🔬 Crear Especie Debug
+    </button>
+    <button (click)="probarAPIsCreacion()" class="bg-purple-500 text-white px-3 py-1 rounded text-sm hover:bg-purple-600">
+      🧪 Probar APIs
+    </button>
+  </div>
+</div>
+
+<!-- SERVICIOS (vista principal) -->
+<div *ngIf="activeTab === 'servicios'" class="bg-white rounded-lg shadow p-6 mb-8">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-xl font-semibold">Catálogo de Servicios</h2>
+    <button (click)="abrirModal()" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center">
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+      Nuevo Servicio
+    </button>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm text-left text-gray-500 border rounded-lg">
+      <thead class="text-xs uppercase bg-gray-50 text-gray-700">
+        <tr>
+          <th class="px-6 py-3">ID</th>
+          <th class="px-6 py-3">Servicio</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        <tr *ngFor="let tipo of tiposServicios">
+          <td class="px-6 py-4 font-medium text-gray-900">{{ tipo.tipoServicioId }}</td>
+          <td class="px-6 py-4">{{ tipo.nombre }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- MODAL: Nuevo Servicio -->
+<div *ngIf="modalVisible" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+  <div class="bg-white p-6 rounded-md shadow-lg w-full max-w-md relative">
+    <h3 class="text-lg font-semibold mb-4">Registrar Nuevo Servicio</h3>
+    <div class="space-y-4">
+      <div>
+        <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre del Servicio</label>
+        <input id="nombre" type="text" [(ngModel)]="nuevoTipoServicio.nombre" placeholder="Ej. Consulta médica" class="mt-1 block w-full px-4 py-2 border rounded-md" />
+      </div>
+
+      <div class="flex justify-end gap-2 mt-4">
+        <button (click)="cerrarModal()" class="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400 text-gray-800">Cancelar</button>
+        <button (click)="registrarTipoServicio()" class="px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white">Registrar</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- VACUNAS -->
-<div *ngIf="activeTab === 'vacunas'">
-  <div class="bg-white rounded-lg shadow">
-    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-      <h2 class="text-xl font-semibold">Catálogo de Vacunas</h2>
-      <button class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center">
-        <!-- Plus SVG -->
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-             viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Nueva Vacuna
+<!-- ESPECIES Y RAZAS -->
+<div *ngIf="activeTab === 'especies'" class="bg-white rounded-xl shadow p-6 mb-6">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-xl font-semibold">Especies y Razas</h2>
+    <div class="space-x-2" *ngIf="especies.length > 0 || razas.length > 0">
+      <!-- Botón de prueba temporal -->
+      <button (click)="probarAPIsCreacion()" class="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600">
+        🧪 Probar APIs
+      </button>
+      <button (click)="abrirModalEspecie()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+        Nueva Especie
+      </button>
+      <button 
+        (click)="abrirModalRaza()" 
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        Nueva Raza
       </button>
     </div>
-    <div class="overflow-x-auto">
-      <table class="w-full">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vacuna</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Especie</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Frecuencia</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200">
-          <tr *ngFor="let vacuna of vacunas">
-            <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ vacuna.nombre }}</td>
-            <td class="px-6 py-4 text-sm text-gray-500">{{ vacuna.especie }}</td>
-            <td class="px-6 py-4 text-sm text-gray-500">{{ vacuna.frecuencia }}</td>
-            <td class="px-6 py-4 text-sm space-x-2">
-              <button class="text-blue-600 hover:text-blue-800">
-                <!-- Edit SVG -->
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                     viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+  </div>
+
+  <!-- VENTANA DE CONFIGURACIÓN INICIAL (cuando no hay datos) -->
+  <div *ngIf="especies.length === 0 && razas.length === 0" class="max-w-4xl mx-auto">
+    <div class="bg-gradient-to-r from-blue-50 to-green-50 border-2 border-dashed border-blue-300 rounded-lg p-8">
+      <div class="text-center mb-6">
+        <div class="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+          <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-800 mb-2">Configuración Inicial del Sistema</h3>
+        <p class="text-gray-600 max-w-2xl mx-auto">
+          Parece que es la primera vez que accedes a la gestión de especies y razas. 
+          Te ayudamos a configurar la información básica para tu veterinaria.
+        </p>
+      </div>
+
+      <!-- SECCIÓN: ESPECIES -->
+      <div class="bg-white rounded-lg shadow-sm border p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+            <span class="text-green-600 font-bold">1</span>
+          </div>
+          <h4 class="text-lg font-semibold text-gray-800">Crear Especies de Animales</h4>
+        </div>
+        <p class="text-gray-600 mb-4">Las especies son las categorías principales de animales que atiendes (ej: Canino, Felino, Ave, etc.)</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div class="border rounded-lg p-4 hover:bg-gray-50">
+            <div class="flex items-center mb-2">
+              <span class="text-2xl mr-2">🐕</span>
+              <span class="font-medium">Canino</span>
+            </div>
+            <button (click)="crearEspecieRapida('Canino')" class="text-sm bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+              Crear Ahora
+            </button>
+          </div>
+          <div class="border rounded-lg p-4 hover:bg-gray-50">
+            <div class="flex items-center mb-2">
+              <span class="text-2xl mr-2">🐱</span>
+              <span class="font-medium">Felino</span>
+            </div>
+            <button (click)="crearEspecieRapida('Felino')" class="text-sm bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+              Crear Ahora
+            </button>
+          </div>
+          <div class="border rounded-lg p-4 hover:bg-gray-50">
+            <div class="flex items-center mb-2">
+              <span class="text-2xl mr-2">🐦</span>
+              <span class="font-medium">Ave</span>
+            </div>
+            <button (click)="crearEspecieRapida('Ave')" class="text-sm bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+              Crear Ahora
+            </button>
+          </div>
+        </div>
+        
+        <div class="flex justify-center">
+          <button (click)="abrirModalEspecie()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 flex items-center">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Crear Especie Personalizada
+          </button>
+        </div>
+      </div>
+
+      <!-- SECCIÓN: RAZAS (solo se muestra si ya hay especies) -->
+      <div *ngIf="especies.length > 0" class="bg-white rounded-lg shadow-sm border p-6">
+        <div class="flex items-center mb-4">
+          <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+            <span class="text-blue-600 font-bold">2</span>
+          </div>
+          <h4 class="text-lg font-semibold text-gray-800">Crear Razas por Especie</h4>
+        </div>
+        <p class="text-gray-600 mb-4">Ahora puedes agregar razas específicas para cada especie que creaste.</p>
+        
+        <div class="space-y-3">
+          <div *ngFor="let especie of especies" class="border rounded-lg p-4">
+            <div class="flex justify-between items-center">
+              <div class="flex items-center">
+                <span class="text-lg mr-2">
+                  {{ especie.nombre === 'Canino' ? '🐕' : especie.nombre === 'Felino' ? '🐱' : especie.nombre === 'Ave' ? '🐦' : '🐾' }}
+                </span>
+                <span class="font-medium">{{ especie.nombre }}</span>
+                <span class="text-sm text-gray-500 ml-2">
+                  ({{ getRazasPorEspecie(especie.especieId).length }} razas)
+                </span>
+              </div>
+              <button (click)="abrirModalRazaParaEspecie(especie.especieId)" 
+                      class="bg-blue-500 text-white px-4 py-1 rounded text-sm hover:bg-blue-600">
+                Agregar Razas
               </button>
-              <button class="text-red-600 hover:text-red-800">
-                <!-- Trash SVG -->
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                     viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+            
+            <!-- Sugerencias de razas comunes -->
+            <div *ngIf="getRazasPorEspecie(especie.especieId).length === 0" class="mt-3 flex flex-wrap gap-2">
+              <span class="text-xs text-gray-500">Sugerencias:</span>
+              <ng-container *ngIf="especie.nombre === 'Canino'">
+                <button *ngFor="let raza of ['Labrador', 'Golden Retriever', 'Pastor Alemán', 'Bulldog']" 
+                        (click)="crearRazaRapida(raza, especie.especieId)"
+                        class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded hover:bg-gray-200">
+                  {{ raza }}
+                </button>
+              </ng-container>
+              <ng-container *ngIf="especie.nombre === 'Felino'">
+                <button *ngFor="let raza of ['Persa', 'Siamés', 'Maine Coon', 'Bengalí']" 
+                        (click)="crearRazaRapida(raza, especie.especieId)"
+                        class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded hover:bg-gray-200">
+                  {{ raza }}
+                </button>
+              </ng-container>
+              <ng-container *ngIf="especie.nombre === 'Ave'">
+                <button *ngFor="let raza of ['Canario', 'Periquito', 'Loro', 'Cacatúa']" 
+                        (click)="crearRazaRapida(raza, especie.especieId)"
+                        class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded hover:bg-gray-200">
+                  {{ raza }}
+                </button>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTÓN PARA VER TABLAS DETALLADAS -->
+      <div *ngIf="especies.length > 0 || razas.length > 0" class="text-center mt-6">
+        <button (click)="mostrarTablasDetalladas = true" 
+                class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700">
+          Ver Tablas Detalladas
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLAS DETALLADAS (cuando hay datos o se solicita explícitamente) -->
+  <div *ngIf="(especies.length > 0 || razas.length > 0) && (mostrarTablasDetalladas || especies.length > 5 || razas.length > 10)">
+    <!-- Tabla de Especies (siempre visible cuando hay datos) -->
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold mb-3 text-gray-700">📋 Especies Registradas</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full border text-left text-sm border-gray-200 rounded-lg">
+          <thead class="bg-green-50 text-gray-700">
+            <tr>
+              <th class="px-4 py-3 font-semibold">ID</th>
+              <th class="px-4 py-3 font-semibold">Nombre de la Especie</th>
+              <th class="px-4 py-3 font-semibold">Razas Asociadas</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <tr *ngFor="let especie of especies; let i = index" class="hover:bg-gray-50">
+              <td class="px-4 py-3 font-medium text-gray-900">{{ especie.especieId }}</td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                  {{ especie.nombre }}
+                </span>
+              </td>
+              <td class="px-4 py-3">
+                <div *ngIf="getRazasPorEspecie(especie.especieId).length === 0" class="text-gray-400 italic text-sm">
+                  Sin razas registradas para esta especie
+                </div>
+                <div *ngIf="getRazasPorEspecie(especie.especieId).length > 0" class="flex flex-wrap gap-1">
+                  <span *ngFor="let raza of getRazasPorEspecie(especie.especieId)" 
+                        class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800">
+                    {{ raza.nombre }}
+                  </span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tabla de Razas (siempre visible cuando hay datos) -->
+    <div>
+      <h3 class="text-lg font-semibold mb-3 text-gray-700">🐕 Razas Registradas</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full border text-left text-sm border-gray-200 rounded-lg">
+          <thead class="bg-blue-50 text-gray-700">
+            <tr>
+              <th class="px-4 py-3 font-semibold">ID</th>
+              <th class="px-4 py-3 font-semibold">Nombre de la Raza</th>
+              <th class="px-4 py-3 font-semibold">Especie</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <tr *ngFor="let raza of razas; let i = index" class="hover:bg-gray-50">
+              <td class="px-4 py-3 font-medium text-gray-900">{{ raza.razaId }}</td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                  {{ raza.nombre }}
+                </span>
+              </td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                  {{ getEspecieNombre(raza.especieId) }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- SERVICIOS -->
-<div *ngIf="activeTab === 'servicios'">
-  <div class="bg-white rounded-lg shadow">
-    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-      <h2 class="text-xl font-semibold">Catálogo de Servicios</h2>
-      <button class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center">
-        <!-- Plus SVG -->
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-             viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Nuevo Servicio
-      </button>
+<!-- MODAL: Nueva Especie -->
+<div *ngIf="modalEspecieVisible" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+  <div class="bg-white p-6 rounded-md shadow-lg w-full max-w-md relative">
+    <h3 class="text-lg font-semibold mb-4">Registrar Nueva Especie</h3>
+    
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Nombre de la especie</label>
+      <input 
+        [(ngModel)]="nuevaEspecie.nombre" 
+        class="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-green-500 focus:border-green-500" 
+        placeholder="Ej. Canino, Felino, Ave..."
+        maxlength="50"
+        required />
     </div>
-    <div class="overflow-x-auto">
-      <table class="w-full">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Servicio</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Precio</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Duración</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200">
-          <tr *ngFor="let servicio of servicios">
-            <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ servicio.nombre }}</td>
-            <td class="px-6 py-4 text-sm text-gray-500">S/ {{ servicio.precio }}</td>
-            <td class="px-6 py-4 text-sm text-gray-500">{{ servicio.duracion }}</td>
-            <td class="px-6 py-4 text-sm space-x-2">
-              <button class="text-blue-600 hover:text-blue-800">
-                <!-- Edit SVG -->
-                <app-icon-pencil [size]="20"></app-icon-pencil>
-              </button>
-              <button class="text-red-600 hover:text-red-800">
-                <!-- Trash SVG -->
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                     viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    
+    <div class="flex justify-end space-x-2">
+      <button (click)="cerrarModalEspecie()" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition-colors">
+        Cancelar
+      </button>
+      <button 
+        (click)="registrarEspecie()" 
+        [disabled]="!nuevaEspecie.nombre?.trim()"
+        class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors">
+        Registrar Especie
+      </button>
     </div>
   </div>
 </div>
 
-<!-- CONFIGURACIÓN DE TARIFAS (DEFAULT) -->
-<div *ngIf="activeTab !== 'especies-razas' && activeTab !== 'vacunas' && activeTab !== 'servicios'" class="bg-white rounded-lg shadow p-6">
-  <h2 class="text-xl font-semibold mb-4">Configuración de Tarifas</h2>
-  <p class="text-gray-600">Gestión de precios y tarifas por servicio.</p>
+<!-- MODAL: Nueva Raza -->
+<div *ngIf="modalRazaVisible" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+  <div class="bg-white p-6 rounded-md shadow-lg w-full max-w-md relative">
+    <h3 class="text-lg font-semibold mb-4">Registrar Nueva Raza</h3>
+    
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Nombre de la raza</label>
+        <input 
+          [(ngModel)]="nuevaRaza.nombre" 
+          class="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+          placeholder="Ej. Labrador, Persa, Canario..."
+          maxlength="50"
+          required />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Especie</label>
+        <select 
+          [(ngModel)]="nuevaRaza.especieId" 
+          class="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+          required>
+          <option [ngValue]="undefined" disabled>
+            {{ especies.length === 0 ? 'Primero crea una especie desde el botón "Nueva Especie"' : 'Selecciona una especie' }}
+          </option>
+          <option *ngFor="let especie of especies" [ngValue]="especie.especieId">
+            {{ especie.nombre }}
+          </option>
+        </select>
+        <p *ngIf="especies.length === 0" class="text-sm text-blue-600 mt-1">
+          💡 Si no ves especies disponibles, cierra este modal y crea una especie primero.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-6 flex justify-end space-x-2">
+      <button (click)="cerrarModalRaza()" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition-colors">
+        Cancelar
+      </button>
+      <button 
+        (click)="registrarRaza()" 
+        [disabled]="!nuevaRaza.nombre?.trim() || !nuevaRaza.especieId"
+        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors">
+        Registrar Raza
+      </button>
+    </div>
+  </div>
 </div>

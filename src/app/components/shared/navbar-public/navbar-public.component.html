@@ -31,10 +31,12 @@
           <span class="relative z-10">Contacto</span>
           <div class="absolute inset-0 bg-gradient-to-r from-green-100 to-blue-100 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </a>
-        <div class="ml-4 relative">
-          <a href="/agendar">
-          <button class="bg-gradient-to-r from-green-600 via-green-700 to-blue-600 hover:from-green-700 hover:via-green-800 hover:to-blue-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-semibold flex items-center relative">
-            <!-- Calendar SVG icon -->
+      </div>
+
+      <!-- Botones -->
+      <div class="flex items-center space-x-2">
+        <a href="/agendar">
+          <button class="bg-gradient-to-r from-green-600 via-green-700 to-blue-600 hover:from-green-700 hover:via-green-800 hover:to-blue-700 text-white px-4 py-2 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-semibold flex items-center relative">
             <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor"/>
               <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor"/>
@@ -42,8 +44,13 @@
             Agendar Cita
             <div class="absolute inset-0 bg-white/20 rounded-xl opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
           </button>
-          </a>
-        </div>
+        </a>
+        <a routerLink="/login">
+          <button class="bg-gradient-to-r from-gray-800 via-gray-900 to-black hover:from-gray-700 hover:via-gray-800 hover:to-black text-white px-4 py-2 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-semibold flex items-center relative">
+            Iniciar sesión
+            <div class="absolute inset-0 bg-white/20 rounded-xl opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+          </button>
+        </a>
       </div>
 
       <!-- Botón menú móvil -->
@@ -56,19 +63,6 @@
           </div>
         </button>
       </div>
-    </div>
-    <!-- Menú móvil -->
-    <div *ngIf="isMenuOpen" class="md:hidden mt-2 bg-white rounded-lg shadow-lg p-4 space-y-2">
-      <a href="#servicios" class="block px-4 py-2 text-gray-700 hover:text-green-600 rounded-lg hover:bg-green-50">Servicios</a>
-      <a href="#nosotros" class="block px-4 py-2 text-gray-700 hover:text-green-600 rounded-lg hover:bg-green-50">Nosotros</a>
-      <a href="#contacto" class="block px-4 py-2 text-gray-700 hover:text-green-600 rounded-lg hover:bg-green-50">Contacto</a>
-      <button class="w-full bg-gradient-to-r from-green-600 via-green-700 to-blue-600 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 font-semibold flex items-center justify-center mt-2">
-        <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor"/>
-          <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor"/>
-        </svg>
-        Agendar Cita
-      </button>
     </div>
   </div>
 </nav>

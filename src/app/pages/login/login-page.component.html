@@ -1,3 +1,84 @@
 <main class="min-h-screen bg-gradient-to-br from-cyan-900 to-emerald-900 flex items-center justify-center p-4">
-  <app-login></app-login >
+  <section class="bg-white p-6 rounded-xl shadow-lg w-full max-w-sm group">
+    
+    <!-- Nuevo logo SVG con fondo -->
+    <div class="flex justify-center mb-6">
+      <div class="bg-gradient-to-br from-green-500 via-green-600 to-blue-600 p-3 rounded-xl shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
+        <svg fill="currentColor" viewBox="0 0 24 24" class="h-7 w-7 text-white group-hover:animate-pulse">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 
+                   2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09
+                   C13.09 3.81 14.76 3 16.5 3 
+                   19.58 3 22 5.42 22 8.5
+                   c0 3.78-3.4 6.86-8.55 11.54L12 21.35z">
+          </path>
+        </svg>
+      </div>
+    </div>
+
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Inicia sesión en tu cuenta</h2>
+
+    <form (ngSubmit)="login()" class="space-y-4">
+      <!-- Usuario -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Usuario</label>
+        <div class="relative">
+          <input
+            type="text"
+            [(ngModel)]="username"
+            name="username"
+            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring focus:border-blue-300"
+            placeholder="usuario@example.com"
+            required
+          />
+          <svg xmlns="http://www.w3.org/2000/svg" class="absolute right-3 top-3 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A7 7 0 0112 15a7 7 0 016.879 2.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Contraseña -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Contraseña</label>
+        <div class="relative">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            [(ngModel)]="password"
+            name="password"
+            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring focus:border-blue-300"
+            placeholder="••••••••"
+            required
+          />
+          <button type="button" (click)="togglePassword()" class="absolute right-3 top-2.5 text-gray-500">
+            <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.269-2.944-9.543-7a9.97 9.97 0 012.12-3.362M6.1 6.1l11.8 11.8M3 3l18 18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Recordarme y olvidé contraseña -->
+      <div class="flex items-center justify-between text-sm text-gray-600">
+        <label class="flex items-center space-x-2">
+          <input type="checkbox" class="form-checkbox rounded text-blue-600">
+          <span>Recordarme</span>
+        </label>
+        <a href="#" class="text-blue-600 hover:underline">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      <!-- Mensaje de error -->
+      <div *ngIf="error" class="text-red-600 text-sm text-center">{{ error }}</div>
+
+      <!-- Botón de login -->
+      <button
+        type="submit"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition"
+      >
+        Iniciar sesión
+      </button>
+    </form>
+  </section>
 </main>
