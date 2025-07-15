@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // Importa tus componentes standalone
@@ -27,11 +27,7 @@ import { MaintenanceSecurityComponent } from '../../components/admin/maintenance
   styleUrls: ['./admin-dashboard.component.css']
 })
 export class AdminDashboardComponent {
-  activeSection = 'lista-usuarios';
-
-  setActiveSection(section: string) {
-    this.activeSection = section;
-  }
+  @Input() activeSection: string = 'lista-usuarios';
 
   // Renderiza el componente correspondiente
   renderContent() {
