@@ -8,12 +8,25 @@ import { AsistenteSidebarComponent } from '../../components/shared/asistente-sid
   standalone: true,
   imports: [CommonModule, RouterOutlet, AsistenteSidebarComponent],
   template: `
-    <div class="flex h-screen bg-gray-50">
+    <div class="layout-container">
       <app-asistente-sidebar />
-      <main class="flex-1 overflow-y-auto p-6">
+      <main class="main-content">
         <router-outlet></router-outlet>
       </main>
     </div>
-  `
+  `,
+  styles: [`
+    .layout-container {
+      display: flex;
+      min-height: 100vh;
+    }
+    .main-content {
+      flex: 1;
+      margin-left: 80px;
+      padding: 20px;
+      background: #f8fafc;
+      padding-top: 64px; /* Altura del navbar fijo */
+    }
+  `]
 })
 export class AsistenteLayoutComponent {}

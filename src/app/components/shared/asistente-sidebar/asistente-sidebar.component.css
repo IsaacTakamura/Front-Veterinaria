@@ -1,0 +1,189 @@
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+  transition: background 0.2s, color 0.2s;
+  text-decoration: none;
+  font-size: 1rem;
+}
+.sidebar-link:hover {
+  background: linear-gradient(90deg, #34d39922 0%, #1e3a8a22 100%);
+  color: #0e7490;
+}
+.sidebar-link-active {
+  background: linear-gradient(90deg, #34d39955 0%, #1e3a8a55 100%);
+  color: #0e7490;
+  font-weight: 600;
+}
+.sidebar-link .w-8 {
+  min-width: 2rem;
+  min-height: 2rem;
+}
+.sidebar-link svg {
+  display: block;
+}
+.bg-gradient-to-br {
+  background: linear-gradient(135deg, #34d399 0%, #1e3a8a 100%);
+}
+.bg-gradient-to-br.from-emerald-400.to-blue-900 {
+  background: linear-gradient(135deg, #34d399 0%, #1e3a8a 100%);
+}
+.bg-gradient-to-br.from-blue-900.to-emerald-400 {
+  background: linear-gradient(135deg, #1e3a8a 0%, #34d399 100%);
+}
+
+.sidebar-compact {
+  width: 80px;
+  height: calc(100vh - 64px);
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  left: 0;
+  top: 64px;
+  z-index: 10;
+}
+
+.sidebar-header {
+  margin-bottom: 40px;
+}
+
+.icon-container {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+  transition: all 0.3s ease;
+}
+
+.icon-container:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-item {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+  position: relative;
+  text-decoration: none;
+}
+
+.nav-item:hover {
+  transform: scale(1.1);
+}
+
+.icon-wrapper {
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.icon-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit;
+  border-radius: 15px;
+  opacity: 0.1;
+  transition: all 0.3s ease;
+}
+
+.icon-wrapper svg,
+.icon-container svg {
+  width: 24px;
+  height: 24px;
+  color: #fff !important;
+  fill: #fff !important;
+  stroke: #fff !important;
+  opacity: 1 !important;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.enfermera-icon {
+  background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+}
+
+.enfermera-icon:hover {
+  box-shadow: 0 6px 20px rgba(0, 212, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+.agendar-icon {
+  background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+}
+
+.agendar-icon:hover {
+  box-shadow: 0 6px 20px rgba(255, 107, 157, 0.6);
+  transform: translateY(-2px);
+}
+
+.nav-item.active .icon-wrapper {
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+}
+
+.nav-item.active .enfermera-icon {
+  background: linear-gradient(135deg, #00ffff 0%, #00b3e6 100%);
+  box-shadow: 0 8px 25px rgba(0, 255, 255, 0.6);
+}
+
+.nav-item.active .agendar-icon {
+  background: linear-gradient(135deg, #ff8fab 0%, #e84393 100%);
+  box-shadow: 0 8px 25px rgba(255, 143, 171, 0.6);
+}
+
+/* Tooltip para mostrar el nombre al hacer hover */
+.nav-item::after {
+  content: attr(title);
+  position: absolute;
+  left: 60px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+}
+
+.nav-item:hover::after {
+  opacity: 1;
+}
