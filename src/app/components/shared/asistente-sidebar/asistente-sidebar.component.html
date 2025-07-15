@@ -6,16 +6,24 @@
   </div>
 
   <nav class="sidebar-nav">
-    <a routerLink="/enfermera" routerLinkActive="active" class="nav-item" title="Enfermera">
+    <button type="button"
+      class="nav-item"
+      [ngClass]="activeSection === 'hoy' ? 'active' : ''"
+      title="Enfermera"
+      (click)="goTo('hoy')">
       <div class="icon-wrapper enfermera-icon">
         <app-icon-calendar size="24" color="#ffffff" strokeColor="#ffffff" strokeWidth="2" />
       </div>
-    </a>
+    </button>
 
-    <a routerLink="/agendar" routerLinkActive="active" class="nav-item" title="Agendar">
+    <button type="button"
+      class="nav-item"
+      [ngClass]="activeSection === 'agendar' ? 'active' : ''"
+      title="Agendar"
+      (click)="goTo('agendar')">
       <div class="icon-wrapper agendar-icon">
         <app-icon-document size="24" color="#ffffff" strokeColor="#ffffff" strokeWidth="2" />
       </div>
-    </a>
+    </button>
   </nav>
 </aside>

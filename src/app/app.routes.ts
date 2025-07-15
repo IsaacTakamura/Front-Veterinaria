@@ -9,6 +9,7 @@ import { AdminIndexPageComponent } from './pages/admin-index/admin-index-page.co
 import { AgendarPageComponent } from './pages/agendar/agendar-page.component';
 import { EnfermeraPageComponent } from './pages/enfermera/enfermera-page.component';
 import { AsistenteLayoutComponent } from './layouts/asistente-layout/asistente-layout.component';
+import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { authGuard } from './core/guard/auth.guard';
 
 export const routes: Routes = [
@@ -40,12 +41,19 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/veterinario/veterinario-page.component').then((m) => m.VeterinarioPageComponent),
   },
+  // Agrupar admin bajo su layout
   {
     path: 'admin',
+    component: AdminLayoutComponent,
     canActivate: [authGuard],
     data: { roles: ['ADMIN'] },
-    loadComponent: () =>
-      import('./pages/admin-index/admin-index-page.component').then((m) => m.AdminIndexPageComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/admin-index/admin-index-page.component').then((m) => m.AdminIndexPageComponent),
+      },
+    ],
   },
   {
     path: '',
