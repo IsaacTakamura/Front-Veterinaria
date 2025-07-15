@@ -4,20 +4,21 @@
     (click)="closeModal($event)"
   >
     <div
-      class="bg-white rounded-lg shadow-xl w-full max-w-md"
+      class="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[85vh] overflow-y-auto"
       (click)="$event.stopPropagation()"
     >
       <!-- Header -->
-      <div class="border-b p-4">
+      <div class="border-b p-3">
         <h2 class="text-lg font-semibold">Detalles de la Cita</h2>
         <p class="text-sm text-gray-500">Información completa de la cita agendada.</p>
       </div>
 
       <!-- Content -->
-      <div class="p-4 space-y-4">
+      <div class="p-3 space-y-3">
         @if (cita()) {
+          <!-- Información básica de la cita -->
           <div class="flex justify-between items-center">
-            <h3 class="text-lg font-semibold">{{ cita().paciente }}</h3>
+            <h3 class="text-lg font-semibold">{{ cita().paciente || 'Cargando...' }}</h3>
             <span
               class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {{ getBadgeColor(cita().estado) }}"
             >
@@ -25,62 +26,111 @@
             </span>
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <p class="text-sm font-medium text-gray-500">Especie</p>
-              <p>{{ cita().especie }}</p>
+          <!-- Indicador de carga -->
+          @if (cargando()) {
+            <div class="flex items-center justify-center py-4">
+              <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+              <span class="ml-2 text-gray-600 text-sm">Cargando información...</span>
             </div>
-            <div>
-              <p class="text-sm font-medium text-gray-500">Raza</p>
-              <p>{{ cita().raza }}</p>
-            </div>
-            <div>
-              <p class="text-sm font-medium text-gray-500">Edad</p>
-              <p>{{ cita().edad }}</p>
-            </div>
-            <div>
-              <p class="text-sm font-medium text-gray-500">Hora de Cita</p>
-              <p>{{ cita().hora }}</p>
+          }
+
+          <!-- Información de la mascota -->
+          <div class="border-t pt-3">
+            <h4 class="font-medium mb-2 text-blue-600 text-sm">Información de la Mascota</h4>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              <div>
+                <p class="text-xs font-medium text-gray-500">Nombre</p>
+                <p class="font-semibold">{{ mascotaCompleta()?.nombre || cita().paciente || 'No disponible' }}</p>
+              </div>
+              <div>
+                <p class="text-xs font-medium text-gray-500">Edad</p>
+                <p>{{ mascotaCompleta()?.edad || cita().edad || 'No disponible' }} años</p>
+              </div>
+              <div>
+                <p class="text-xs font-medium text-gray-500">Estado</p>
+                <p>{{ mascotaCompleta()?.estado || 'No disponible' }}</p>
+              </div>
+              <div>
+                <p class="text-xs font-medium text-gray-500">Especie</p>
+                <p>{{ razaMascota() ? (razaMascota()?.especieId === 1 ? 'Perro' : 'Gato') : cita().especie || 'No disponible' }}</p>
+              </div>
+              <div class="col-span-2">
+                <p class="text-xs font-medium text-gray-500">Raza</p>
+                <p>{{ razaMascota()?.nombre || cita().raza || 'No disponible' }}</p>
+              </div>
             </div>
           </div>
 
-          <div class="border-t pt-4">
-            <h4 class="font-medium mb-2">Información del Propietario</h4>
-            <div class="grid grid-cols-1 gap-3">
+          <!-- Información del propietario -->
+          <div class="border-t pt-3">
+            <h4 class="font-medium mb-2 text-green-600 text-sm">Información del Propietario</h4>
+            <div class="grid grid-cols-2 gap-2 text-sm">
               <div>
-                <p class="text-sm font-medium text-gray-500">Nombre</p>
-                <p>{{ cita().propietario }}</p>
+                <p class="text-xs font-medium text-gray-500">Nombre</p>
+                <p class="font-semibold">{{ clienteCompleto()?.nombre || cita().propietario || 'No disponible' }}</p>
               </div>
               <div>
-                <p class="text-sm font-medium text-gray-500">Teléfono</p>
-                <div class="flex items-center gap-2">
-                  <p>{{ cita().telefono }}</p>
-                  <button
-                    class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 w-8"
-                    title="Llamar"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                    </svg>
-                    <span class="sr-only">Llamar</span>
-                  </button>
+                <p class="text-xs font-medium text-gray-500">Apellido</p>
+                <p>{{ clienteCompleto()?.apellido || 'No disponible' }}</p>
+              </div>
+              <div>
+                <p class="text-xs font-medium text-gray-500">Teléfono</p>
+                <div class="flex items-center gap-1">
+                  <p>{{ clienteCompleto()?.telefono || cita().telefono || 'No disponible' }}</p>
+                  @if (clienteCompleto()?.telefono || cita().telefono) {
+                    <button
+                      class="inline-flex items-center justify-center rounded-md text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-6 w-6"
+                      title="Llamar"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                      </svg>
+                      <span class="sr-only">Llamar</span>
+                    </button>
+                  }
                 </div>
               </div>
+              <div>
+                <p class="text-xs font-medium text-gray-500">Email</p>
+                <p class="truncate">{{ clienteCompleto()?.email || 'No disponible' }}</p>
+              </div>
+              <div class="col-span-2">
+                <p class="text-xs font-medium text-gray-500">Dirección</p>
+                <p class="text-xs">{{ clienteCompleto()?.direccion || 'No disponible' }}</p>
+              </div>
+              <div>
+                <p class="text-xs font-medium text-gray-500">Ciudad</p>
+                <p>{{ clienteCompleto()?.ciudad || 'No disponible' }}</p>
+              </div>
             </div>
           </div>
 
-          <div class="border-t pt-4">
-            <h4 class="font-medium mb-2">Motivo de la Consulta</h4>
-            <p>{{ cita().motivo }}</p>
+          <!-- Información de la cita -->
+          <div class="border-t pt-3">
+            <h4 class="font-medium mb-2 text-purple-600 text-sm">Información de la Cita</h4>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              <div>
+                <p class="text-xs font-medium text-gray-500">Fecha de Registro</p>
+                <p>{{ cita().fechaRegistro | date:'dd/MM/yyyy' }}</p>
+              </div>
+              <div>
+                <p class="text-xs font-medium text-gray-500">Hora de Cita</p>
+                <p>{{ cita().hora || 'No disponible' }}</p>
+              </div>
+              <div class="col-span-2">
+                <p class="text-xs font-medium text-gray-500">Motivo de la Consulta</p>
+                <p class="bg-gray-50 p-2 rounded-md text-xs">{{ cita().motivo || 'No especificado' }}</p>
+              </div>
+            </div>
           </div>
         }
       </div>
 
       <!-- Footer -->
-      <div class="border-t p-4 flex justify-end">
+      <div class="border-t p-3 flex justify-end">
         <button
-          (click)="onClose.emit()"
-          class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+          (click)="cerrarModal()"
+          class="px-3 py-1.5 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors text-sm"
         >
           Cerrar
         </button>

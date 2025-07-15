@@ -1,0 +1,58 @@
+/* Evita que la tabla se desborde horizontalmente */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Opcional: Asegura que la tabla ocupe el 100% del contenedor */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Opcional: Ajusta el tamaño mínimo de las celdas para evitar desbordes */
+th, td {
+  min-width: 120px;
+  word-break: break-word;
+}
+
+/* Opcional: Oculta el scroll horizontal si no es necesario */
+.table-responsive::-webkit-scrollbar {
+  height: 6px;
+}
+
+/* Evita que la tabla se desborde del contenedor */
+.tabla-container {
+  width: 100%;
+  overflow-x: auto;
+  padding: 8px;
+  box-sizing: border-box;
+}
+/* Reemplazo de clases Tailwind para la tabla */
+.tabla-citas {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+}
+
+.tabla-citas thead {
+  background-color: #f3f4f6; /* Equivale a bg-gray-100 */
+}
+
+.tabla-citas th,
+.tabla-citas td {
+  border: 1px solid #e5e7eb; /* border-gray-300 */
+  padding: 0.5rem;
+  text-align: left;
+  white-space: nowrap; /* Para que no se rompan las celdas */
+}
+
+.tabla-citas tbody tr:nth-child(even) {
+  background-color: #f9fafb; /* zebra effect */
+}
+
+.tabla-citas tbody tr:hover {
+  background-color: #e5e7eb;
+  transition: background-color 0.2s ease;
+}

@@ -1,4 +1,4 @@
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
   <!-- Tarjeta del Calendario -->
   <div class="md:col-span-1 border rounded-lg shadow-sm">
     <div class="p-4 border-b">
@@ -50,7 +50,7 @@
   </div>
 
   <!-- Tarjeta de Citas del Día -->
-  <div class="md:col-span-2 border rounded-lg shadow-sm">
+  <div class="md:col-span-3 border rounded-lg shadow-sm">
     <div class="p-4 border-b">
       <h2 class="text-lg font-semibold">
         Citas para el {{ fechaSeleccionada() | date:'fullDate' }}
@@ -58,8 +58,10 @@
     </div>
     <div class="p-4">
       @if (citasDelDia().length > 0) {
-      <app-tabla-citas [citas]="citasDelDia()" (onTriaje)="abrirModalTriaje($event)"
+      <div class="tabla-container">
+        <app-tabla-citas [citas]="citasDelDia()" (onTriaje)="abrirModalTriaje($event)"
         (onHistorial)="abrirModalHistorial($event)" (onDetalles)="abrirModalDetalles($event)" />
+      </div>
       } @else {
       <p class="text-center py-6 text-gray-500">
         No hay citas programadas para este día.
@@ -71,7 +73,7 @@
   <!-- Modales -->
   @if (citaSeleccionada()) {
   <app-triaje-modal [isOpen]="modalTriajeAbierto()" [cita]="citaSeleccionada()"
-    (closeModal)="modalTriajeAbierto.set(false)"></app-triaje-modal>
+    (closeModal)="modalTriajeAbierto.set(false)" (triajeCreado)="onTriajeCreado($event)"></app-triaje-modal>
   <app-historial-modal [isOpenValue]="modalHistorialAbierto()" [citaData]="citaSeleccionada()"
     (onClose)="modalHistorialAbierto.set(false)" />
   <app-detalles-cita-modal [isOpenValue]="modalDetallesAbierto()" [citaData]="citaSeleccionada()"

@@ -1,8 +1,8 @@
-<ng-container *ngIf="isOpenSignal()"> <!-- ✅ Usar la señal como función -->
+<ng-container *ngIf="isOpenSignal()">
   <div class="fixed inset-0 bg-black/50 z-40"></div>
-  <div class="fixed inset-0 z-50 flex items-center justify-center">
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-lg w-full max-w-xl p-6 shadow-lg">
-      <h2 class="text-lg font-bold mb-1">Triaje para {{ cita?.paciente }}</h2>
+      <h2 class="text-lg font-bold mb-1">Triaje para {{ getNombreMascota() }}</h2>
       <p class="text-sm text-gray-600 mb-4">
         Registra los signos vitales y observaciones iniciales del paciente.
       </p>
@@ -10,36 +10,117 @@
       <form [formGroup]="triajeForm" (ngSubmit)="onSubmit()" class="grid gap-4">
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium">Temperatura (°C)</label>
-            <input type="number" step="0.1" formControlName="temperatura" class="input" required />
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Temperatura (°C)
+              <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              step="0.1"
+              formControlName="temperatura"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="37.5"
+              [class.border-red-500]="triajeForm.get('temperatura')?.invalid && triajeForm.get('temperatura')?.touched"
+              required
+            />
+            <div *ngIf="triajeForm.get('temperatura')?.invalid && triajeForm.get('temperatura')?.touched" class="text-red-500 text-xs mt-1">
+              Temperatura debe estar entre 30°C y 45°C
+            </div>
           </div>
 
           <div>
-            <label class="block text-sm font-medium">Peso (kg)</label>
-            <input type="number" step="0.1" formControlName="peso" class="input" required />
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Peso (kg)
+              <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              step="0.1"
+              formControlName="peso"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="5.2"
+              [class.border-red-500]="triajeForm.get('peso')?.invalid && triajeForm.get('peso')?.touched"
+              required
+            />
+            <div *ngIf="triajeForm.get('peso')?.invalid && triajeForm.get('peso')?.touched" class="text-red-500 text-xs mt-1">
+              Peso debe estar entre 0.1kg y 200kg
+            </div>
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium">Frecuencia Cardíaca (lpm)</label>
-            <input type="number" formControlName="frecuenciaCardiaca" class="input" required />
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Frecuencia Cardíaca (lpm)
+              <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              formControlName="frecuenciaCardiaca"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="120"
+              [class.border-red-500]="triajeForm.get('frecuenciaCardiaca')?.invalid && triajeForm.get('frecuenciaCardiaca')?.touched"
+              required
+            />
+            <div *ngIf="triajeForm.get('frecuenciaCardiaca')?.invalid && triajeForm.get('frecuenciaCardiaca')?.touched" class="text-red-500 text-xs mt-1">
+              Frecuencia debe estar entre 40 y 300 lpm
+            </div>
           </div>
 
           <div>
-            <label class="block text-sm font-medium">Frecuencia Respiratoria (rpm)</label>
-            <input type="number" formControlName="frecuenciaRespiratoria" class="input" required />
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Frecuencia Respiratoria (rpm)
+              <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              formControlName="frecuenciaRespiratoria"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="20"
+              [class.border-red-500]="triajeForm.get('frecuenciaRespiratoria')?.invalid && triajeForm.get('frecuenciaRespiratoria')?.touched"
+              required
+            />
+            <div *ngIf="triajeForm.get('frecuenciaRespiratoria')?.invalid && triajeForm.get('frecuenciaRespiratoria')?.touched" class="text-red-500 text-xs mt-1">
+              Frecuencia debe estar entre 10 y 100 rpm
+            </div>
           </div>
         </div>
 
         <div>
-          <label class="block text-sm font-medium">Observaciones</label>
-          <textarea formControlName="observaciones" rows="3" class="input resize-none"></textarea>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Observaciones
+          </label>
+          <textarea
+            formControlName="observaciones"
+            rows="3"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+            placeholder="Observaciones adicionales sobre el estado del paciente..."
+          ></textarea>
+        </div>
+
+        <!-- Indicador de carga -->
+        <div *ngIf="cargando()" class="flex items-center justify-center py-2">
+          <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+          <span class="ml-2 text-gray-600 text-sm">Guardando triaje...</span>
         </div>
 
         <div class="flex justify-end gap-2 mt-4">
-          <button type="button" (click)="onCancel()" class="btn-outline">Cancelar</button>
-          <button type="submit" class="btn-primary">Guardar y enviar a veterinario</button>
+          <button
+            type="button"
+            (click)="onCancel()"
+            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+            [disabled]="cargando()"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="isFormDisabled()"
+          >
+            <span *ngIf="!cargando()">Guardar y enviar a veterinario</span>
+            <span *ngIf="cargando()">Guardando...</span>
+          </button>
         </div>
       </form>
     </div>

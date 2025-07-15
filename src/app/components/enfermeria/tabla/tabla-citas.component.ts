@@ -1,36 +1,33 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule, NgClass, NgIf, NgFor } from '@angular/common';
+import { EstadoCitaColorPipe } from '../../shared/pipes/estado-cita-color.pipe';
+import { CitaTabla } from '../../shared/interfaces/cita-tabla.model';
+import { IconStethoscopeComponent } from '../../icons/icon-stethoscope.component';
 
 @Component({
   selector: 'app-tabla-citas',
   templateUrl: './tabla-citas.component.html',
-  styleUrls: ['./tabla-citas.component.css'],
-  imports: [CommonModule],
-  standalone: true
+  standalone: true,
+  imports: [CommonModule, NgClass, NgIf, NgFor, EstadoCitaColorPipe, IconStethoscopeComponent]
 })
 export class TablaCitasComponent {
-  @Input() citas: any[] = [];
-  @Output() onTriaje = new EventEmitter<any>();
-  @Output() onHistorial = new EventEmitter<any>();
-  @Output() onDetalles = new EventEmitter<any>();
+  @Input() citas: CitaTabla[] = [];
+  @Output() onTriaje = new EventEmitter<CitaTabla>();
+  @Output() onHistorial = new EventEmitter<CitaTabla>();
+  @Output() onDetalles = new EventEmitter<CitaTabla>();
 
-  getBadgeColor(estado: string): string {
-    switch (estado) {
-      case 'pendiente':
-        return 'bg-yellow-500 hover:bg-yellow-600';
-      case 'en-triaje':
-        return 'bg-blue-500 hover:bg-blue-600';
-      case 'con-veterinario':
-        return 'bg-purple-500 hover:bg-purple-600';
-      case 'completada':
-        return 'bg-green-500 hover:bg-green-600';
-      default:
-        return '';
-    }
+  emitirTriaje(cita: CitaTabla) {
+    this.onTriaje.emit(cita);
+  }
+  emitirHistorial(cita: CitaTabla) {
+    this.onHistorial.emit(cita);
+  }
+  emitirDetalles(cita: CitaTabla) {
+    this.onDetalles.emit(cita);
   }
 
   getEstadoTexto(estado: string): string {
-    switch (estado) {
+    switch (estado?.toLowerCase()) {
       case 'pendiente':
         return 'Pendiente';
       case 'en-triaje':

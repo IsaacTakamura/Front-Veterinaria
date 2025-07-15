@@ -1,0 +1,29 @@
+<button class="btn" (click)="abrirModal()">Buscar Cliente</button>
+
+<div *ngIf="mostrarModal" class="modal-backdrop">
+  <div class="modal-card">
+    <h3>Buscar Cliente</h3>
+    <input [formControl]="searchControl" placeholder="Nombre del cliente" />
+
+    <ul *ngIf="resultados && resultados.length > 0">
+      <li *ngFor="let c of resultados" class="cliente-item">
+        <div class="cliente-info">
+          <strong>{{ c.nombre }} {{ c.apellido }}</strong>
+          <div class="cliente-detalles">
+            <div *ngIf="c.telefono">📞 {{ c.telefono }}</div>
+            <div *ngIf="c.email">✉️ {{ c.email }}</div>
+          </div>
+        </div>
+        <button class="btn-seleccionar" (click)="seleccionar(c)">
+          Seleccionar
+        </button>
+      </li>
+    </ul>
+    
+    <div *ngIf="resultados && resultados.length === 0" class="no-resultados">
+      No se encontraron clientes
+    </div>
+
+    <button class="btn-cerrar" (click)="mostrarModal = false">Cerrar</button>
+  </div>
+</div>
