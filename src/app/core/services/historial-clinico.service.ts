@@ -9,7 +9,7 @@ export class HistorialClinicoService {
   private apiAsistente = '/api/v1/asistente';
   private apiVet = '/api/v1/vet';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   //* No olvidar que CasosClinicos es igual a HistorialClinico, pero así está en la API
 
@@ -17,16 +17,19 @@ export class HistorialClinicoService {
   listarHistorialPorMascota(mascotaId: number): Observable<Visita[]> {
     return this.http.get<Visita[]>(`${this.apiAsistente}/CasosClinicos/mascota/${mascotaId}`);
   }
+  /*  */
 
   // Listar todas las visitas
   listarTodasVisitas(): Observable<Visita[]> {
     return this.http.get<Visita[]>(`${this.apiAsistente}/ListarTodasLasVisitas`);
   }
+  /*  */
 
   // Listar Casos Clínicos por id de caso clínico
   listarCasoClinicoPorId(casoClinicoId: number): Observable<Visita> {
     return this.http.get<Visita>(`${this.apiAsistente}/listarCasoClinicos/${casoClinicoId}`);
   }
+  /*  */
 
   // Listar servicios
   listarServicios(): Observable<{ data: { servicioId: number; nombre: string }[] }> {

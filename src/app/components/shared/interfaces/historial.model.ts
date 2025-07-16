@@ -2,6 +2,6 @@
 export interface Visita {
   visitaId: number;
   tipoVisita: string;
-  casoClinico: string;
+  casoClinicoId: number;
   fecha: string;
 }
