@@ -1,0 +1,29 @@
+<button class="btn" (click)="abrirModal()">Buscar Mascota</button>
+
+<div *ngIf="mostrarModal" class="modal-backdrop">
+  <div class="modal-card">
+    <h3>Buscar Mascota</h3>
+    <input [formControl]="searchControl" placeholder="Nombre de la mascota" />
+
+    <ul *ngIf="resultados && resultados.length > 0">
+      <li *ngFor="let m of resultados" class="mascota-item">
+        <div class="mascota-info">
+          <strong>{{ m.nombre }}</strong>
+          <div class="mascota-detalles">
+            <div *ngIf="m.edad">🎂 {{ m.edad }} años</div>
+            <div *ngIf="m.estado">💚 {{ m.estado }}</div>
+          </div>
+        </div>
+        <button class="btn-seleccionar" (click)="seleccionar(m)">
+          Seleccionar
+        </button>
+      </li>
+    </ul>
+
+    <div *ngIf="resultados && resultados.length === 0" class="no-resultados">
+      No se encontraron mascotas
+    </div>
+
+    <button class="btn-cerrar" (click)="mostrarModal = false">Cerrar</button>
+  </div>
+</div>

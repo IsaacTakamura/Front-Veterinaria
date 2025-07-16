@@ -1,4 +1,16 @@
 <div class="agendar-cita-container">
+  <!-- Sistema de avisos -->
+  <div *ngIf="mostrarAviso()" class="aviso-container" [ngClass]="{'aviso-exito': tipoAviso() === 'exito', 'aviso-error': tipoAviso() === 'error'}">
+    <div class="aviso-contenido">
+      <div class="aviso-icono">
+        <span *ngIf="tipoAviso() === 'exito'">✅</span>
+        <span *ngIf="tipoAviso() === 'error'">❌</span>
+      </div>
+      <div class="aviso-mensaje">{{ mensajeAviso() }}</div>
+      <button class="aviso-cerrar" (click)="cerrarAviso()">×</button>
+    </div>
+  </div>
+
   <!-- Título y descripción -->
   <h1 class="text-3xl font-bold text-gray-800 mb-2">Agendar Cita</h1>
   <p class="text-gray-500 mb-6">Complete el formulario para agendar una cita para su mascota</p>
@@ -28,17 +40,10 @@
         </form>
       </div>
       <ng-template #buscarCliente>
-        <div class="mb-4 space-y-2">
-          <input type="text" #clienteInput placeholder="Buscar cliente por nombre" class="input" />
-          <button class="btn" type="button" (click)="buscarClientePorNombre(clienteInput.value)">Buscar</button>
-          <div *ngIf="clienteEncontrado()" class="bg-green-100 text-green-800 px-3 py-2 rounded-md text-sm">
-            <strong>Cliente encontrado:</strong>
-            {{ clienteEncontrado()?.nombre }} {{ clienteEncontrado()?.apellido }}
-            <button type="button" class="ml-4 text-sm underline text-emerald-700 hover:text-emerald-900"
-              (click)="usarClienteExistente()">
-              Usar este cliente
-            </button>
-          </div>
+        <app-cliente-selector (clienteSeleccionado)="onClienteSeleccionado($event)"></app-cliente-selector>
+        <div *ngIf="clienteEncontrado()" class="bg-green-100 text-green-800 px-3 py-2 rounded-md text-sm mt-4">
+          <strong>Cliente seleccionado:</strong>
+          {{ clienteEncontrado()?.nombre }} {{ clienteEncontrado()?.apellido }}
         </div>
       </ng-template>
     </div>
@@ -69,17 +74,11 @@
         </form>
       </div>
       <ng-template #buscarMascota>
-        <div class="mb-4 space-y-2">
-          <input type="text" #mascotaInput placeholder="Buscar mascota por nombre" class="input" />
-          <button class="btn" type="button" (click)="buscarMascotaPorNombre(mascotaInput.value)">Buscar</button>
-          <div *ngIf="mascotaEncontrada()" class="bg-green-100 text-green-800 px-3 py-2 rounded-md text-sm">
-            <strong>Mascota encontrada:</strong>
-            {{ mascotaEncontrada()?.nombre }}
-            <button type="button" class="ml-4 text-sm underline text-emerald-700 hover:text-emerald-900"
-              (click)="usarMascotaExistente()">
-              Usar esta mascota
-            </button>
-          </div>
+        <app-mascota-selector (mascotaSeleccionada)="onMascotaSeleccionada($event)"></app-mascota-selector>
+        <div *ngIf="mascotaEncontrada()" class="bg-green-100 text-green-800 px-3 py-2 rounded-md text-sm mt-4">
+          <strong>Mascota seleccionada:</strong>
+          {{ mascotaEncontrada()?.nombre }}
+          <span *ngIf="mascotaEncontrada()?.edad"> - {{ mascotaEncontrada()?.edad }} años</span>
         </div>
       </ng-template>
     </div>
@@ -94,9 +93,10 @@
       <select class="input" formControlName="veterinarioId" required>
         <option [ngValue]="null" disabled selected>Seleccione un veterinario disponible</option>
         <option *ngFor="let vet of veterinarios" [ngValue]="vet.veterinarioId">
-          {{ vet.nombre }}
+          {{ vet.nombre }} {{ vet.apellido }}
         </option>
       </select>
+
       <div class="grid grid-cols-2 gap-4">
         <input class="input" type="date" formControlName="fecha" />
         <input class="input" type="time" formControlName="hora" />

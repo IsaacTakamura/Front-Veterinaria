@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FooterComponent } from '../../components/shared/footer/footer.component';
 
 
 @Component({
@@ -9,6 +10,7 @@ import { RouterModule } from '@angular/router';
   imports: [
     CommonModule,
     RouterModule,
+    FooterComponent,
   ],
   templateUrl: './index-page.component.html',
   styleUrls: ['./index-page.component.css']

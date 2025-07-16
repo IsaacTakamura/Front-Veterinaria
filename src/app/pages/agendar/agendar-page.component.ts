@@ -13,6 +13,11 @@ import { Cita } from '../../components/shared/interfaces/cita.model';
 import { Cliente } from '../../components/shared/interfaces/cliente.model';
 import { Mascota } from '../../components/shared/interfaces/mascota.model';
 import { Raza } from '../../components/shared/interfaces/Raza.model';
+import { Veterinario } from '../../components/shared/interfaces/Veterinario.model';
+
+//components
+import { ClienteSelectorComponent } from '../../components/agendar/cliente-selector/cliente-selector.component';
+import { MascotaSelectorComponent } from '../../components/agendar/mascota-selector/mascota-selector.component';
 
 // RxJS
 import { map, Observable, of, switchMap } from 'rxjs';
@@ -22,7 +27,7 @@ import { map, Observable, of, switchMap } from 'rxjs';
   templateUrl: './agendar-page.component.html',
   styleUrls: ['./agendar-page.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule]
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, ClienteSelectorComponent, MascotaSelectorComponent]
 })
 export class AgendarPageComponent implements OnInit {
   isLoading = signal(false);
@@ -31,6 +36,11 @@ export class AgendarPageComponent implements OnInit {
 
   clienteEncontrado = signal<Cliente | null>(null);
   mascotaEncontrada = signal<Mascota | null>(null);
+
+  // Signals para avisos
+  mostrarAviso = signal(false);
+  tipoAviso = signal<'exito' | 'error'>('exito');
+  mensajeAviso = signal('');
 
   clienteForm: FormGroup;
   mascotaForm: FormGroup;
@@ -72,14 +82,26 @@ export class AgendarPageComponent implements OnInit {
       hora: ['', Validators.required],
       motivo: ['', Validators.required],
       tipoServicioId: [null, Validators.required],
-      veterinarioId: [null, Validators.required] // 🎯 agregado al formulario
+      veterinarioId: [null, Validators.required],
+      estadoCita: ['PENDIENTE', Validators.required]
     });
   }
 
   ngOnInit(): void {
-    this.veterinarioService.listarVeterinarios().subscribe(data => {
-      this.veterinarios = data;
+    this.veterinarioService.listarVeterinarios().subscribe(res => {
+      this.veterinarios = res.data;
     });
+
+  }
+
+  onClienteSeleccionado(cliente: Cliente) {
+    this.clienteEncontrado.set(cliente);
+    this.nuevoCliente.set(false);
+  }
+
+  onMascotaSeleccionada(mascota: Mascota) {
+    this.mascotaEncontrada.set(mascota);
+    this.nuevaMascota.set(false);
   }
 
   buscarClientePorNombre(nombre: string) {
@@ -102,14 +124,77 @@ export class AgendarPageComponent implements OnInit {
     this.nuevaMascota.set(false);
   }
 
+  // Métodos para avisos
+  mostrarExito(mensaje: string) {
+    this.mensajeAviso.set(mensaje);
+    this.tipoAviso.set('exito');
+    this.mostrarAviso.set(true);
+
+    // Auto-ocultar después de 5 segundos
+    setTimeout(() => {
+      this.mostrarAviso.set(false);
+    }, 5000);
+  }
+
+  mostrarError(mensaje: string) {
+    this.mensajeAviso.set(mensaje);
+    this.tipoAviso.set('error');
+    this.mostrarAviso.set(true);
+
+    // Auto-ocultar después de 8 segundos
+    setTimeout(() => {
+      this.mostrarAviso.set(false);
+    }, 8000);
+  }
+
+  cerrarAviso() {
+    this.mostrarAviso.set(false);
+  }
+
+  // Método para limpiar formularios
+  limpiarFormularios() {
+    // Resetear formularios
+    this.clienteForm.reset();
+    this.mascotaForm.reset();
+    this.citaForm.reset();
+
+    // Resetear estados
+    this.nuevoCliente.set(true);
+    this.nuevaMascota.set(true);
+    this.clienteEncontrado.set(null);
+    this.mascotaEncontrada.set(null);
+
+    // Establecer valores por defecto
+    this.mascotaForm.patchValue({
+      estado: 'VIVO'
+    });
+  }
+
   agendar() {
+    // Validaciones más específicas
     if (!this.nuevoCliente() && !this.clienteEncontrado()) {
-      alert('Seleccione un cliente existente');
+      this.mostrarError('Por favor, seleccione un cliente existente o active "Nuevo Cliente"');
       return;
     }
 
     if (!this.nuevaMascota() && !this.mascotaEncontrada()) {
-      alert('Seleccione una mascota existente');
+      this.mostrarError('Por favor, seleccione una mascota existente o active "Nueva Mascota"');
+      return;
+    }
+
+    // Validar formularios requeridos
+    if (this.nuevoCliente() && !this.clienteForm.valid) {
+      this.mostrarError('Por favor, complete todos los campos requeridos del cliente');
+      return;
+    }
+
+    if (this.nuevaMascota() && !this.mascotaForm.valid) {
+      this.mostrarError('Por favor, complete todos los campos requeridos de la mascota');
+      return;
+    }
+
+    if (!this.citaForm.valid) {
+      this.mostrarError('Por favor, complete todos los campos requeridos de la cita');
       return;
     }
 
@@ -134,13 +219,17 @@ export class AgendarPageComponent implements OnInit {
         return crearMascota$.pipe(
           switchMap(mascotaRes => {
             const citaPayload: Cita = {
+              // No enviar citaId para que el backend lo genere automáticamente
               fechaRegistro: new Date().toISOString(),
               tipoServicioId: this.citaForm.value.tipoServicioId,
               mascotaId: mascotaRes.data.mascotaId ?? 0,
               clienteId,
               veterinarioId: this.citaForm.value.veterinarioId, // 🧠 tomado del form
-              motivo: this.citaForm.value.motivo
+              motivo: this.citaForm.value.motivo,
+              estadoCita: this.citaForm.value.estadoCita || 'PENDIENTE', // 🧠 tomado del form
             };
+
+            console.log('Datos de la cita a enviar:', citaPayload);
             return this.citaService.agendar(citaPayload);
           })
         );
@@ -148,12 +237,21 @@ export class AgendarPageComponent implements OnInit {
     ).subscribe({
       next: () => {
         this.isLoading.set(false);
-        alert('Cita registrada con éxito');
+        this.mostrarExito('Cita registrada con éxito');
+        this.limpiarFormularios();
       },
       error: err => {
         this.isLoading.set(false);
-        alert('Error al agendar cita');
-        console.error(err);
+        console.error('Error completo:', err);
+
+        // Mostrar mensaje más específico
+        if (err.status === 500) {
+          this.mostrarError('Error interno del servidor. Verifique que todos los datos sean correctos.');
+        } else if (err.status === 404) {
+          this.mostrarError('Endpoint no encontrado. Contacte al administrador.');
+        } else {
+          this.mostrarError(`Error al agendar cita: ${err.message || 'Error desconocido'}`);
+        }
       }
     });
   }

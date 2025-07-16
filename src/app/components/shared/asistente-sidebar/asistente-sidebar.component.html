@@ -1,0 +1,29 @@
+<aside class="sidebar-compact">
+  <div class="sidebar-header">
+    <div class="icon-container">
+      <app-icon-stethoscope size="24" color="#ffffff" />
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <button type="button"
+      class="nav-item"
+      [ngClass]="activeSection === 'hoy' ? 'active' : ''"
+      title="Enfermera"
+      (click)="goTo('hoy')">
+      <div class="icon-wrapper enfermera-icon">
+        <app-icon-calendar size="24" color="#ffffff" strokeColor="#ffffff" strokeWidth="2" />
+      </div>
+    </button>
+
+    <button type="button"
+      class="nav-item"
+      [ngClass]="activeSection === 'agendar' ? 'active' : ''"
+      title="Agendar"
+      (click)="goTo('agendar')">
+      <div class="icon-wrapper agendar-icon">
+        <app-icon-document size="24" color="#ffffff" strokeColor="#ffffff" strokeWidth="2" />
+      </div>
+    </button>
+  </nav>
+</aside>

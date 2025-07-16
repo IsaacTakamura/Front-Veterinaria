@@ -1,74 +1,21 @@
 // citas-hoy.component.ts
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TablaCitasComponent } from '../tabla/tabla-citas.component';
 import { TriajeModalComponent } from '../triaje/triaje-modal.component';
 import { HistorialModalComponent } from '../historial/historial-modal.component';
 import { DetallesCitaModalComponent } from '../detalles-cita/detalles-cita-modal.component';
+// Datos de ejemplo para las citas de hoy (CitaTabla[])
+import { CitaTabla } from '../../shared/interfaces/cita-tabla.model';
+import { CitaService } from '../../../core/services/cita.service';
+import { MascotaService } from '../../../core/services/mascota.service';
+import { ClienteService } from '../../../core/services/cliente.service';
+import { Mascota } from '../../shared/interfaces/mascota.model';
+import { Cliente } from '../../shared/interfaces/cliente.model';
+import { Raza } from '../../shared/interfaces/Raza.model';
+import { forkJoin } from 'rxjs';
 
-// Datos de ejemplo para las citas de hoy
-const CITAS_HOY = [
-  {
-    id: "1",
-    hora: "09:00",
-    paciente: "Max",
-    especie: "Perro",
-    raza: "Labrador",
-    edad: "3 años",
-    propietario: "Juan Pérez",
-    telefono: "987654321",
-    motivo: "Vacunación",
-    estado: "pendiente",
-  },
-  {
-    id: "2",
-    hora: "09:30",
-    paciente: "Luna",
-    especie: "Gato",
-    raza: "Siamés",
-    edad: "2 años",
-    propietario: "María García",
-    telefono: "987123456",
-    motivo: "Control",
-    estado: "en-triaje",
-  },
-  {
-    id: "3",
-    hora: "10:00",
-    paciente: "Rocky",
-    especie: "Perro",
-    raza: "Bulldog",
-    edad: "5 años",
-    propietario: "Carlos López",
-    telefono: "912345678",
-    motivo: "Consulta general",
-    estado: "con-veterinario",
-  },
-  {
-    id: "4",
-    hora: "10:30",
-    paciente: "Michi",
-    especie: "Gato",
-    raza: "Persa",
-    edad: "1 año",
-    propietario: "Ana Martínez",
-    telefono: "945678123",
-    motivo: "Desparasitación",
-    estado: "completada",
-  },
-  {
-    id: "5",
-    hora: "11:00",
-    paciente: "Toby",
-    especie: "Perro",
-    raza: "Poodle",
-    edad: "4 años",
-    propietario: "Pedro Sánchez",
-    telefono: "978123456",
-    motivo: "Vacunación",
-    estado: "pendiente",
-  },
-];
+
 
 @Component({
   selector: 'app-citas-hoy',
@@ -83,7 +30,7 @@ const CITAS_HOY = [
   templateUrl: './citas-hoy.component.html',
   styleUrls: ['./citas-hoy.component.css'],
 })
-export class CitasHoyComponent {
+export class CitasHoyComponent implements OnInit {
   // Señales para el estado
   searchTerm = signal('');
   citaSeleccionada = signal<any>(null);
@@ -91,31 +38,72 @@ export class CitasHoyComponent {
   modalHistorialAbierto = signal(false);
   modalDetallesAbierto = signal(false);
 
+  // Datos de citas de hoy
+  citasDeHoy = signal<CitaTabla[]>([]);
+
+  constructor(
+    private citaService: CitaService,
+    private mascotaService: MascotaService,
+    private clienteService: ClienteService
+  ) {}
+
+  ngOnInit(): void {
+    this.citaService.obtenerCitasDeHoy().subscribe((citas: any[]) => {
+      if (!citas || citas.length === 0) {
+        this.citasDeHoy.set([]);
+        return;
+      }
+      // Para cada cita, obtenemos los datos enriquecidos
+      const mascotaRequests = citas.map(c => this.mascotaService.listarMascotaPorId(c.mascotaId));
+      const clienteRequests = citas.map(c => this.clienteService.listarClientePorId(c.clienteId));
+      // Obtenemos todas las razas una sola vez
+      this.mascotaService.listarRazas().subscribe(razasResp => {
+        const razas: Raza[] = razasResp.data;
+        forkJoin([...mascotaRequests, ...clienteRequests]).subscribe(respuestas => {
+          const mascotas = respuestas.slice(0, citas.length).map((r: any) => r.data as Mascota);
+          const clientes = respuestas.slice(citas.length).map((r: any) => r.data as Cliente);
+          const enriquecidas = citas.map((cita, i) => {
+            const mascota = mascotas[i];
+            const cliente = clientes[i];
+            const raza = razas.find(r => r.razaId === mascota.razaId);
+            return {
+              ...cita,
+              paciente: mascota?.nombre || '',
+              especie: raza ? (raza.especieId === 1 ? 'Perro' : 'Gato') : '',
+              raza: raza?.nombre || '',
+              propietario: cliente?.nombre + (cliente?.apellido ? ' ' + cliente.apellido : ''),
+            };
+          });
+          this.citasDeHoy.set(enriquecidas);
+        });
+      });
+    });
+  }
+
   // Computed properties
   citasFiltradas = computed(() => {
     const term = this.searchTerm().toLowerCase();
-    if (!term) return CITAS_HOY;
-
-    return CITAS_HOY.filter(cita =>
+    if (!term) return this.citasDeHoy();
+    return this.citasDeHoy().filter((cita: CitaTabla) =>
       cita.paciente.toLowerCase().includes(term) ||
       cita.propietario.toLowerCase().includes(term)
     );
   });
 
   pendientes = computed(() =>
-    CITAS_HOY.filter(cita => cita.estado === "pendiente").length
+    this.citasDeHoy().filter((cita: CitaTabla) => cita.estadoCita === 'PENDIENTE').length
   );
 
   enTriaje = computed(() =>
-    CITAS_HOY.filter(cita => cita.estado === "en-triaje").length
+    this.citasDeHoy().filter((cita: CitaTabla) => cita.estadoCita === 'TRIAJE').length
   );
 
   conVeterinario = computed(() =>
-    CITAS_HOY.filter(cita => cita.estado === "con-veterinario").length
+    this.citasDeHoy().filter((cita: CitaTabla) => cita.estadoCita === 'CONVETERINARIO').length
   );
 
   completadas = computed(() =>
-    CITAS_HOY.filter(cita => cita.estado === "completada").length
+    this.citasDeHoy().filter((cita: CitaTabla) => cita.estadoCita === 'COMPLETADA').length
   );
 
   // Métodos para abrir modales
@@ -132,5 +120,13 @@ export class CitasHoyComponent {
   abrirModalDetalles(cita: any): void {
     this.citaSeleccionada.set(cita);
     this.modalDetallesAbierto.set(true);
+  }
+
+  // Método para manejar cuando se crea un triaje
+  onTriajeCreado(triaje: any): void {
+    console.log('Triaje creado:', triaje);
+    // Aquí podrías actualizar el estado de la cita o recargar los datos
+    // Por ejemplo, cambiar el estado de la cita a "en-triaje"
+    this.ngOnInit(); // Recargar datos
   }
 }
