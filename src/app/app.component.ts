@@ -2,7 +2,6 @@ import { Component, computed, signal, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { NavbarPublicComponent } from './components/shared/navbar-public/navbar-public.component';
 import { NavbarPrivateComponent } from './components/shared/navbar-private/navbar-private.component';
-import { FooterComponent } from './components/shared/footer/footer.component';
 import { RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
@@ -18,7 +17,6 @@ import { SessionService } from '../app/core/services/session.service';
     RouterOutlet,
     NavbarPublicComponent,
     NavbarPrivateComponent,
-    FooterComponent,
     CommonModule,
     ChatBotComponent
   ]
