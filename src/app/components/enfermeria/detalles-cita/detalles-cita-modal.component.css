@@ -1,0 +1,33 @@
+/* Estilos específicos para adaptar el modal al layout del asistente */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-container {
+  background: white;
+  border-radius: 0.5rem;
+  width: 100%;
+  max-width: 40rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  position: relative;
+}
+
+/* Asegurar que el modal esté por encima del sidebar */
+@media (min-width: 768px) {
+  .modal-overlay {
+    padding-left: calc(80px + 1rem); /* 80px del sidebar + 1rem de padding */
+    padding-top: calc(64px + 1rem); /* 64px del navbar + 1rem de padding */
+  }
+}
