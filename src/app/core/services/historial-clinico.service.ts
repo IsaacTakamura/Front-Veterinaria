@@ -13,25 +13,84 @@ export class HistorialClinicoService {
 
   //* No olvidar que CasosClinicos es igual a HistorialClinico, pero así está en la API
 
-  // Listar todos los casos clínicos por mascota
-  listarHistorialPorMascota(mascotaId: number): Observable<Visita[]> {
+  // Listar todos los casos clínicos por mascota id
+  listarHistorialPorMascotaid(mascotaId: number): Observable<Visita[]> {
     return this.http.get<Visita[]>(`${this.apiAsistente}/CasosClinicos/mascota/${mascotaId}`);
   }
-  /*  */
+  /* {
+  "codigo": 0,
+  "message": "string",
+  "data": [
+    {
+      "casoClinicoId": 0,
+      "descripcion": "string",
+      "mascotaId": 0
+    }
+  ]
+} */
 
   // Listar todas las visitas
   listarTodasVisitas(): Observable<Visita[]> {
     return this.http.get<Visita[]>(`${this.apiAsistente}/ListarTodasLasVisitas`);
   }
-  /*  */
+  /* {
+  "codigo": 0,
+  "message": "string",
+  "data": [
+    {
+      "visitaId": 0,
+      "casoClinicoId": 0,
+      "signoVital": [
+        {
+          "signoVitalId": 0,
+          "tipoSignoVital": {
+            "tipoSignoVitalId": 0,
+            "nombre": "string"
+          },
+          "valor": 0
+        }
+      ],
+      "tipoVisitaId": 0
+    }
+  ] */
+
+  //listar todos los casos clínicos para asistente
+  listarTodosCasosClinicosAsistente(): Observable<Visita[]> {
+    return this.http.get<Visita[]>(`${this.apiAsistente}/listarCasos`);
+  }
+  /* {
+  "codigo": 0,
+  "message": "string",
+  "data": [
+    {
+      "casoClinicoId": 0,
+      "descripcion": "string",
+      "mascotaId": 0
+    }
+  ]
+} */
 
   // Listar Casos Clínicos por id de caso clínico
   listarCasoClinicoPorId(casoClinicoId: number): Observable<Visita> {
     return this.http.get<Visita>(`${this.apiAsistente}/listarCasoClinicos/${casoClinicoId}`);
   }
-  /*  */
+  /* {
+  "codigo": 0,
+  "message": "string",
+  "data": {
+    "casoClinicoId": 0,
+    "descripcion": "string",
+    "mascotaId": 0
+  }
+} */
 
-  // Listar servicios
+  // Listar todos los servicios para asistente
+  listarServiciosAsistente(): Observable<{ data: { servicioId: number; nombre: string }[] }> {
+    return this.http.get<{ data: { servicioId: number; nombre: string }[] }>(`${this.apiAsistente}/ListarServicios`);
+  }
+  /* */
+
+  // Listar servicios para veterinario
   listarServicios(): Observable<{ data: { servicioId: number; nombre: string }[] }> {
     return this.http.get<{ data: { servicioId: number; nombre: string }[] }>(`${this.apiVet}/ListarServicios`);
   }
