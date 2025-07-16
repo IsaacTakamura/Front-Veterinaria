@@ -23,6 +23,16 @@ export class HistorialClinicoService {
     return this.http.get<Visita[]>(`${this.apiAsistente}/ListarTodasLasVisitas`);
   }
 
+  // Listar Casos Clínicos por id de caso clínico
+  listarCasoClinicoPorId(casoClinicoId: number): Observable<Visita> {
+    return this.http.get<Visita>(`${this.apiAsistente}/listarCasoClinicos/${casoClinicoId}`);
+  }
+
+  // Listar servicios
+  listarServicios(): Observable<{ data: { servicioId: number; nombre: string }[] }> {
+    return this.http.get<{ data: { servicioId: number; nombre: string }[] }>(`${this.apiVet}/ListarServicios`);
+  }
+
   // Crear tipo de visita
   crearTipoVisita(tipoVisita: { nombre: string }): Observable<{ data: any }> {
     return this.http.post<{ data: any }>(`${this.apiVet}/CrearTipoVisita`, tipoVisita);
