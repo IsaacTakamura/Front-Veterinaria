@@ -1,12 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { TipoServicio } from '../../shared/interfaces/tipo-servicio.model';
 import { TipoServicioService } from '../../../core/services/tipo-servicio.service';
 import { Especie } from '../../shared/interfaces/especie.model';
 import { Raza } from '../../shared/interfaces/Raza.model';
 import { CatalogoService } from '../../../core/services/catalogo.service';
 import { SessionService } from '../../../core/services/session.service';
+import { EmojiService } from '../../../core/services/emoji.service';
 
 @Component({
   selector: 'app-catalog-management',
@@ -16,11 +18,16 @@ import { SessionService } from '../../../core/services/session.service';
   styleUrls: ['./catalog-management.component.css']
 })
 export class CatalogManagementComponent implements OnInit {
-  @Input() activeTab: string = 'servicios';
+  @Input() activeTab: string = 'especies-razas'; // Cambiado para coincidir con dashboard
 
   // Loading state
   isLoading = false;
   mostrarTablasDetalladas = false;
+  
+  // Variables para paginación
+  especiesPagina = 1;
+  razasPagina = 1;
+  Math = Math; // Exposición de Math para usar en el HTML
 
   // Servicios
   tiposServicios: TipoServicio[] = [];
@@ -35,69 +42,34 @@ export class CatalogManagementComponent implements OnInit {
 
   nuevaEspecie: Partial<Especie> = { nombre: '' };
   nuevaRaza: Partial<Raza> = { nombre: '', especieId: 0 };
-
+  
   constructor(
     private tipoServicioService: TipoServicioService,
     private catalogoService: CatalogoService,
-    private sessionService: SessionService
-  ) {}
+    private sessionService: SessionService,
+    private http: HttpClient,
+    private emojiService: EmojiService
+  ) { }
 
   ngOnInit(): void {
     this.isLoading = true;
-    
-    // 🔍 Verificar autenticación
     this.verificarAutenticacion();
-    
-    // Cargar servicios (estos suelen funcionar)
     this.obtenerTiposServicios();
-    
-    // Intentar cargar especies y razas, pero no bloquear la interfaz si fallan
     this.obtenerDatosEspeciesYRazas();
   }
 
-  // 🔍 Método para verificar token y autenticación
+  // Verificación de autenticación simplificada
   verificarAutenticacion(): void {
-    // Usar SessionService como fuente principal de verdad
-    const token = this.sessionService.token;
-    const user = this.sessionService.user;
     const isLoggedIn = this.sessionService.isLoggedIn();
+    const user = this.sessionService.user;
     
-    console.log('🔐 Debug de Autenticación (SessionService):');
-    console.log('¿Está logueado?:', isLoggedIn ? '✅ SÍ' : '❌ NO');
-    console.log('Token presente:', token ? '✅ SÍ' : '❌ NO');
-    console.log('Usuario completo:', user);
-    console.log('Username:', user?.username || 'No definido');
-    console.log('Rol:', user?.rol || 'No definido');
-    
-    // También verificar localStorage por compatibilidad
-    const tokenLS = localStorage.getItem('auth_token');
-    const userInfoLS = localStorage.getItem('user_info');
-    const userRolLS = localStorage.getItem('user_rol');
-    
-    console.log('🔍 Debug localStorage:');
-    console.log('auth_token:', tokenLS ? '✅ Presente' : '❌ Ausente');
-    console.log('user_info:', userInfoLS || 'No definido');
-    console.log('user_rol (legacy):', userRolLS || 'No definido');
-    
-    if (!isLoggedIn || !token) {
-      console.error('❌ NO HAY SESIÓN VÁLIDA - Usuario no autenticado');
+    if (!isLoggedIn) {
       alert('⚠️ Sesión expirada. Por favor, inicia sesión nuevamente.');
       return;
     }
     
-    if (!user?.rol || user.rol === 'undefined' || user.rol === 'null') {
-      console.warn('⚠️ ROL NO DEFINIDO - Esto puede causar errores 403/500 en endpoints de admin');
-      console.warn('💡 Posibles causas: 1) Backend no envía rol en login, 2) Usuario no tiene rol asignado');
-      
-      // Mostrar advertencia al usuario
-      console.warn('⚠️ ADVERTENCIA: Tu usuario no tiene un rol definido. Esto puede causar errores en algunas funciones.');
-    } else {
-      console.log(`✅ Sesión válida. Rol identificado: "${user.rol}"`);
-      
-      // Verificar si tiene permisos de admin
-      if (user.rol !== 'ADMIN') {
-        console.warn(`⚠️ Usuario con rol "${user.rol}" accediendo a funciones de admin. Esto puede causar errores 403.`);
-      }
+    if (!user?.rol || user.rol !== 'ADMIN') {
+      console.warn('Usuario sin permisos de administrador');
     }
   }
 
@@ -137,38 +109,95 @@ export class CatalogManagementComponent implements OnInit {
     });
   }
 
+  // Método para mostrar tablas detalladas y reiniciar paginación
+  mostrarTablas(): void {
+    this.mostrarTablasDetalladas = true;
+    this.especiesPagina = 1;
+    this.razasPagina = 1;
+  }
+
   // ========== ESPECIES Y RAZAS ==========
   obtenerDatosEspeciesYRazas(): void {
     console.log('📋 Iniciando carga de especies y razas...');
+    this.isLoading = true;
     
     // Cargar especies
     this.catalogoService.listarEspecies().subscribe({
-      next: (especies: Especie[]) => {
-        this.especies = especies;
+      next: (response: any) => {
+        // Verificamos si la respuesta tiene la estructura esperada
+        if (response && response.data && Array.isArray(response.data)) {
+          this.especies = response.data;
+        } else if (Array.isArray(response)) {
+          this.especies = response;
+        } else {
+          this.especies = [];
+          console.warn('⚠️ La respuesta de especies no tiene el formato esperado:', response);
+        }
+        
         console.log(`✅ Especies cargadas: ${this.especies.length} registros`);
         if (this.especies.length === 0) {
           console.log('📝 No hay especies en la base de datos. Mostrando tabla vacía.');
         }
+        
+        // Aseguramos que las tablas se muestren si hay datos
+        if (this.especies.length > 0) {
+          this.mostrarTablasDetalladas = true;
+        }
+        
+        // Independientemente de si la carga de especies fue exitosa, intentamos cargar las razas
+        this.cargarRazas();
       },
       error: (err) => {
-        console.error('❌ Error inesperado al cargar especies (no debería llegar aquí):', err);
+        console.error('❌ Error al cargar especies:', err);
         this.especies = [];
+        this.isLoading = false;
+        
+        // A pesar del error, intentamos cargar las razas
+        this.cargarRazas();
       }
     });
-
+  }
+  
+  cargarRazas(): void {
     // Cargar razas
     this.catalogoService.listarRazas().subscribe({
-      next: (razas: Raza[]) => {
-        this.razas = razas;
+      next: (response: any) => {
+        // Verificamos si la respuesta tiene la estructura esperada
+        if (response && response.data && Array.isArray(response.data)) {
+          this.razas = response.data;
+        } else if (Array.isArray(response)) {
+          this.razas = response;
+        } else {
+          this.razas = [];
+          console.warn('⚠️ La respuesta de razas no tiene el formato esperado:', response);
+        }
+        
         console.log(`✅ Razas cargadas: ${this.razas.length} registros`);
         if (this.razas.length === 0) {
           console.log('📝 No hay razas en la base de datos. Mostrando tabla vacía.');
         }
+        
+        // Aseguramos que las tablas se muestren si hay datos
+        if (this.razas.length > 0) {
+          this.mostrarTablasDetalladas = true;
+        }
+        
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('❌ Error inesperado al cargar razas (no debería llegar aquí):', err);
-        this.razas = [];
+        // Si el error es 500 y el mensaje contiene "No se encontraron razas", 
+        // lo tratamos como un caso válido de "no hay datos" en lugar de un error
+        if (err.status === 500 && 
+            err.error && 
+            typeof err.error.message === 'string' && 
+            err.error.message.includes('No se encontraron razas')) {
+          console.log('📝 No hay razas registradas en la base de datos');
+          this.razas = [];
+        } else {
+          console.error('❌ Error al cargar razas:', err);
+          this.razas = [];
+        }
+        
         this.isLoading = false;
       }
     });
@@ -183,24 +212,64 @@ export class CatalogManagementComponent implements OnInit {
     this.modalEspecieVisible = false;
   }
 
+  // Método para obtener emoji según la especie
+  obtenerEmojiEspecie(especieId: number | undefined, nombreEspecie?: string): string {
+    return this.emojiService.obtenerEmojiDeEspecie(especieId, nombreEspecie);
+  }
+
   registrarEspecie(): void {
     if (!this.nuevaEspecie.nombre?.trim()) {
-      alert('❌ El nombre de la especie es obligatorio');
+      this.mostrarNotificacionError('El nombre de la especie es obligatorio', { error: { message: 'Campo requerido' } });
       return;
     }
 
     console.log('📝 Registrando especie:', this.nuevaEspecie);
-    this.catalogoService.crearEspecie(this.nuevaEspecie).subscribe({
+    
+    // Desactivar el botón mientras se procesa
+    const nombreEspecie = this.nuevaEspecie.nombre.trim();
+    this.isLoading = true;
+    
+    this.catalogoService.crearEspecie({ nombre: nombreEspecie }).subscribe({
       next: (response: any) => {
         console.log('✅ Especie creada:', response);
-        this.obtenerDatosEspeciesYRazas();
+        
+        // Agregar la nueva especie a la lista local inmediatamente
+        let nuevaEspecieCreada: Especie;
+        
+        if (response && response.data) {
+          // Si la respuesta tiene estructura con data
+          nuevaEspecieCreada = response.data;
+        } else if (response && response.especieId) {
+          // Si la respuesta es directamente el objeto
+          nuevaEspecieCreada = response;
+        } else {
+          // Si no podemos extraer el objeto, recargamos todos los datos
+          this.obtenerDatosEspeciesYRazas();
+          this.cerrarModalEspecie();
+          this.mostrarNotificacionExito(`Especie "${nombreEspecie}" registrada correctamente`);
+          return;
+        }
+        
+        // El emoji se asigna automáticamente según el nombre de la especie
+        const emojiAsignado = this.emojiService.obtenerEmojiPorDefectoSegunNombre(nombreEspecie);
+        this.emojiService.asignarEmojiAEspecie(nuevaEspecieCreada.especieId!, emojiAsignado);
+        
+        // Agregamos la nueva especie a la lista local
+        this.especies.push(nuevaEspecieCreada);
+        
+        // Mostrar las tablas detalladas si es la primera especie
+        if (this.especies.length === 1) {
+          this.mostrarTablasDetalladas = true;
+        }
+        
         this.cerrarModalEspecie();
-        alert(`✅ Especie "${this.nuevaEspecie.nombre}" registrada correctamente`);
+        this.isLoading = false;
+        this.mostrarNotificacionExito(`Especie "${nombreEspecie}" registrada correctamente`);
       },
       error: (err) => {
         console.error('❌ Error al registrar especie:', err);
-        const mensaje = err.error?.message || 'Error desconocido';
-        alert(`❌ Error al registrar la especie: ${mensaje}`);
+        this.mostrarNotificacionError('Error al registrar la especie', err);
+        this.isLoading = false;
       }
     });
   }
@@ -231,66 +300,136 @@ export class CatalogManagementComponent implements OnInit {
 
   registrarRaza(): void {
     if (!this.nuevaRaza.nombre?.trim()) {
-      alert('❌ El nombre de la raza es obligatorio');
+      this.mostrarNotificacionError('El nombre de la raza es obligatorio', { error: { message: 'Campo requerido' } });
       return;
     }
     
     if (!this.nuevaRaza.especieId) {
-      alert('❌ Debes seleccionar una especie. Si no hay especies disponibles, crea una primero.');
+      this.mostrarNotificacionError('Debes seleccionar una especie', { error: { message: 'Si no hay especies disponibles, crea una primero.' } });
+      return;
+    }
+
+    // Verificar si la raza ya existe para esta especie
+    const razaExistente = this.razas.find(r => 
+      r.especieId === this.nuevaRaza.especieId && 
+      r.nombre.toLowerCase() === this.nuevaRaza.nombre?.trim().toLowerCase()
+    );
+    
+    if (razaExistente) {
+      this.mostrarNotificacionError('Esta raza ya está registrada para la especie seleccionada', { error: { message: 'Raza duplicada' } });
       return;
     }
 
     console.log('📝 Registrando raza:', this.nuevaRaza);
-    this.catalogoService.crearRaza(this.nuevaRaza).subscribe({
+    
+    // Desactivar el botón mientras se procesa y guardar valores para usar después
+    const nombreRaza = this.nuevaRaza.nombre.trim();
+    const idEspecie = this.nuevaRaza.especieId;
+    const especieNombre = this.especies.find(e => e.especieId === idEspecie)?.nombre || 'especie desconocida';
+    
+    this.isLoading = true;
+    
+    this.catalogoService.crearRaza({
+      nombre: nombreRaza,
+      especieId: idEspecie
+    }).subscribe({
       next: (response: any) => {
         console.log('✅ Raza creada:', response);
-        this.obtenerDatosEspeciesYRazas();
+        
+        // Agregar la nueva raza a la lista local inmediatamente
+        let nuevaRazaCreada: Raza;
+        
+        if (response && response.data) {
+          // Si la respuesta tiene estructura con data
+          nuevaRazaCreada = response.data;
+        } else if (response && response.razaId) {
+          // Si la respuesta es directamente el objeto
+          nuevaRazaCreada = response;
+        } else {
+          // Si no podemos extraer el objeto, recargamos todos los datos
+          this.obtenerDatosEspeciesYRazas();
+          this.cerrarModalRaza();
+          this.mostrarNotificacionExito(`Raza "${nombreRaza}" registrada correctamente para ${especieNombre}`);
+          return;
+        }
+        
+        // Agregamos la nueva raza a la lista local
+        this.razas.push(nuevaRazaCreada);
+        
+        // Mostrar las tablas detalladas si es la primera raza
+        if (this.razas.length === 1) {
+          this.mostrarTablasDetalladas = true;
+        }
+        
         this.cerrarModalRaza();
-        const especieNombre = this.especies.find(e => e.especieId === this.nuevaRaza.especieId)?.nombre || 'especie desconocida';
-        alert(`✅ Raza "${this.nuevaRaza.nombre}" registrada correctamente para ${especieNombre}`);
+        this.isLoading = false;
+        this.mostrarNotificacionExito(`Raza "${nombreRaza}" registrada correctamente para ${especieNombre}`);
       },
       error: (err) => {
         console.error('❌ Error al registrar raza:', err);
-        const mensaje = err.error?.message || 'Error desconocido';
-        alert(`❌ Error al registrar la raza: ${mensaje}`);
+        this.mostrarNotificacionError('Error al registrar la raza', err);
+        this.isLoading = false;
       }
     });
   }
 
   // 🧪 Método de prueba para verificar APIs de creación
   probarAPIsCreacion(): void {
-    console.log('🧪 === PRUEBA DE APIs DE CREACIÓN ===');
+    console.log('🧪 === PRUEBA DE APIs DE CREACIÓN (ADMIN DESDE localhost:4200/admin) ===');
+    console.log(`📍 URL actual: ${window.location.href}`);
+    console.log(`🌐 Origin: ${window.location.origin}`);
+    console.log(`📂 Pathname: ${window.location.pathname}`);
+    
+    // Verificar autenticación primero
+    const token = localStorage.getItem('auth_token');
+    const user = this.sessionService.user;
+    
+    console.log('🔐 Estado de autenticación:');
+    console.log('  - Token presente:', token ? '✅ SÍ' : '❌ NO');
+    console.log('  - Usuario:', user?.username || 'NO DEFINIDO');
+    console.log('  - Rol:', user?.rol || 'NO DEFINIDO');
+    
+    if (!token || !user?.rol) {
+      this.mostrarNotificacionError('Error de autenticación', { error: { message: 'Token o rol no definido' } });
+      return;
+    }
     
     // Probar creación de especie de prueba
-    const especiePrueba = { nombre: 'TEST_Especie_' + Date.now() };
+    const timestamp = Date.now();
+    const especiePrueba = { nombre: `TEST_Especie_${timestamp}` };
+    
     console.log('🧪 Probando creación de especie:', especiePrueba);
+    this.mostrarNotificacionExito('Iniciando prueba de APIs...');
     
     this.catalogoService.crearEspecie(especiePrueba).subscribe({
       next: (response) => {
         console.log('✅ API creación especie FUNCIONA:', response);
+        this.mostrarNotificacionExito('✅ API de especies funciona correctamente');
         
         // Si funciona, probar creación de raza
         const razaPrueba = { 
-          nombre: 'TEST_Raza_' + Date.now(), 
-          especieId: response.especieId || 1 
+          nombre: `TEST_Raza_${timestamp}`, 
+          especieId: response.data?.especieId || response.especieId || 1 
         };
         
         console.log('🧪 Probando creación de raza:', razaPrueba);
         this.catalogoService.crearRaza(razaPrueba).subscribe({
           next: (responseRaza) => {
             console.log('✅ API creación raza FUNCIONA:', responseRaza);
-            console.log('🎉 AMBAS APIs de creación están funcionando correctamente!');
+            this.mostrarNotificacionExito('🎉 Ambas APIs funcionan correctamente!');
             
             // Recargar datos para ver los nuevos registros
-            this.obtenerDatosEspeciesYRazas();
+            setTimeout(() => this.obtenerDatosEspeciesYRazas(), 1000);
           },
           error: (errRaza) => {
             console.error('❌ API creación raza FALLA:', errRaza);
+            this.mostrarNotificacionError('API de razas falló', errRaza);
           }
         });
       },
       error: (errEspecie) => {
         console.error('❌ API creación especie FALLA:', errEspecie);
+        this.mostrarNotificacionError('API de especies falló', errEspecie);
       }
     });
   }
@@ -435,48 +574,152 @@ export class CatalogManagementComponent implements OnInit {
 
   // ========== MÉTODOS DE CREACIÓN RÁPIDA ==========
   crearEspecieRapida(nombre: string): void {
-    console.log(`🚀 Creación rápida de especie: ${nombre}`);
-    
     const especie = { nombre: nombre };
     this.catalogoService.crearEspecie(especie).subscribe({
       next: (response: any) => {
-        console.log('✅ Especie creada rápidamente:', response);
         this.obtenerDatosEspeciesYRazas();
-        // Mostrar mensaje de éxito sin alert intrusivo
-        console.log(`🎉 Especie "${nombre}" creada exitosamente`);
+        this.mostrarNotificacionExito(`Especie "${nombre}" agregada exitosamente`);
       },
       error: (err) => {
-        console.error('❌ Error al crear especie rápida:', err);
-        alert(`❌ Error al crear la especie "${nombre}": ${err.error?.message || 'Error desconocido'}`);
+        console.error('Error al crear especie:', err);
+        this.mostrarNotificacionError(`Error al crear la especie "${nombre}"`, err);
       }
     });
   }
 
-  crearRazaRapida(nombre: string, especieId: number): void {
-    console.log(`🚀 Creación rápida de raza: ${nombre} para especie ${especieId}`);
+  crearRazaRapida(nombre: string, especieId: number | undefined): void {
+    if (!especieId) {
+      this.mostrarNotificacionError('Error al crear raza', { error: { message: 'ID de especie no válido' } });
+      return;
+    }
     
     const raza = { nombre: nombre, especieId: especieId };
     this.catalogoService.crearRaza(raza).subscribe({
       next: (response: any) => {
-        console.log('✅ Raza creada rápidamente:', response);
         this.obtenerDatosEspeciesYRazas();
-        // Mostrar mensaje de éxito sin alert intrusivo
-        console.log(`🎉 Raza "${nombre}" creada exitosamente`);
+        this.mostrarNotificacionExito(`Raza "${nombre}" agregada exitosamente`);
       },
       error: (err) => {
-        console.error('❌ Error al crear raza rápida:', err);
-        alert(`❌ Error al crear la raza "${nombre}": ${err.error?.message || 'Error desconocido'}`);
+        console.error('Error al crear raza:', err);
+        this.mostrarNotificacionError(`Error al crear la raza "${nombre}"`, err);
       }
     });
   }
 
-  abrirModalRazaParaEspecie(especieId: number): void {
-    this.modalRazaVisible = true;
-    this.nuevaRaza = { nombre: '', especieId: especieId };
-    console.log(`📝 Abriendo modal de raza para especie ID: ${especieId}`);
+  // 🎉 Método para mostrar notificaciones de éxito
+  mostrarNotificacionExito(mensaje: string): void {
+    // Log para debug
+    console.log(`🎉 ÉXITO: ${mensaje}`);
+    
+    // Crear elemento de notificación temporal
+    const notification = document.createElement('div');
+    notification.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white px-8 py-4 rounded-lg shadow-xl z-50 transition-all duration-300 max-w-md text-center';
+    notification.innerHTML = `
+      <div class="flex items-center justify-center">
+        <div class="flex-shrink-0">
+          <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm font-medium">¡Operación exitosa!</p>
+          <p class="mt-1 text-sm opacity-90">${mensaje}</p>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Añadir efecto de entrada
+    setTimeout(() => {
+      notification.classList.add('scale-105');
+    }, 10);
+    
+    // Remover después de 3 segundos
+    setTimeout(() => {
+      notification.classList.add('opacity-0', 'scale-95');
+      setTimeout(() => notification.remove(), 300);
+    }, 3000);
   }
 
-  getRazasPorEspecie(id: number): Raza[] {
+  // ❌ Método para mostrar notificaciones de error
+  mostrarNotificacionError(mensaje: string, error: any): void {
+    console.error(`❌ ERROR: ${mensaje}`, error);
+    
+    let detalleError = 'Error desconocido';
+    if (error.status === 401) {
+      detalleError = 'No estás autenticado';
+    } else if (error.status === 403) {
+      detalleError = 'No tienes permisos';
+    } else if (error.status === 500) {
+      detalleError = 'Error del servidor';
+    } else if (error.error?.message) {
+      detalleError = error.error.message;
+    }
+    
+    // Crear elemento de notificación temporal
+    const notification = document.createElement('div');
+    notification.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-8 py-4 rounded-lg shadow-xl z-50 transition-all duration-300 max-w-md text-center';
+    notification.innerHTML = `
+      <div class="flex items-center justify-center">
+        <div class="flex-shrink-0">
+          <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm font-medium">Error</p>
+          <p class="mt-1 text-sm opacity-90">${mensaje}</p>
+          <p class="mt-1 text-xs opacity-75">${detalleError}</p>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Añadir efecto de entrada
+    setTimeout(() => {
+      notification.classList.add('scale-105');
+    }, 10);
+    
+    // Remover después de 4 segundos
+    setTimeout(() => {
+      notification.classList.add('opacity-0', 'scale-95');
+      setTimeout(() => notification.remove(), 300);
+    }, 4000);
+  }
+
+  // Método para abrir modal de raza (puede recibir especie o especieId)
+  abrirModalRazaParaEspecie(especieOrId: Especie | number | undefined): void {
+    let especieId: number | undefined;
+    
+    if (typeof especieOrId === 'object' && especieOrId) {
+      // Es un objeto Especie
+      especieId = especieOrId.especieId;
+    } else if (typeof especieOrId === 'number') {
+      // Es un ID numérico
+      especieId = especieOrId;
+    }
+    
+    if (!especieId) {
+      this.mostrarNotificacionError('Error al abrir modal', { error: { message: 'ID de especie no válido' } });
+      return;
+    }
+    
+    this.modalRazaVisible = true;
+    this.nuevaRaza = { nombre: '', especieId: especieId };
+    
+    console.log('🔵 Modal de raza abierto para especie:', especieId);
+  }
+
+  // Método auxiliar para obtener especie por ID
+  getEspeciePorId(especieId: number | undefined): Especie | undefined {
+    if (!especieId) return undefined;
+    return this.especies.find(especie => especie.especieId === especieId);
+  }
+
+  getRazasPorEspecie(id: number | undefined): Raza[] {
+    if (!id) return [];
     return this.razas.filter(r => r.especieId === id);
   }
 
@@ -525,4 +768,5 @@ export class CatalogManagementComponent implements OnInit {
       alert('❌ No hay sesión guardada. Por favor, inicia sesión.');
     }
   }
+
 }

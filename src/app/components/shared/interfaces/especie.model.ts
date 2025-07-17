@@ -1,5 +1,5 @@
 // especie.model.ts
 export interface Especie {
-  especieId: number;
+  especieId?: number; // 🔧 CAMBIO: Hacer opcional como TipoServicio
   nombre: string;
 }
