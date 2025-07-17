@@ -1,15 +1,14 @@
-import { Component, signal, computed, OnInit } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { CitaService } from 'src/app/core/services/cita.service';
-import { MascotaService } from 'src/app/core/services/mascota.service';
-import { ClienteService } from 'src/app/core/services/cliente.service';
-import { Cita } from '../../shared/interfaces/cita.model';
-import { Mascota } from '../../shared/interfaces/mascota.model';
-import { Cliente } from '../../shared/interfaces/cliente.model';
-import { Observable } from 'rxjs';
-import { VeteModalCitasHoyComponent } from '../vete-modal-citasHoy/vete-modal-citasHoy.component';
-import { BuscadorMascotaComponent } from '../buscador-mascota/buscador-mascota.component';
-import { CitaConNombres } from '../../shared/interfaces/cita-con-nombres.model';
+
+interface Appointment {
+  id: number;
+  time: string;
+  pet: string;
+  owner: string;
+  type: string;
+  status: 'completed' | 'in-progress' | 'pending';
+}
 
 interface Patient {
   id: number;
@@ -25,164 +24,66 @@ interface Patient {
   imports: [
     CommonModule,
     DatePipe,
-    VeteModalCitasHoyComponent,
   ],
   templateUrl: './veterinarian-dashboard.component.html',
   styleUrls: ['./veterinarian-dashboard.component.css']
 })
-export class VeterinarianDashboardComponent implements OnInit {
+export class VeterinarianDashboardComponent {
   todayDate = new Date();
 
   stats = {
-    todayAppointments: 0,
-    pendingConsultations: 0,
-    completedToday: 0,
-    emergencies: 0,
+    todayAppointments: 8,
+    pendingConsultations: 4,
+    completedToday: 3,
+    emergencies: 1,
   };
 
-  todayAppointments: CitaConNombres[] = [];
-  loadingCitas = false;
-  errorCitas = '';
+  todayAppointments: Appointment[] = [
+    { id: 1, time: '09:00', pet: 'Max', owner: 'Juan Pérez', type: 'Consulta', status: 'pending' },
+    { id: 2, time: '10:30', pet: 'Luna', owner: 'María García', type: 'Vacunación', status: 'completed' },
+    { id: 3, time: '11:15', pet: 'Rocky', owner: 'Carlos López', type: 'Cirugía', status: 'in-progress' },
+    { id: 4, time: '14:00', pet: 'Bella', owner: 'Ana Martínez', type: 'Control', status: 'pending' }
+  ];
 
-  showModalCitasHoy = false;
-
-  // --- Búsqueda de pacientes ---
   recentPatients: Patient[] = [
     { id: 1, name: 'Max', species: 'Perro', breed: 'Golden Retriever', lastVisit: '2024-01-15' },
     { id: 2, name: 'Luna', species: 'Gato', breed: 'Siamés', lastVisit: '2024-01-14' },
     { id: 3, name: 'Rocky', species: 'Perro', breed: 'Bulldog', lastVisit: '2024-01-13' }
   ];
+
   searchTerm = signal('');
+
   filteredPatients = computed(() =>
     this.recentPatients.filter(p =>
       p.name.toLowerCase().includes(this.searchTerm().toLowerCase())
     )
   );
-  // -----------------------------
 
-  ngOnInit(): void {
-    this.cargarCitasHoy();
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'completed': return 'bg-green-100 text-green-800';
+      case 'in-progress': return 'bg-blue-100 text-blue-800';
+      case 'pending': return 'bg-yellow-100 text-yellow-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
   }
 
-  constructor(
-    private citaService: CitaService,
-    private mascotaService: MascotaService,
-    private clienteService: ClienteService
-  ) {}
-
-  cargarCitasHoy() {
-    this.loadingCitas = true;
-    this.errorCitas = '';
-    this.citaService.listarCitasHoyVeterinario().subscribe({
-      next: (citas: Cita[]) => {
-        // Mapear cada cita para obtener los nombres
-        const citasConNombres: CitaConNombres[] = [];
-        let pendientes = citas.length;
-        if (citas.length === 0) {
-          this.todayAppointments = [];
-          this.stats.todayAppointments = 0;
-          this.stats.pendingConsultations = 0;
-          this.stats.completedToday = 0;
-          this.stats.emergencies = 0;
-          this.loadingCitas = false;
-          return;
-        }
-        citas.forEach((cita, idx) => {
-          const citaConNombres: CitaConNombres = { ...cita };
-          // Obtener nombre de mascota
-          this.mascotaService.listarCasosClinicos(cita.mascotaId).subscribe({
-            next: (resMascota: { data: Mascota }) => {
-              citaConNombres.nombreMascota = resMascota.data.nombre;
-              // Obtener nombre de cliente
-              this.clienteService.listarClientePorId(cita.clienteId).subscribe({
-                next: (resCliente: { data: Cliente }) => {
-                  citaConNombres.nombreCliente = resCliente.data.nombre + ' ' + (resCliente.data.apellido || '');
-                  citasConNombres[idx] = citaConNombres;
-                  pendientes--;
-                  if (pendientes === 0) {
-                    this.todayAppointments = citasConNombres;
-                    this.stats.todayAppointments = citasConNombres.length;
-                    this.stats.pendingConsultations = citasConNombres.filter((c: CitaConNombres) => c.estadoCita === 'PENDIENTE').length;
-                    this.stats.completedToday = citasConNombres.filter((c: CitaConNombres) => c.estadoCita === 'COMPLETADA').length;
-                    this.stats.emergencies = citasConNombres.filter((c: CitaConNombres) => c.motivo?.toLowerCase().includes('emergencia')).length;
-                    this.loadingCitas = false;
-                  }
-                },
-                error: () => {
-                  citaConNombres.nombreCliente = 'Desconocido';
-                  citasConNombres[idx] = citaConNombres;
-                  pendientes--;
-                  if (pendientes === 0) {
-                    this.todayAppointments = citasConNombres;
-                    this.stats.todayAppointments = citasConNombres.length;
-                    this.stats.pendingConsultations = citasConNombres.filter((c: CitaConNombres) => c.estadoCita === 'PENDIENTE').length;
-                    this.stats.completedToday = citasConNombres.filter((c: CitaConNombres) => c.estadoCita === 'COMPLETADA').length;
-                    this.stats.emergencies = citasConNombres.filter((c: CitaConNombres) => c.motivo?.toLowerCase().includes('emergencia')).length;
-                    this.loadingCitas = false;
-                  }
-                }
-              });
-            },
-            error: () => {
-              citaConNombres.nombreMascota = 'Desconocido';
-              // Intentar aún así obtener el cliente
-              this.clienteService.listarClientePorId(cita.clienteId).subscribe({
-                next: (resCliente: { data: Cliente }) => {
-                  citaConNombres.nombreCliente = resCliente.data.nombre + ' ' + (resCliente.data.apellido || '');
-                  citasConNombres[idx] = citaConNombres;
-                  pendientes--;
-                  if (pendientes === 0) {
-                    this.todayAppointments = citasConNombres;
-                    this.stats.todayAppointments = citasConNombres.length;
-                    this.stats.pendingConsultations = citasConNombres.filter((c: CitaConNombres) => c.estadoCita === 'PENDIENTE').length;
-                    this.stats.completedToday = citasConNombres.filter((c: CitaConNombres) => c.estadoCita === 'COMPLETADA').length;
-                    this.stats.emergencies = citasConNombres.filter((c: CitaConNombres) => c.motivo?.toLowerCase().includes('emergencia')).length;
-                    this.loadingCitas = false;
-                  }
-                },
-                error: () => {
-                  citaConNombres.nombreCliente = 'Desconocido';
-                  citasConNombres[idx] = citaConNombres;
-                  pendientes--;
-                  if (pendientes === 0) {
-                    this.todayAppointments = citasConNombres;
-                    this.stats.todayAppointments = citasConNombres.length;
-                    this.stats.pendingConsultations = citasConNombres.filter((c: CitaConNombres) => c.estadoCita === 'PENDIENTE').length;
-                    this.stats.completedToday = citasConNombres.filter((c: CitaConNombres) => c.estadoCita === 'COMPLETADA').length;
-                    this.stats.emergencies = citasConNombres.filter((c: CitaConNombres) => c.motivo?.toLowerCase().includes('emergencia')).length;
-                    this.loadingCitas = false;
-                  }
-                }
-              });
-            }
-          });
-        });
-      },
-      error: (err: any) => {
-        this.errorCitas = 'No se pudieron cargar las citas de hoy.';
-        this.loadingCitas = false;
-      }
-    });
+  getStatusText(status: string): string {
+    switch (status) {
+      case 'completed': return 'Completada';
+      case 'in-progress': return 'En Proceso';
+      case 'pending': return 'Pendiente';
+      default: return status;
+    }
   }
-
-  get primeras4Citas(): CitaConNombres[] {
-    return this.todayAppointments.slice(0, 4);
-  }
-
-  get hayMasDe4Citas(): boolean {
-    return this.todayAppointments.length > 4;
-  }
-
-  abrirModalCitasHoy() {
-    this.showModalCitasHoy = true;
-  }
-
-  cerrarModalCitasHoy() {
-    this.showModalCitasHoy = false;
-  }
+  // Property to control modal visibility
+  showBuscadorMascota = true;
 
   openBuscadorMascota() {
-    // Aquí puedes abrir un modal o implementar la lógica deseada
-    console.log('Abrir buscador de mascota');
+    this.showBuscadorMascota = true;
+  }
+
+  closeBuscadorMascota() {
+    this.showBuscadorMascota = false;
   }
 }
