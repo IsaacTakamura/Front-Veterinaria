@@ -1,7 +1,12 @@
 import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { CitaService } from 'src/app/core/services/cita.service';
+import { MascotaService } from 'src/app/core/services/mascota.service';
+import { ClienteService } from 'src/app/core/services/cliente.service';
+import { forkJoin } from 'rxjs';
 import { Cita } from '../../shared/interfaces/cita.model';
+import { Mascota } from '../../shared/interfaces/mascota.model';
+import { Cliente } from '../../shared/interfaces/cliente.model';
 
 interface Appointment {
   id: number;
@@ -34,6 +39,8 @@ export class VeterinarianDashboardComponent implements OnInit {
   todayDate = new Date();
 
   citaService = inject(CitaService);
+  mascotaService = inject(MascotaService);
+  clienteService = inject(ClienteService);
 
   stats = {
     todayAppointments: 0,
@@ -59,6 +66,7 @@ export class VeterinarianDashboardComponent implements OnInit {
   );
 
   ngOnInit(): void {
+    const veterinarioId = 1; // Reemplaza esto por la obtención dinámica del ID si lo tienes
     this.citaService.listarCitasHoyVeterinario().subscribe((citas: Cita[]) => {
       console.log('Citas recibidas en el dashboard:', citas);
       this.stats.todayAppointments = citas.length;
@@ -66,15 +74,28 @@ export class VeterinarianDashboardComponent implements OnInit {
       this.stats.completedToday = citas.filter(c => c.estadoCita === 'COMPLETADA').length;
       this.stats.emergencies = citas.filter(c => c.motivo?.toLowerCase() === 'emergencia').length;
 
-      // Mapear las citas a la estructura de Appointment para el listado visual
-      this.todayAppointments = citas.map(cita => ({
-        id: cita.citaId ?? 0, // Asegura que siempre sea un número
-        time: cita.fechaRegistro.substring(11, 16), // Extrae la hora en formato HH:mm
-        pet: 'Mascota', // Aquí deberías buscar el nombre real de la mascota si lo tienes
-        owner: 'Cliente', // Aquí deberías buscar el nombre real del cliente si lo tienes
-        type: cita.motivo,
-        status: cita.estadoCita.toLowerCase() as any
-      }));
+      // Obtener todas las mascotas del veterinario
+      this.mascotaService.listarMascotasVet().subscribe((mascotasResponse: any) => {
+        const mascotas = mascotasResponse.data;
+        console.log('Mascotas del veterinario:', mascotas);
+
+        // Procesar las citas con los datos de mascotas disponibles
+        this.todayAppointments = citas.map(cita => {
+          // Buscar la mascota correspondiente
+          const mascota = mascotas.find((m: any) => m.mascotaId === cita.mascotaId);
+
+          return {
+            id: cita.citaId ?? 0,
+            time: cita.fechaRegistro.substring(11, 16),
+            pet: mascota?.nombre || 'Mascota',
+            owner: 'Cliente', // Temporalmente mostramos "Cliente" hasta que se resuelva el problema de permisos
+            type: cita.motivo,
+            status: cita.estadoCita.toLowerCase() as any
+          };
+        });
+
+        console.log('Citas procesadas con datos de mascotas:', this.todayAppointments);
+      });
     });
   }
 
