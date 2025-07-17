@@ -69,13 +69,22 @@
             </svg>
             <span>Nueva Consulta</span>
           </button>
-
           <button class="btn-outline flex flex-col items-center justify-center space-y-2 h-20" (click)="openBuscadorMascota()">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
               <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
             <span>Buscar Paciente</span>
+          </button>
+          <button class="btn-outline flex flex-col items-center justify-center space-y-2 h-20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+              <polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/>
+              <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="2"/>
+              <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="2"/>
+              <line x1="10" y1="9" x2="8" y2="9" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span>Historial Clínico</span>
           </button>
           <button class="btn-outline flex flex-col items-center justify-center space-y-2 h-20">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -95,31 +104,24 @@
             <span class="text-lg font-semibold">Citas de Hoy</span>
           </div>
           <div class="card-content space-y-4">
-            <ng-container *ngIf="!loadingCitas && !errorCitas">
-              <div *ngIf="primeras4Citas.length === 0" class="text-center text-gray-500 py-4">
-                No hay ninguna cita por ahora
-              </div>
-              <div *ngFor="let appt of primeras4Citas">
-                <div class="flex items-center justify-between p-3 border rounded-lg">
-                  <div class="flex items-center space-x-3">
-                    <div class="text-sm font-medium text-blue-600">{{ appt.fechaRegistro | date:'shortTime' }}</div>
-                    <div>
-                      <div class="font-medium">Mascota: {{ appt.nombreMascota }}</div>
-                      <div class="text-sm text-gray-500">Cliente: {{ appt.nombreCliente }}</div>
-                    </div>
-                  </div>
-                  <div class="flex items-center space-x-2">
-                    <span class="badge-secondary text-xs">{{ appt.motivo }}</span>
-                    <span class="badge text-xs">{{ appt.estadoCita }}</span>
+            <div *ngFor="let appt of todayAppointments">
+              <div class="flex items-center justify-between p-3 border rounded-lg">
+                <div class="flex items-center space-x-3">
+                  <div class="text-sm font-medium text-blue-600">{{ appt.time }}</div>
+                  <div>
+                    <div class="font-medium">{{ appt.pet }}</div>
+                    <div class="text-sm text-gray-500">{{ appt.owner }}</div>
                   </div>
                 </div>
+                <div class="flex items-center space-x-2">
+                  <span class="badge-secondary text-xs">{{ appt.type }}</span>
+                  <span class="badge {{ getStatusColor(appt.status) }} text-xs">
+                    {{ getStatusText(appt.status) }}
+                  </span>
+                </div>
               </div>
-              <button *ngIf="hayMasDe4Citas" class="btn-outline w-full mt-4" (click)="abrirModalCitasHoy()">Ver Todas las Citas</button>
-            </ng-container>
-            <div *ngIf="loadingCitas" class="text-center text-gray-400 py-4">Cargando citas...</div>
-            <div *ngIf="errorCitas" class="text-center text-red-500 py-4">{{ errorCitas }}</div>
-            <!-- Modal de todas las citas -->
-            <app-vete-modal-citas-hoy *ngIf="showModalCitasHoy" [citas]="todayAppointments" (close)="cerrarModalCitasHoy()"></app-vete-modal-citas-hoy>
+            </div>
+            <button class="btn-outline w-full mt-4">Ver Todas las Citas</button>
           </div>
         </div>
 
