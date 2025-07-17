@@ -24,24 +24,36 @@ export class CatalogManagementComponent implements OnInit {
   isLoading = false;
   mostrarTablasDetalladas = false;
   
-  // Variables para paginación
+  // Variables para paginación fija (5 elementos por página)
   especiesPagina = 1;
-  razasPagina = 1;
+  serviciosPagina = 1;
+  itemsPerPageEspecies = 5; // Estándar fijo: 5 elementos por página
+  itemsPerPageServicios = 5; // Estándar fijo: 5 elementos por página
   Math = Math; // Exposición de Math para usar en el HTML
 
   // Servicios
   tiposServicios: TipoServicio[] = [];
   modalVisible = false;
   nuevoTipoServicio: TipoServicio = { nombre: '' };
+  
+  // Almacenamiento local de descripciones (solo frontend)
+  private readonly DESCRIPCIONES_KEY = 'vet_servicios_descripciones';
+  private descripcionesLocales: Map<number, string> = new Map();
 
   // Especies y razas
   especies: Especie[] = [];
   razas: Raza[] = [];
   modalEspecieVisible = false;
   modalRazaVisible = false;
+  modalAsignarRazaVisible = false; // Nuevo modal para asignar raza existente
 
   nuevaEspecie: Partial<Especie> = { nombre: '' };
   nuevaRaza: Partial<Raza> = { nombre: '', especieId: 0 };
+  asignacionRaza: {
+    especieId: number;
+    razaId: number;
+    especieNombre: string;
+  } = { especieId: 0, razaId: 0, especieNombre: '' }; // Para asignar raza existente
   
   constructor(
     private tipoServicioService: TipoServicioService,
@@ -51,8 +63,49 @@ export class CatalogManagementComponent implements OnInit {
     private emojiService: EmojiService
   ) { }
 
+  // ========== MÉTODOS DE DESCRIPCIONES LOCALES ==========
+  private cargarDescripcionesLocales(): void {
+    try {
+      const data = localStorage.getItem(this.DESCRIPCIONES_KEY);
+      if (data) {
+        const parsed = JSON.parse(data);
+        Object.keys(parsed).forEach(key => {
+          this.descripcionesLocales.set(Number(key), parsed[key]);
+        });
+      }
+    } catch (error) {
+      console.error('Error al cargar descripciones locales:', error);
+      this.descripcionesLocales = new Map();
+    }
+  }
+
+  private guardarDescripcionesLocales(): void {
+    try {
+      const dataObj: Record<number, string> = {};
+      this.descripcionesLocales.forEach((value, key) => {
+        dataObj[key] = value;
+      });
+      localStorage.setItem(this.DESCRIPCIONES_KEY, JSON.stringify(dataObj));
+    } catch (error) {
+      console.error('Error al guardar descripciones locales:', error);
+    }
+  }
+
+  private asignarDescripcionLocal(tipoServicioId: number, descripcion: string): void {
+    if (descripcion && descripcion.trim()) {
+      this.descripcionesLocales.set(tipoServicioId, descripcion.trim());
+      this.guardarDescripcionesLocales();
+    }
+  }
+
+  obtenerDescripcionLocal(tipoServicioId: number | undefined): string {
+    if (!tipoServicioId) return '';
+    return this.descripcionesLocales.get(tipoServicioId) || '';
+  }
+
   ngOnInit(): void {
     this.isLoading = true;
+    this.cargarDescripcionesLocales();
     this.verificarAutenticacion();
     this.obtenerTiposServicios();
     this.obtenerDatosEspeciesYRazas();
@@ -96,24 +149,113 @@ export class CatalogManagementComponent implements OnInit {
   }
 
   registrarTipoServicio(): void {
-    this.tipoServicioService.crearTipoServicio(this.nuevoTipoServicio).subscribe({
-      next: () => {
+    // Guardar la descripción local antes de enviar a la API
+    const descripcionLocal = this.nuevoTipoServicio.descripcion;
+    
+    // Crear objeto solo con el nombre para enviar a la API
+    const tipoServicioParaAPI = { nombre: this.nuevoTipoServicio.nombre };
+    
+    this.tipoServicioService.crearTipoServicio(tipoServicioParaAPI).subscribe({
+      next: (response: any) => {
+        // Obtener el ID del nuevo servicio creado
+        const nuevoServicio = response.data || response;
+        const tipoServicioId = nuevoServicio.tipoServicioId;
+        
+        // Guardar la descripción localmente si existe
+        if (descripcionLocal && tipoServicioId) {
+          this.asignarDescripcionLocal(tipoServicioId, descripcionLocal);
+        }
+        
         this.obtenerTiposServicios();
         this.cerrarModal();
-        alert('✅ Servicio registrado correctamente');
+        this.mostrarNotificacionExito('Tipo de servicio registrado correctamente');
       },
       error: (err) => {
         console.error('Error al registrar servicio', err);
-        alert('❌ Error al registrar el servicio.');
+        this.mostrarNotificacionError('Error al registrar el servicio', err);
       }
     });
+  }
+
+  // Eliminar tipo de servicio
+  eliminarTipoServicio(tipoServicioId: number): void {
+    if (confirm('¿Estás seguro de que deseas eliminar este tipo de servicio? Esta acción no se puede deshacer.')) {
+      // TODO: Implementar llamada a la API cuando esté disponible
+      // this.tipoServicioService.eliminarTipoServicio(tipoServicioId).subscribe({
+      //   next: () => {
+      //     this.obtenerTiposServicios();
+      //     this.mostrarNotificacionExito('Tipo de servicio eliminado correctamente');
+      //   },
+      //   error: (err) => {
+      //     console.error('Error al eliminar tipo de servicio', err);
+      //     this.mostrarNotificacionError('Error al eliminar el tipo de servicio', err);
+      //   }
+      // });
+      
+      // Simulación temporal: eliminar de la lista local y mostrar notificación
+      const servicioEliminado = this.tiposServicios.find(s => s.tipoServicioId === tipoServicioId);
+      this.tiposServicios = this.tiposServicios.filter(s => s.tipoServicioId !== tipoServicioId);
+      
+      // Eliminar también la descripción local
+      this.descripcionesLocales.delete(tipoServicioId);
+      this.guardarDescripcionesLocales();
+      
+      const nombreServicio = servicioEliminado?.nombre || 'Servicio';
+      this.mostrarNotificacionExito(`Tipo de servicio "${nombreServicio}" eliminado correctamente`);
+      
+      console.log(`✅ Tipo de servicio eliminado localmente: ID ${tipoServicioId}`);
+    }
+  }
+
+  // Eliminar especie y sus razas vinculadas
+  eliminarEspecie(especieId: number): void {
+    const especieAEliminar = this.especies.find(e => e.especieId === especieId);
+    const razasVinculadas = this.getRazasPorEspecie(especieId);
+    
+    let mensajeConfirmacion = `¿Estás seguro de que deseas eliminar la especie "${especieAEliminar?.nombre}"?`;
+    if (razasVinculadas.length > 0) {
+      mensajeConfirmacion += `\n\nEsto también eliminará ${razasVinculadas.length} raza(s) vinculada(s): ${razasVinculadas.map(r => r.nombre).join(', ')}`;
+    }
+    mensajeConfirmacion += '\n\nEsta acción no se puede deshacer.';
+    
+    if (confirm(mensajeConfirmacion)) {
+      // TODO: Implementar llamada a la API cuando esté disponible
+      // this.catalogoService.eliminarEspecie(especieId).subscribe({
+      //   next: () => {
+      //     this.obtenerDatosEspeciesYRazas();
+      //     this.mostrarNotificacionExito(`Especie "${especieAEliminar?.nombre}" eliminada correctamente`);
+      //   },
+      //   error: (err) => {
+      //     console.error('Error al eliminar especie', err);
+      //     this.mostrarNotificacionError('Error al eliminar la especie', err);
+      //   }
+      // });
+      
+      // Simulación temporal: eliminar de las listas locales
+      this.especies = this.especies.filter(e => e.especieId !== especieId);
+      this.razas = this.razas.filter(r => r.especieId !== especieId);
+      
+      // Eliminar emoji asociado si existe
+      this.emojiService.obtenerTodosLosEmojisAsignados().delete(especieId);
+      
+      const nombreEspecie = especieAEliminar?.nombre || 'Especie';
+      const cantidadRazas = razasVinculadas.length;
+      
+      let mensajeExito = `Especie "${nombreEspecie}" eliminada correctamente`;
+      if (cantidadRazas > 0) {
+        mensajeExito += ` junto con ${cantidadRazas} raza(s) vinculada(s)`;
+      }
+      
+      this.mostrarNotificacionExito(mensajeExito);
+      console.log(`✅ Especie eliminada localmente: ID ${especieId}, Razas eliminadas: ${cantidadRazas}`);
+    }
   }
 
   // Método para mostrar tablas detalladas y reiniciar paginación
   mostrarTablas(): void {
     this.mostrarTablasDetalladas = true;
     this.especiesPagina = 1;
-    this.razasPagina = 1;
+    this.serviciosPagina = 1;
   }
 
   // ========== ESPECIES Y RAZAS ==========
@@ -282,8 +424,15 @@ export class CatalogManagementComponent implements OnInit {
     if (this.especies.length === 0) {
       console.log('🔄 Cargando especies para el modal de raza...');
       this.catalogoService.listarEspecies().subscribe({
-        next: (especies: Especie[]) => {
-          this.especies = especies;
+        next: (response: any) => {
+          // Verificamos si la respuesta tiene la estructura esperada
+          if (response && response.data && Array.isArray(response.data)) {
+            this.especies = response.data;
+          } else if (Array.isArray(response)) {
+            this.especies = response;
+          } else {
+            this.especies = [];
+          }
           console.log(`✅ Especies cargadas para modal: ${this.especies.length} registros`);
         },
         error: (err) => {
@@ -372,6 +521,181 @@ export class CatalogManagementComponent implements OnInit {
       }
     });
   }
+
+  // Métodos para modal de asignar raza
+  abrirModalAsignarRaza(especie: any) {
+    this.asignacionRaza = {
+      especieId: especie.especieId,
+      razaId: 0,
+      especieNombre: especie.nombre
+    };
+    this.modalAsignarRazaVisible = true;
+  }
+
+  cerrarModalAsignarRaza() {
+    this.modalAsignarRazaVisible = false;
+    this.asignacionRaza = {
+      especieId: 0,
+      razaId: 0,
+      especieNombre: ''
+    };
+  }
+
+  getRazasNoAsignadas() {
+    const razasAsignadas = this.getRazasPorEspecie(this.asignacionRaza.especieId);
+    const idsAsignados = razasAsignadas.map(r => r.razaId);
+    // Mostrar todas las razas que no están asignadas a esta especie específica
+    return this.razas.filter(raza => 
+      !idsAsignados.includes(raza.razaId) && 
+      raza.especieId !== this.asignacionRaza.especieId
+    );
+  }
+
+  seleccionarRazaParaAsignar(raza: any) {
+    // Simulamos la asignación localmente
+    raza.especieId = this.asignacionRaza.especieId;
+    
+    this.mostrarNotificacionExito(
+      `Raza "${raza.nombre}" asignada a "${this.asignacionRaza.especieNombre}" exitosamente`
+    );
+    
+    // Refrescar la vista
+    this.cargarRazas();
+  }
+
+  // ========== MÉTODOS DE PAGINACIÓN FIJA ==========
+  
+  /**
+   * Ir a la página anterior para servicios
+   */
+  anteriorPaginaServicios(): void {
+    if (this.serviciosPagina > 1) {
+      this.serviciosPagina--;
+    }
+  }
+
+  /**
+   * Ir a la página siguiente para servicios
+   */
+  siguientePaginaServicios(): void {
+    if (this.serviciosPagina < this.totalPagesServicios) {
+      this.serviciosPagina++;
+    }
+  }
+
+  /**
+   * Ir a la página anterior para especies
+   */
+  anteriorPaginaEspecies(): void {
+    if (this.especiesPagina > 1) {
+      this.especiesPagina--;
+    }
+  }
+
+  /**
+   * Ir a la página siguiente para especies
+   */
+  siguientePaginaEspecies(): void {
+    if (this.especiesPagina < this.totalPagesEspecies) {
+      this.especiesPagina++;
+    }
+  }
+
+  /**
+   * Obtiene el número total de páginas para servicios
+   */
+  get totalPagesServicios(): number {
+    return Math.ceil(this.tiposServicios.length / this.itemsPerPageServicios);
+  }
+
+  /**
+   * Obtiene el número total de páginas para especies
+   */
+  get totalPagesEspecies(): number {
+    return Math.ceil(this.especies.length / this.itemsPerPageEspecies);
+  }
+
+  /**
+   * Obtiene el número del primer elemento mostrado en la página actual de servicios
+   */
+  get firstItemNumberServicios(): number {
+    if (this.tiposServicios.length === 0) return 0;
+    return ((this.serviciosPagina - 1) * this.itemsPerPageServicios) + 1;
+  }
+
+  /**
+   * Obtiene el número del último elemento mostrado en la página actual de servicios
+   */
+  get lastItemNumberServicios(): number {
+    const lastItem = this.serviciosPagina * this.itemsPerPageServicios;
+    return Math.min(lastItem, this.tiposServicios.length);
+  }
+
+  /**
+   * Obtiene el número del primer elemento mostrado en la página actual de especies
+   */
+  get firstItemNumberEspecies(): number {
+    if (this.especies.length === 0) return 0;
+    return ((this.especiesPagina - 1) * this.itemsPerPageEspecies) + 1;
+  }
+
+  /**
+   * Obtiene el número del último elemento mostrado en la página actual de especies
+   */
+  get lastItemNumberEspecies(): number {
+    const lastItem = this.especiesPagina * this.itemsPerPageEspecies;
+    return Math.min(lastItem, this.especies.length);
+  }
+
+  /**
+   * Obtiene los servicios paginados para la página actual
+   */
+  get serviciosPaginados(): TipoServicio[] {
+    const startIndex = (this.serviciosPagina - 1) * this.itemsPerPageServicios;
+    const endIndex = startIndex + this.itemsPerPageServicios;
+    return this.tiposServicios.slice(startIndex, endIndex);
+  }
+
+  /**
+   * Obtiene las especies paginadas para la página actual
+   */
+  get especiesPaginadas(): Especie[] {
+    const startIndex = (this.especiesPagina - 1) * this.itemsPerPageEspecies;
+    const endIndex = startIndex + this.itemsPerPageEspecies;
+    return this.especies.slice(startIndex, endIndex);
+  }
+
+  // ========== NUEVO ESTÁNDAR DE PAGINACIÓN PARA TODO EL SISTEMA ========== 
+  //
+  // 🎯 CONFIGURACIÓN ESTÁNDAR APLICADA:
+  // ✅ 5 elementos por página (fijo)
+  // ✅ Navegación solo con "Anterior" y "Siguiente"  
+  // ✅ Sin dropdown de selección de elementos por página
+  // ✅ Colores y diseño consistente con Tailwind CSS
+  //
+  // 📋 ELEMENTOS IMPLEMENTADOS:
+  // - Información: "Mostrando X-Y de Z elementos" 
+  // - Controles: Botones "Anterior" y "Siguiente" deshabilitados cuando corresponde
+  // - Indicador: "Página X de Y" (solo cuando hay múltiples páginas)
+  // - Colores: bg-gray-50, text-gray-700, border-gray-300, hover:bg-gray-50
+  // 
+  // 🔧 COMPONENTES YA ACTUALIZADOS:
+  // ✅ catalog-management.component (servicios y especies)
+  // ✅ user-management.component (usuarios)
+  //
+  // 📌 PRÓXIMOS COMPONENTES A ACTUALIZAR:
+  // - appointment-supervision (citas)
+  // - inventory-management (inventario) 
+  // - reports (reportes)
+  // - Y cualquier otra tabla que muestre listados
+  //
+  // 🎨 ESTRUCTURA HTML ESTÁNDAR:
+  // <div class="bg-gray-50 px-4 py-3 flex flex-col lg:flex-row justify-between items-center gap-4 border-t border-gray-200">
+  //   <div class="text-sm text-gray-700"><!-- Información --></div>
+  //   <div class="flex items-center space-x-2"><!-- Controles --></div>
+  // </div>
+  //
+  // ========== FIN DEL ESTÁNDAR DE PAGINACIÓN ==========
 
   // 🧪 Método de prueba para verificar APIs de creación
   probarAPIsCreacion(): void {
@@ -767,6 +1091,44 @@ export class CatalogManagementComponent implements OnInit {
       console.error('❌ No hay datos de sesión en localStorage');
       alert('❌ No hay sesión guardada. Por favor, inicia sesión.');
     }
+  }
+
+  // Método para asignar una raza a una especie
+  asignarRazaAEspecie(raza: any): void {
+    // Simulamos la asignación localmente
+    const razaIndex = this.razas.findIndex(r => r.razaId === raza.razaId);
+    if (razaIndex !== -1) {
+      this.razas[razaIndex].especieId = this.asignacionRaza.especieId;
+    }
+    
+    this.mostrarNotificacionExito(
+      `Raza "${raza.nombre}" asignada a "${this.asignacionRaza.especieNombre}" exitosamente`
+    );
+  }
+
+  // Método para remover una raza de una especie
+  removerRazaDeEspecie(raza: any): void {
+    // Simulamos la remoción localmente
+    const razaIndex = this.razas.findIndex(r => r.razaId === raza.razaId);
+    if (razaIndex !== -1) {
+      // Reasignar la raza a una especie diferente o simular la remoción
+      const otraEspecie = this.especies.find(e => e.especieId !== this.asignacionRaza.especieId);
+      if (otraEspecie && otraEspecie.especieId) {
+        this.razas[razaIndex].especieId = otraEspecie.especieId;
+      }
+    }
+    
+    this.mostrarNotificacionExito(
+      `Raza "${raza.nombre}" removida de "${this.asignacionRaza.especieNombre}" exitosamente`
+    );
+    
+    // Recargar los datos para reflejar los cambios
+    this.cargarRazas();
+  }
+
+  // Método para tracking en ngFor para mejor performance
+  trackByRazaId(index: number, raza: any): number {
+    return raza.razaId;
   }
 
 }

@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { UserService } from '../../../core/services/user.service';
 import { PerfilService } from '../../../core/services/perfil.service';
-import { NgxPaginationModule } from 'ngx-pagination';
 import { User, PerfilPersonal, UserWithProfile } from '../../../core/models/user.model';
 
 @Component({
@@ -13,8 +12,7 @@ import { User, PerfilPersonal, UserWithProfile } from '../../../core/models/user
   imports: [
     CommonModule,
     FormsModule,
-    HttpClientModule,
-     NgxPaginationModule // ← aquí
+    HttpClientModule
   ],
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.css']
@@ -26,13 +24,20 @@ export class UserManagementComponent implements OnInit {
   private perfilService = inject(PerfilService);
 
   usuarios: UserWithProfile[] = [];
+  usuariosFiltrados: UserWithProfile[] = [];
   perfiles: PerfilPersonal[] = [];
   searchTerm: string = '';
   page: number = 1;
-  itemsPerPage: number = 10;
+  itemsPerPage: number = 5; // Estándar fijo: 5 elementos por página
   usernameDisponible: boolean | null = null;
   usuarioEnEdicion: UserWithProfile | null = null;
   showPassword: boolean = false;
+  
+  /**
+   * Modal para mostrar información completa del usuario
+   */
+  modalInfoVisible: boolean = false;
+  usuarioSeleccionado: UserWithProfile | null = null;
 
   // Modelo del nuevo usuario (separado en usuario base y perfil)
   newUser: User & { password: string } = {
@@ -55,6 +60,34 @@ export class UserManagementComponent implements OnInit {
     { id: 'VET', label: 'Veterinario', desc: 'Puede gestionar pacientes y consultas' },
     { id: 'ASISTENTE', label: 'Asistente', desc: 'Acceso limitado a citas y triaje' }
   ];
+
+  // ========== VARIABLES DE PAGINACIÓN Y BÚSQUEDA ==========
+  mostrarRoles: boolean = false;
+  
+  // ========== VARIABLES PARA MODAL ==========
+  mostrarModalExito: boolean = false;
+  mensajeModal: string = '';
+  fechaActual: string = new Date().toLocaleDateString('es-ES');
+
+  // ========== GETTERS PARA PAGINACIÓN ==========
+  get usuariosPaginados(): UserWithProfile[] {
+    const startIndex = (this.page - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.usuariosFiltrados.slice(startIndex, endIndex);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.usuariosFiltrados.length / this.itemsPerPage);
+  }
+
+  get firstItemNumber(): number {
+    return (this.page - 1) * this.itemsPerPage + 1;
+  }
+
+  get lastItemNumber(): number {
+    const endIndex = this.page * this.itemsPerPage;
+    return Math.min(endIndex, this.usuariosFiltrados.length);
+  }
 
   ngOnInit(): void {
     this.cargarUsuarios();
@@ -79,6 +112,7 @@ export class UserManagementComponent implements OnInit {
         if (usuarios.length === 0) {
           console.log('ℹ️ No hay usuarios registrados');
           this.usuarios = [];
+          this.usuariosFiltrados = [];
           return;
         }
         
@@ -110,6 +144,7 @@ export class UserManagementComponent implements OnInit {
             
             console.log('🎉 CARGA COMPLETA: Usuarios con perfiles combinados:', this.usuarios);
             console.log(`📊 Total: ${this.usuarios.length} usuarios, ${perfiles.length} perfiles`);
+            this.usuariosFiltrados = [...this.usuarios]; // Inicializar filtrados
           },
           error: (perfilesError) => {
             console.error('❌ Error al cargar perfiles desde API de administración:', perfilesError);
@@ -122,6 +157,7 @@ export class UserManagementComponent implements OnInit {
             }));
             
             console.log('⚠️ Usuarios cargados sin perfiles debido al error:', this.usuarios);
+            this.usuariosFiltrados = [...this.usuarios]; // Inicializar filtrados
           }
         });
       },
@@ -156,19 +192,19 @@ export class UserManagementComponent implements OnInit {
     // Validaciones básicas del usuario con logging detallado
     if (!this.newUser.username?.trim()) {
       console.log('❌ VALIDACIÓN FALLÓ: Username vacío');
-      this.mostrarMensajeExito('❌ El campo "Nombre de Usuario" es obligatorio.');
+      console.log('❌ El campo "Nombre de Usuario" es obligatorio.');
       return;
     }
     
     if (!this.newUser.password?.trim()) {
       console.log('❌ VALIDACIÓN FALLÓ: Password vacío');
-      this.mostrarMensajeExito('❌ El campo "Contraseña" es obligatorio.');
+      console.log('❌ El campo "Contraseña" es obligatorio.');
       return;
     }
     
     if (!this.newUser.rol?.trim()) {
       console.log('❌ VALIDACIÓN FALLÓ: Rol vacío o no seleccionado');
-      this.mostrarMensajeExito('❌ Debe seleccionar un rol para el usuario.');
+      console.log('❌ Debe seleccionar un rol para el usuario.');
       return;
     }
 
@@ -176,20 +212,20 @@ export class UserManagementComponent implements OnInit {
     const rolesValidos = ['ADMIN', 'VET', 'ASISTENTE'];
     if (!rolesValidos.includes(this.newUser.rol)) {
       console.log('❌ VALIDACIÓN FALLÓ: Rol inválido:', this.newUser.rol);
-      this.mostrarMensajeExito('❌ El rol seleccionado no es válido.');
+      console.log('❌ El rol seleccionado no es válido.');
       return;
     }
 
     // Validaciones básicas del perfil
     if (!this.newPerfil.nombres?.trim()) {
       console.log('❌ VALIDACIÓN FALLÓ: Nombres vacío');
-      this.mostrarMensajeExito('❌ El campo "Nombres" es obligatorio.');
+      console.log('❌ El campo "Nombres" es obligatorio.');
       return;
     }
     
     if (!this.newPerfil.apellidos?.trim()) {
       console.log('❌ VALIDACIÓN FALLÓ: Apellidos vacío');
-      this.mostrarMensajeExito('❌ El campo "Apellidos" es obligatorio.');
+      console.log('❌ El campo "Apellidos" es obligatorio.');
       return;
     }
 
@@ -197,7 +233,7 @@ export class UserManagementComponent implements OnInit {
     const usernameExists = this.usuarios.some(u => u.username.toLowerCase() === this.newUser.username.toLowerCase());
     if (usernameExists) {
       console.log('❌ VALIDACIÓN FALLÓ: Username ya existe');
-      this.mostrarMensajeExito('❌ Ese nombre de usuario ya existe.');
+      console.log('❌ Ese nombre de usuario ya existe.');
       return;
     }
 
@@ -230,7 +266,7 @@ export class UserManagementComponent implements OnInit {
               console.log('✅ PASO 2 COMPLETADO: Perfil creado en API de administración', perfilResponse);
               console.log('🎉 PROCESO COMPLETO: Usuario y perfil creados exitosamente');
               
-              this.mostrarMensajeExito('✅ Usuario y perfil creados exitosamente');
+              console.log('✅ Usuario y perfil creados exitosamente');
               this.cargarUsuarios(); // Recargar la lista completa
               this.resetearFormulario();
             },
@@ -238,14 +274,14 @@ export class UserManagementComponent implements OnInit {
               console.error('❌ PASO 2 FALLÓ: Error al crear perfil en API de administración', perfilError);
               console.error('Detalles del error:', perfilError.error || perfilError.message);
               
-              this.mostrarMensajeExito('⚠️ Usuario creado exitosamente, pero hubo un problema al crear el perfil. Contacte al administrador.');
+              console.log('⚠️ Usuario creado exitosamente, pero hubo un problema al crear el perfil. Contacte al administrador.');
               this.cargarUsuarios(); // Recargar la lista aunque falle el perfil
               this.resetearFormulario();
             }
           });
         } else {
           console.error('❌ No se recibió usuarioId en la respuesta:', userResponse);
-          this.mostrarMensajeExito('❌ Error: No se pudo obtener el ID del usuario creado.');
+          console.log('❌ Error: No se pudo obtener el ID del usuario creado.');
         }
       },
       error: (userError) => {
@@ -253,11 +289,11 @@ export class UserManagementComponent implements OnInit {
         console.error('Detalles del error:', userError.error || userError.message);
         
         if (userError.status === 409) {
-          this.mostrarMensajeExito('❌ El nombre de usuario ya existe. Elija otro nombre.');
+          console.log('❌ El nombre de usuario ya existe. Elija otro nombre.');
         } else if (userError.status === 400) {
-          this.mostrarMensajeExito('❌ Datos inválidos. Verifique todos los campos.');
+          console.log('❌ Datos inválidos. Verifique todos los campos.');
         } else {
-          this.mostrarMensajeExito('❌ Error al crear usuario. Verifique su conexión e intente nuevamente.');
+          console.log('❌ Error al crear usuario. Verifique su conexión e intente nuevamente.');
         }
       }
     });
@@ -283,22 +319,7 @@ export class UserManagementComponent implements OnInit {
     };
 
     this.page = 1;
-    
     console.log('🔄 Formulario reseteado con valores por defecto');
-  }
-
-  getRolDescripcion(rol?: string): string {
-    if (rol) {
-      switch (rol) {
-        case 'ADMIN': return 'Gestión completa del sistema';
-        case 'VET': return 'Profesional médico veterinario';
-        case 'ASISTENTE': return 'Apoyo administrativo';
-        default: return '';
-      }
-    }
-    // Versión original para el formulario
-    const actual = this.roles.find(r => r.id === this.newUser.rol);
-    return actual ? actual.desc : '';
   }
 
   /**
@@ -318,23 +339,7 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-
- get usuariosFiltrados(): UserWithProfile[] {
-  if (!this.searchTerm?.trim()) return this.usuarios;
-  const term = this.searchTerm.toLowerCase();
-  return this.usuarios.filter(u =>
-    u.username.toLowerCase().includes(term) ||
-    u.rol.toLowerCase().includes(term) ||
-    u.estado?.toLowerCase().includes(term) ||
-    u.perfil?.nombres?.toLowerCase().includes(term) ||
-    u.perfil?.apellidos?.toLowerCase().includes(term) ||
-    u.perfil?.direccion?.toLowerCase().includes(term) ||
-    u.perfil?.telefonoEmergencia?.includes(term)
-  );
-}
-
-
-validarUsernameEnVivo(): void {
+  validarUsernameEnVivo(): void {
   const nombre = this.newUser.username.trim();
   if (!nombre) {
     this.usernameDisponible = null;
@@ -406,16 +411,16 @@ guardarEdicion(): void {
         console.log('✅ Usuario actualizado en la lista local:', this.usuarios[idx]);
       }
       
-      // Refrescar datos del usuario para asegurar sincronización
-      this.actualizarUsuarioEspecifico(payload.usuarioId);
+      // Refrescar lista de usuarios para asegurar sincronización
+      this.cargarUsuarios();
       
       this.usuarioEnEdicion = null;
-      this.mostrarMensajeExito('✅ Usuario actualizado correctamente.');
+      console.log('✅ Usuario actualizado correctamente.');
     },
     error: err => {
       console.error('❌ Error al actualizar usuario:', err);
       console.error('Detalles del error:', err.error || err.message);
-      this.mostrarMensajeExito('❌ Error al actualizar el usuario. Verifique los datos e intente nuevamente.');
+      console.error('❌ Error al actualizar el usuario. Verifique los datos e intente nuevamente.');
     }
   });
 }
@@ -438,7 +443,7 @@ guardarEdicion(): void {
 cambiarEstadoToggle(user: UserWithProfile): void {
   if (!user.usuarioId) {
     console.error('❌ Usuario sin ID válido:', user);
-    this.mostrarMensajeExito('❌ Error: Usuario sin ID válido');
+    console.log('❌ Error: Usuario sin ID válido');
     return;
   }
 
@@ -453,12 +458,12 @@ cambiarEstadoToggle(user: UserWithProfile): void {
       next: (response) => {
         console.log('✅ Usuario desactivado exitosamente:', response);
         user.estado = 'INACTIVO';
-        this.mostrarMensajeExito('✅ Usuario desactivado correctamente');
+        console.log('✅ Usuario desactivado correctamente');
       },
       error: err => {
         console.error('❌ Error al desactivar usuario:', err);
         console.error('Detalles del error:', err.error || err.message);
-        this.mostrarMensajeExito('❌ No se pudo desactivar el usuario. Intente nuevamente.');
+        console.log('❌ No se pudo desactivar el usuario. Intente nuevamente.');
       }
     });
   } else {
@@ -478,12 +483,12 @@ cambiarEstadoToggle(user: UserWithProfile): void {
       next: (response) => {
         console.log('✅ Usuario activado exitosamente:', response);
         user.estado = 'ACTIVO';
-        this.mostrarMensajeExito('✅ Usuario activado correctamente');
+        console.log('✅ Usuario activado correctamente');
       },
       error: err => {
         console.error('❌ Error al activar usuario:', err);
         console.error('Detalles del error:', err.error || err.message);
-        this.mostrarMensajeExito('❌ No se pudo activar el usuario. Intente nuevamente.');
+        console.log('❌ No se pudo activar el usuario. Intente nuevamente.');
       }
     });
   }
@@ -499,276 +504,192 @@ cambiarEstadoToggle(user: UserWithProfile): void {
     }
   }
 
-// Variable para controlar la visibilidad de los roles y permisos
-// ✅ Usamos una variable booleana para mostrar/ocultar la sección de roles
-mostrarRoles: boolean = false;
-
-
-// Variables para el modal de éxito
-// ✅ Usamos una variable booleana para controlar la visibilidad del modal
-// ✅ Usamos una variable para el mensaje del modal
-mostrarModalExito: boolean = false;
-mensajeModal: string = '';
-
-// Método para mostrar el modal de éxito con un mensaje
-// ✅ Usamos un método que recibe un mensaje y lo muestra en el modal
-mostrarMensajeExito(mensaje: string): void {
-  this.mensajeModal = mensaje;
-  this.mostrarModalExito = true;
-
-  // Cerrar automáticamente después de 3 segundos
-  setTimeout(() => {
-    this.mostrarModalExito = false;
-  }, 3000);
-}
-
-
-// ========== MÉTODOS DE PAGINACIÓN ==========
-  
   /**
-   * Obtiene el número total de páginas para los usuarios filtrados
+   * Obtiene descripción detallada del rol para tooltips
    */
-  get totalPages(): number {
-    return Math.ceil(this.usuariosFiltrados.length / this.itemsPerPage);
+  getRolDescripcion(rol: string): string {
+    const descripciones: { [key: string]: string } = {
+      'ADMIN': 'Gestión completa del sistema',
+      'VET': 'Profesional médico veterinario',
+      'ASISTENTE': 'Apoyo administrativo'
+    };
+    return descripciones[rol] || 'Rol no definido';
   }
 
   /**
-   * Obtiene el número del primer elemento mostrado en la página actual
+   * Formatea fecha de manera más legible
    */
-  get firstItemNumber(): number {
-    if (this.usuariosFiltrados.length === 0) return 0;
-    return ((this.page - 1) * this.itemsPerPage) + 1;
-  }
-
-  /**
-   * Obtiene el número del último elemento mostrado en la página actual
-   */
-  get lastItemNumber(): number {
-    const lastItem = this.page * this.itemsPerPage;
-    return Math.min(lastItem, this.usuariosFiltrados.length);
-  }
-
-  /**
-   * Resetea la página a 1 cuando se hace una búsqueda
-   */
-  onSearchChange(): void {
-    this.page = 1;
-  }
-
-  /**
-   * Cambia el número de elementos por página
-   */
-  changeItemsPerPage(newItemsPerPage: number): void {
-    this.itemsPerPage = newItemsPerPage;
-    this.page = 1; // Resetear a la primera página
-  }
-
-
-// ========== MÉTODOS DE VALIDACIÓN ==========
-  
-  /**
-   * Valida si un email tiene formato correcto
-   */
-  isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-
-  /**
-   * Valida si una cédula tiene formato correcto (Ecuador)
-   */
-  isValidCedula(cedula: string): boolean {
-    return cedula.length === 10 && /^\d+$/.test(cedula);
-  }
-
-  // ========== MÉTODOS DE DEBUGGING ==========
-  
-  /**
-   * Método para probar la conectividad con ambas APIs
-   * Útil para debugging durante desarrollo
-   */
-  probarAPIs(): void {
-    console.log('🔍 Probando conectividad con APIs...');
-    
-    // Probar API de usuarios
-    this.userService.obtenerUsuarios().subscribe({
-      next: (response) => {
-        console.log('✅ API de usuarios funciona:', response);
-      },
-      error: (error) => {
-        console.error('❌ API de usuarios falló:', error);
-      }
-    });
-    
-    // Probar API de perfiles  
-    this.perfilService.listarPerfiles().subscribe({
-      next: (response) => {
-        console.log('✅ API de perfiles funciona:', response);
-      },
-      error: (error) => {
-        console.error('❌ API de perfiles falló:', error);
-      }
-    });
-  }
-
-  cambiarEstadoUsuario(usuarioId: number, estadoActual: string): void {
-    const nuevoEstado = estadoActual === 'ACTIVO' ? 'INACTIVO' : 'ACTIVO';
-    const accion = nuevoEstado === 'ACTIVO' ? 'activar' : 'desactivar';
-    
-    if (confirm(`¿Está seguro de que desea ${accion} este usuario?`)) {
-      console.log(`🔄 Cambiando estado de usuario ${usuarioId} a ${nuevoEstado}`);
-      // Aquí iría la lógica para cambiar el estado
-      // Ejemplo: this.userService.cambiarEstado(usuarioId, nuevoEstado).subscribe(...)
-      
-      this.mostrarMensajeExito(`🔄 Usuario ${accion === 'activar' ? 'activado' : 'desactivado'} exitosamente`);
-    }
-  }
-
-  formatearFecha(fecha: string): string {
-    if (!fecha) return 'N/A';
+  formatDate(fecha: string | Date): string {
+    if (!fecha) return 'No disponible';
     const date = new Date(fecha);
     return date.toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: '2-digit', 
-      year: 'numeric'
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   }
 
-  formatearHora(fecha: string): string {
+  /**
+   * Obtiene tiempo transcurrido desde el registro
+   */
+  getTimeAgo(fecha: string | Date): string {
     if (!fecha) return '';
-    const date = new Date(fecha);
-    return date.toLocaleTimeString('es-ES', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  }
-
-  tiempoTranscurrido(fecha: string): string {
-    if (!fecha) return 'N/A';
-    const ahora = new Date();
-    const fechaRegistro = new Date(fecha);
-    const diffMs = ahora.getTime() - fechaRegistro.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const now = new Date();
+    const past = new Date(fecha);
+    const diffInMs = now.getTime() - past.getTime();
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
     
-    if (diffDays === 0) return 'Hoy';
-    if (diffDays === 1) return 'Ayer';
-    if (diffDays < 7) return `${diffDays} días`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} semanas`;
-    if (diffDays < 365) return `${Math.floor(diffDays / 30)} meses`;
-    return `${Math.floor(diffDays / 365)} años`;
+    if (diffInDays < 1) return 'Hoy';
+    if (diffInDays < 30) return `Hace ${diffInDays} días`;
+    if (diffInDays < 365) return `Hace ${Math.floor(diffInDays / 30)} meses`;
+    return `Hace ${Math.floor(diffInDays / 365)} años`;
   }
 
   /**
-   * Actualiza los datos de un usuario específico recargando desde las APIs
-   * Útil después de cambios críticos para mantener sincronización
+   * Exportar tabla completa a Excel con formato profesional
    */
-  actualizarUsuarioEspecifico(usuarioId: number): void {
-    console.log(`🔄 Actualizando datos del usuario ${usuarioId}...`);
-    
-    // Buscar el usuario en la API de autenticación
-    this.userService.obtenerUsuarios().subscribe({
-      next: (usuariosResponse) => {
-        const usuarios = usuariosResponse.data || [];
-        const usuarioActualizado = usuarios.find((u: any) => u.usuarioId === usuarioId);
-        
-        if (usuarioActualizado) {
-          // Buscar el perfil asociado
-          this.perfilService.listarPerfiles().subscribe({
-            next: (perfilesResponse) => {
-              const perfiles = perfilesResponse.data || [];
-              const perfil = perfiles.find((p: any) => p.usuarioId === usuarioId);
-              
-              // Actualizar en la lista local
-              const idx = this.usuarios.findIndex(u => u.usuarioId === usuarioId);
-              if (idx !== -1) {
-                this.usuarios[idx] = {
-                  ...usuarioActualizado,
-                  perfil: perfil || undefined
-                };
-                console.log(`✅ Usuario ${usuarioId} actualizado en lista local:`, this.usuarios[idx]);
-              }
-            },
-            error: (error) => {
-              console.error('❌ Error al actualizar perfil del usuario:', error);
-            }
-          });
-        }
-      },
-      error: (error) => {
-        console.error('❌ Error al actualizar datos del usuario:', error);
-      }
-    });
-  }
+  exportarTablaCompleta(): void {
+    try {
+      // Preparar datos para Excel con headers profesionales
+      const datosExcel = this.usuariosFiltrados.map(user => ({
+        'ID': user.usuarioId,
+        'Usuario': user.username,
+        'Nombres': user.perfil?.nombres || 'No registrado',
+        'Apellidos': user.perfil?.apellidos || 'No registrado', 
+        'Rol': this.getRolLegible(user.rol),
+        'Teléfono Emergencia': user.perfil?.telefonoEmergencia || 'No registrado',
+        'Dirección': user.perfil?.direccion || 'No registrado',
+        'Estado': user.estado,
+        'Fecha Registro': this.formatDate(user.fechaRegistro || ''),
+        'Tiempo Transcurrido': this.getTimeAgo(user.fechaRegistro || '')
+      }));
 
-  /**
-   * Método temporal para debugging del formulario
-   * Imprime todos los valores actuales para identificar problemas
-   */
-  debugFormulario(): void {
-    console.log('🔍 === DEBUG COMPLETO DEL FORMULARIO ===');
-    console.log('=== DATOS DEL USUARIO ===');
-    console.log('newUser object:', this.newUser);
-    console.log('username:', `"${this.newUser.username}"`);
-    console.log('password:', `"${this.newUser.password}"`);
-    console.log('rol:', `"${this.newUser.rol}"`);
-    console.log('username length:', this.newUser.username?.length || 0);
-    console.log('password length:', this.newUser.password?.length || 0);
-    console.log('rol length:', this.newUser.rol?.length || 0);
-    
-    console.log('=== DATOS DEL PERFIL ===');
-    console.log('newPerfil object:', this.newPerfil);
-    console.log('nombres:', `"${this.newPerfil.nombres}"`);
-    console.log('apellidos:', `"${this.newPerfil.apellidos}"`);
-    console.log('telefonoEmergencia:', `"${this.newPerfil.telefonoEmergencia}"`);
-    console.log('direccion:', `"${this.newPerfil.direccion}"`);
-    console.log('alergias:', `"${this.newPerfil.alergias}"`);
-    
-    console.log('=== VALIDACIONES ===');
-    console.log('username válido:', !!this.newUser.username?.trim());
-    console.log('password válido:', !!this.newUser.password?.trim());
-    console.log('rol válido:', !!this.newUser.rol?.trim());
-    console.log('nombres válido:', !!this.newPerfil.nombres?.trim());
-    console.log('apellidos válido:', !!this.newPerfil.apellidos?.trim());
-    console.log('=====================================');
-    
-    // Mostrar también un modal con la información
-    const info = `
-    Usuario: "${this.newUser.username}" (${this.newUser.username?.length || 0} chars)
-    Password: ${this.newUser.password?.length || 0} caracteres
-    Rol: "${this.newUser.rol}" (${this.newUser.rol?.length || 0} chars)
-    Nombres: "${this.newPerfil.nombres}" (${this.newPerfil.nombres?.length || 0} chars)
-    Apellidos: "${this.newPerfil.apellidos}" (${this.newPerfil.apellidos?.length || 0} chars)
-    `;
-    
-    this.mostrarMensajeExito(`🔍 DEBUG INFO: ${info}`);
-  }
+      // Crear contenido CSV con formato UTF-8
+      const headers = Object.keys(datosExcel[0]).join(',');
+      const filas = datosExcel.map(fila => 
+        Object.values(fila).map(valor => 
+          typeof valor === 'string' && valor.includes(',') 
+            ? `"${valor}"` 
+            : valor
+        ).join(',')
+      );
 
-  /**
-   * Método para limpiar y normalizar el rol seleccionado
-   * Elimina espacios en blanco y asegura que el valor sea válido
-   */
-  normalizarRol(): void {
-    if (this.newUser.rol) {
-      const rolLimpio = this.newUser.rol.trim().toUpperCase();
-      const rolesValidos: ('ADMIN' | 'VET' | 'ASISTENTE')[] = ['ADMIN', 'VET', 'ASISTENTE'];
+      const contenidoCSV = [headers, ...filas].join('\n');
       
-      if (rolesValidos.includes(rolLimpio as any)) {
-        this.newUser.rol = rolLimpio as 'ADMIN' | 'VET' | 'ASISTENTE';
-        console.log('🔧 Rol normalizado:', this.newUser.rol);
-      } else {
-        console.log('❌ Rol inválido detectado:', rolLimpio);
-        this.newUser.rol = 'ASISTENTE'; // Valor por defecto si es inválido
-      }
+      // Crear blob con UTF-8 BOM para soporte de acentos
+      const bom = '\uFEFF';
+      const blob = new Blob([bom + contenidoCSV], { 
+        type: 'text/csv;charset=utf-8;' 
+      });
+
+      // Descargar archivo
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `usuarios-sistema-${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      console.log('✅ Exportación de tabla completa realizada exitosamente');
+    } catch (error) {
+      console.error('❌ Error al exportar tabla completa:', error);
     }
   }
 
-  /**
-   * Método llamado cuando cambia el select del rol
-   * Normaliza el valor y hace debug
-   */
+  abrirModalInformacionCompleta(user: UserWithProfile): void {
+    this.usuarioSeleccionado = user;
+    this.modalInfoVisible = true;
+  }
+
+  cerrarModalInformacionCompleta(): void {
+    this.modalInfoVisible = false;
+    this.usuarioSeleccionado = null;
+  }
+
+  // ========== MÉTODOS DE PAGINACIÓN ==========
+  anteriorPagina(): void {
+    if (this.page > 1) {
+      this.page--;
+    }
+  }
+
+  siguientePagina(): void {
+    if (this.page < this.totalPages) {
+      this.page++;
+    }
+  }
+
+  // ========== MÉTODOS DE BÚSQUEDA Y EVENTOS ==========
+  onSearchChange(): void {
+    this.page = 1; // Resetear a la primera página al buscar
+    this.filtrarUsuarios();
+  }
+
   onRolChange(): void {
-    console.log('🔄 Rol cambiado a:', this.newUser.rol);
-    this.normalizarRol();
-    console.log('✅ Rol después de normalizar:', this.newUser.rol);
+    // Actualizar descripción del rol cuando cambie
+    console.log('Rol seleccionado:', this.newUser.rol);
+  }
+
+  // ========== MÉTODO DE EXPORTACIÓN INDIVIDUAL ==========
+  exportarUsuarioIndividual(user: UserWithProfile): void {
+    try {
+      const datosUsuario = {
+        'ID': user.usuarioId,
+        'Usuario': user.username,
+        'Nombres': user.perfil?.nombres || 'No registrado',
+        'Apellidos': user.perfil?.apellidos || 'No registrado', 
+        'Rol': this.getRolLegible(user.rol),
+        'Teléfono Emergencia': user.perfil?.telefonoEmergencia || 'No registrado',
+        'Dirección': user.perfil?.direccion || 'No registrado',
+        'Estado': user.estado,
+        'Fecha Registro': this.formatDate(user.fechaRegistro || ''),
+        'Tiempo Transcurrido': this.getTimeAgo(user.fechaRegistro || '')
+      };
+
+      const headers = Object.keys(datosUsuario).join(',');
+      const valores = Object.values(datosUsuario).map(valor => 
+        typeof valor === 'string' && valor.includes(',') 
+          ? `"${valor}"` 
+          : valor
+      ).join(',');
+
+      const contenidoCSV = [headers, valores].join('\n');
+      
+      const bom = '\uFEFF';
+      const blob = new Blob([bom + contenidoCSV], { 
+        type: 'text/csv;charset=utf-8;' 
+      });
+
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `usuario-${user.username}-${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      console.log('✅ Exportación individual realizada exitosamente');
+    } catch (error) {
+      console.error('❌ Error al exportar usuario individual:', error);
+    }
+  }
+
+  // ========== MÉTODO DE FILTRADO ==========
+  filtrarUsuarios(): void {
+    if (!this.searchTerm.trim()) {
+      this.usuariosFiltrados = [...this.usuarios];
+    } else {
+      const termino = this.searchTerm.toLowerCase();
+      this.usuariosFiltrados = this.usuarios.filter(user => 
+        user.username.toLowerCase().includes(termino) ||
+        user.rol.toLowerCase().includes(termino) ||
+        user.estado?.toLowerCase().includes(termino) ||
+        user.perfil?.nombres?.toLowerCase().includes(termino) ||
+        user.perfil?.apellidos?.toLowerCase().includes(termino)
+      );
+    }
   }
 }
