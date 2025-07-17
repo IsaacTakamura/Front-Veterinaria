@@ -1,5 +1,7 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { CitaService } from 'src/app/core/services/cita.service';
+import { Cita } from '../../shared/interfaces/cita.model';
 
 interface Appointment {
   id: number;
@@ -28,22 +30,19 @@ interface Patient {
   templateUrl: './veterinarian-dashboard.component.html',
   styleUrls: ['./veterinarian-dashboard.component.css']
 })
-export class VeterinarianDashboardComponent {
+export class VeterinarianDashboardComponent implements OnInit {
   todayDate = new Date();
 
+  citaService = inject(CitaService);
+
   stats = {
-    todayAppointments: 8,
-    pendingConsultations: 4,
-    completedToday: 3,
-    emergencies: 1,
+    todayAppointments: 0,
+    pendingConsultations: 0,
+    completedToday: 0,
+    emergencies: 0,
   };
 
-  todayAppointments: Appointment[] = [
-    { id: 1, time: '09:00', pet: 'Max', owner: 'Juan Pérez', type: 'Consulta', status: 'pending' },
-    { id: 2, time: '10:30', pet: 'Luna', owner: 'María García', type: 'Vacunación', status: 'completed' },
-    { id: 3, time: '11:15', pet: 'Rocky', owner: 'Carlos López', type: 'Cirugía', status: 'in-progress' },
-    { id: 4, time: '14:00', pet: 'Bella', owner: 'Ana Martínez', type: 'Control', status: 'pending' }
-  ];
+  todayAppointments: Appointment[] = [];
 
   recentPatients: Patient[] = [
     { id: 1, name: 'Max', species: 'Perro', breed: 'Golden Retriever', lastVisit: '2024-01-15' },
@@ -58,6 +57,26 @@ export class VeterinarianDashboardComponent {
       p.name.toLowerCase().includes(this.searchTerm().toLowerCase())
     )
   );
+
+  ngOnInit(): void {
+    this.citaService.listarCitasHoyVeterinario().subscribe((citas: Cita[]) => {
+      console.log('Citas recibidas en el dashboard:', citas);
+      this.stats.todayAppointments = citas.length;
+      this.stats.pendingConsultations = citas.filter(c => c.estadoCita === 'PENDIENTE').length;
+      this.stats.completedToday = citas.filter(c => c.estadoCita === 'COMPLETADA').length;
+      this.stats.emergencies = citas.filter(c => c.motivo?.toLowerCase() === 'emergencia').length;
+
+      // Mapear las citas a la estructura de Appointment para el listado visual
+      this.todayAppointments = citas.map(cita => ({
+        id: cita.citaId ?? 0, // Asegura que siempre sea un número
+        time: cita.fechaRegistro.substring(11, 16), // Extrae la hora en formato HH:mm
+        pet: 'Mascota', // Aquí deberías buscar el nombre real de la mascota si lo tienes
+        owner: 'Cliente', // Aquí deberías buscar el nombre real del cliente si lo tienes
+        type: cita.motivo,
+        status: cita.estadoCita.toLowerCase() as any
+      }));
+    });
+  }
 
   getStatusColor(status: string): string {
     switch (status) {
