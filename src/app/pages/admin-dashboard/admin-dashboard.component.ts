@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // Importa tus componentes standalone
-import { AdminSidebarComponent } from '../../components/shared/admin-sidebar/admin-sidebar.component';
 import { UserManagementComponent } from '../../components/admin/user-management/user-management.component';
 import { CatalogManagementComponent } from '../../components/admin/catalog-management/catalog-management.component';
 import { AppointmentSupervisionComponent } from '../../components/admin/appointment-supervision/appointment-supervision.component';
@@ -16,7 +15,6 @@ import { SidebarStateService } from '../../layouts/admin-layout/sidebar-state.se
   standalone: true,
   imports: [
     CommonModule,
-    AdminSidebarComponent,
     UserManagementComponent,
     CatalogManagementComponent,
     AppointmentSupervisionComponent,

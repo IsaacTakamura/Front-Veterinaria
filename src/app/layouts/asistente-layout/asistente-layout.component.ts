@@ -34,7 +34,6 @@ import { filter } from 'rxjs/operators';
       padding-top: 64px; /* Altura del navbar fijo */
     }
   `],
-  providers: [SidebarStateService]
 })
 export class AsistenteLayoutComponent {
   constructor(public sidebarState: SidebarStateService, private router: Router) {

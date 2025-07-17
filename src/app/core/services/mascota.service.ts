@@ -10,7 +10,10 @@ import { AuthService } from 'src/app/core/services/auth.service';
 export class MascotaService {
   private baseUrl = '/api/v1/asistente';
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) { }
 
   private getHeaders(): HttpHeaders {
     const token = this.authService.getToken();
@@ -48,4 +51,50 @@ export class MascotaService {
       headers: this.getHeaders()
     });
   }
+  /*
+  Se espera algo como esto:
+  {
+  "codigo": 0,
+  "message": "string",
+  "data": [
+    {
+      "nombreMascota": "string",
+      "especie": "string",
+      "raza": "string",
+      "edad": 0,
+      "nombrePropietario": "string",
+      "telefonoPropietario": "string",
+      "ultimaVisita": "2025-07-15",
+      "proximaCita": "2025-07-15"
+    }
+  ]
+}
+  */
+
+  // Listar generalmente todas las mascotas
+  listarMascotas(): Observable<Mascota[]> {
+    return this.http.get<Mascota[]>(`${this.apiVet}/listar`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  /*
+  Se espera algo como esto:
+    {
+  "codigo": 0,
+  "message": "string",
+  "data": [
+    {
+      "mascotaId": 0,
+      "nombre": "string",
+      "edad": 0,
+      "estado": "VIVO",
+      "razaId": 0,
+      "clienteId": 0
+    }
+  ]
+}
+  */
+
+
 }

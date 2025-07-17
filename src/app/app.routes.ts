@@ -58,18 +58,16 @@ export const routes: Routes = [
   {
     path: '',
     component: AsistenteLayoutComponent,
+    canActivate: [authGuard],
+    data: { roles: ['ASISTENTE'] },
     children: [
       {
         path: 'enfermera',
-        canActivate: [authGuard],
-        data: { roles: ['ASISTENTE'] },
         loadComponent: () =>
           import('./pages/enfermera/enfermera-page.component').then((m) => m.EnfermeraPageComponent),
       },
       {
         path: 'agendar',
-        canActivate: [authGuard],
-        data: { roles: ['ASISTENTE'] },
         component: AgendarPageComponent,
       },
     ],
