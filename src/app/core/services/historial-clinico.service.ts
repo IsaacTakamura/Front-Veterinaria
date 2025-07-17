@@ -95,14 +95,19 @@ export class HistorialClinicoService {
     return this.http.get<{ data: { servicioId: number; nombre: string }[] }>(`${this.apiVet}/ListarServicios`);
   }
 
-  // Crear tipo de visita
+  //! Crear tipo de visita, si tiene esa palabra CreatTipoVisita no cambiar
   crearTipoVisita(tipoVisita: { nombre: string }): Observable<{ data: any }> {
-    return this.http.post<{ data: any }>(`${this.apiVet}/CrearTipoVisita`, tipoVisita);
+    return this.http.post<{ data: any }>(`${this.apiVet}/CreatTipoVisita`, tipoVisita);
   }
 
   // Listar tipos de visita
   listarTiposVisita(): Observable<{ data: { tipoVisitaId: number; nombre: string }[] }> {
-    return this.http.get<{ data: { tipoVisitaId: number; nombre: string }[] }>(`${this.apiVet}/ListarTiposVisita`);
+    return this.http.get<{ data: { tipoVisitaId: number; nombre: string }[] }>(`${this.apiVet}/listarTiposVisitas`);
+  }
+
+  // Listar tipos de visita por id
+  listarTipoVisitaPorId(tipoVisitaId: number): Observable<{ data: { tipoVisitaId: number; nombre: string } }> {
+    return this.http.get<{ data: { tipoVisitaId: number; nombre: string } }>(`${this.apiVet}/visita/tipoVisita/${tipoVisitaId}`);
   }
 
   // Crear visita
@@ -110,14 +115,19 @@ export class HistorialClinicoService {
     return this.http.post<{ data: any }>(`${this.apiVet}/crearVisita`, visita);
   }
 
-  // Listar visitas
+  // Listar visita por id de visita
+  listarVisitaPorId(id: number): Observable<Visita> {
+    return this.http.get<Visita>(`${this.apiVet}/visita/${id}`);
+  }
+
+  //! Listar visitas, no cambiar ruta porque al final si es listarVisitass
   listarVisitas(): Observable<Visita[]> {
-    return this.http.get<Visita[]>(`${this.apiVet}/listarVisitas`);
+    return this.http.get<Visita[]>(`${this.apiVet}/listarVisitass`);
   }
 
   // Actualizar Caso Clínico
   actualizarCasoClinico(casoClinicoId: number, casoClinico: Visita): Observable<{ data: any }> {
-    return this.http.put<{ data: any }>(`${this.apiVet}/actualizarCasoClinico/`, casoClinico);
+    return this.http.put<{ data: any }>(`${this.apiVet}/actualizarCaso`, casoClinico);
   }
 
   // Registrar Caso Clínico
