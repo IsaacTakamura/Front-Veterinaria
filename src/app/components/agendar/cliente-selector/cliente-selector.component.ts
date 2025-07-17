@@ -19,22 +19,24 @@ export class ClienteSelectorComponent {
   resultados: Cliente[] = [];
   mostrarModal = false;
 
-  constructor(private clienteService: ClienteService) {
-    this.searchControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      filter(nombre => nombre !== null && nombre !== '' && nombre.trim().length > 0),
-      switchMap(nombre => this.clienteService.buscarPorNombre(nombre!))
-    ).subscribe({
-      next: (response) => {
-        this.resultados = Array.isArray(response.data) ? response.data : [];
-        console.log('Resultados recibidos:', this.resultados);
-      },
-      error: (error) => {
-        console.error('Error en búsqueda:', error);
-        this.resultados = [];
-      }
-    });
+  constructor(private clienteService: ClienteService) {}
+
+  buscar() {
+    const nombre = this.searchControl.value;
+    if (nombre && nombre.trim().length > 0) {
+      this.clienteService.buscarPorNombre(nombre).subscribe({
+        next: (response) => {
+          this.resultados = Array.isArray(response.data) ? response.data : [];
+          console.log('Resultados recibidos:', this.resultados);
+        },
+        error: (error) => {
+          console.error('Error en búsqueda:', error);
+          this.resultados = [];
+        }
+      });
+    } else {
+      this.resultados = [];
+    }
   }
 
   seleccionar(cliente: Cliente) {
@@ -45,5 +47,6 @@ export class ClienteSelectorComponent {
   abrirModal() {
     this.mostrarModal = true;
     this.searchControl.setValue('');
+    this.resultados = [];
   }
 }

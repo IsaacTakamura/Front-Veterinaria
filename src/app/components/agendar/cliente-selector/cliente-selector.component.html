@@ -4,6 +4,7 @@
   <div class="modal-card">
     <h3>Buscar Cliente</h3>
     <input [formControl]="searchControl" placeholder="Nombre del cliente" />
+    <button class="btn" style="margin-left: 8px;" (click)="buscar()">Buscar</button>
 
     <ul *ngIf="resultados && resultados.length > 0">
       <li *ngFor="let c of resultados" class="cliente-item">
@@ -19,7 +20,7 @@
         </button>
       </li>
     </ul>
-    
+
     <div *ngIf="resultados && resultados.length === 0" class="no-resultados">
       No se encontraron clientes
     </div>

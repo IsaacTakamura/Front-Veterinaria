@@ -4,6 +4,7 @@
   <div class="modal-card">
     <h3>Buscar Mascota</h3>
     <input [formControl]="searchControl" placeholder="Nombre de la mascota" />
+    <button class="btn" style="margin-left: 8px;" (click)="buscar()">Buscar</button>
 
     <ul *ngIf="resultados && resultados.length > 0">
       <li *ngFor="let m of resultados" class="mascota-item">
