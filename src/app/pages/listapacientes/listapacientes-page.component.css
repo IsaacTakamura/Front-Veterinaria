@@ -684,7 +684,7 @@ select {
 .dato-mini strong {
   font-size: 0.97rem;
   font-weight: 500;
-  color: #10b981;
+  color: #10b981 !important;
   min-width: 80px;
 }
 .dato-mini app-icon-vet-dashboard svg,
