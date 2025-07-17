@@ -8,5 +8,5 @@ export interface Triaje {
   observaciones: string;
   peso: number;
   temperatura: number;
-  mascotaId: number;
+  mascotaId?: number; // Opcional para permitir edición sin enviar mascotaId
 }

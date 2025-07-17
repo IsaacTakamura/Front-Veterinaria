@@ -29,10 +29,26 @@ export class TriajeService {
     */
   }
 
+  // actualizarTriaje usando el id del triaje
   actualizarTriaje(id: number, triaje: Triaje): Observable<Triaje> {
     // PUT /api/v1/asistente/triaje/{id}
     return this.http.put<Triaje>(`${this.api}/triaje/${id}`, triaje);
   }
+  /*
+  Ejemplo de envio:
+  {
+  "triajeId": 0,
+  "temperatura": 0,
+  "peso": 0,
+  "frecuenciaCardiaca": 0,
+  "frecuenciaRespiratoria": 0,
+  "observaciones": "string",
+  "mascotaId": 0, // no se envia mascotaid, o se malogra
+  "fechaRegistro": "2025-07-17T01:13:13.240Z", se llena automaticamente
+  "fechaActualizacion": "2025-07-17T01:13:13.240Z", se llena automaticamente
+}
+
+  */
 
   obtenerTriajePorMascotaId(mascotaId: number): Observable<Triaje[]> {
     // GET /api/v1/asistente/triaje/mascota/{mascotaId}
