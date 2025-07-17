@@ -1,18 +1,14 @@
-// src/app/core/services/mascota.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Mascota } from '../../components/shared/interfaces/mascota.model';
-import { Raza } from '../../components/shared/interfaces/Raza.model';
 import { Paciente } from 'src/app/components/shared/interfaces/paciente.model';
-import { AuthService } from 'src/app/core/services/auth.service'; // ✅ Importa correctamente
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MascotaService {
-  private apiAsistente = '/api/v1/asistente';
-  private apiVet = '/api/v1/vet';
+  private baseUrl = '/api/v1/asistente';
 
   constructor(
     private http: HttpClient,
@@ -27,56 +23,31 @@ export class MascotaService {
   }
 
   listarPacientes(): Observable<Paciente[]> {
-    return this.http.get<Paciente[]>(`${this.apiAsistente}/mascotas`, {
+    return this.http.get<Paciente[]>(`${this.baseUrl}/mascota/listarMascota`, {
       headers: this.getHeaders()
     });
   }
 
-  buscarPorNombre(nombre: string): Observable<{ data: Mascota }> {
-    return this.http.get<{ data: Mascota }>(`${this.apiAsistente}/mascota/nombre/${nombre}`);
-  }
-
-  crear(mascota: Mascota): Observable<{ data: Mascota }> {
-    return this.http.post<{ data: Mascota }>(`${this.apiAsistente}/crearMascota`, mascota, {
+  obtenerPacientePorNombre(nombre: string): Observable<Paciente> {
+    return this.http.get<Paciente>(`${this.baseUrl}/mascota/nombre/${nombre}`, {
       headers: this.getHeaders()
     });
   }
 
-  listarRazas(): Observable<{ data: Raza[] }> {
-    return this.http.get<{ data: Raza[] }>(`${this.apiAsistente}/mascota/listarRazas`, {
+  listarCasosClinicos(mascotaId: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/CasosClinicos/mascota/${mascotaId}`, {
       headers: this.getHeaders()
     });
   }
 
-  listarMascotaPorId(id: number): Observable<{ data: Mascota }> {
-    return this.http.get<{ data: Mascota }>(`${this.apiAsistente}/mascota/${id}`);
-  }
-
-  // Visualizacion de mascota para veterinario
-
-  // Listar Resumen
-  listarResumenMascota(mascotaId: number): Observable<{ data: Mascota }> {
-    return this.http.get<{ data: Mascota }>(`${this.apiVet}/resumen`, {
+  listarServicios(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/ListarServicios`, {
       headers: this.getHeaders()
     });
   }
-  /* Se recibe, algo asi:
-      {
-  "codigo": 0,
-  "message": "string",
-  "data": [
-    {
-      "nombreMascota": "string",
-      "razaMascota": "string",
-      "nombreDueno": "string"
-    }
-  ]
-}
-  */
 
-  // Listar pacientes por veterinario
-  listarPacientesPorVeterinario(veterinarioId: number): Observable<Paciente[]> {
-    return this.http.get<Paciente[]>(`${this.apiVet}/pacientes/${veterinarioId}`, {
+  listarVisitas(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/listarTodasLasVisitas`, {
       headers: this.getHeaders()
     });
   }

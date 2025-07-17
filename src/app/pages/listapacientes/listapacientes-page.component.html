@@ -19,8 +19,8 @@
 
         <div class="form-group">
           <label for="busqueda"><strong>Buscar Paciente:</strong></label>
-          <input id="busqueda" type="text" [(ngModel)]="busqueda"
-            placeholder="Buscar por nombre, propietario o raza..." class="busqueda-estilizada" />
+          <input id="busqueda" type="text" [(ngModel)]="busqueda" placeholder="Buscar por nombre, propietario o raza..."
+            class="busqueda-estilizada" />
         </div>
 
         <div *ngIf="pacientesFiltrados.length === 0">
@@ -28,7 +28,7 @@
         </div>
 
         <div class="card" *ngFor="let p of pacientesFiltrados">
-          <h3>🐾 {{ p.nombre }} <span class="status">({{ p.estado }})</span></h3>
+          <h3>{{ getEmojiForStatus(p.estado) }} {{ p.nombre }} <span class="status">({{ p.estado }})</span></h3>
           <p><strong>Edad:</strong> {{ p.edad }} años</p>
           <p><strong>Raza:</strong> {{ p.raza }}</p>
           <p><strong>Especie:</strong> {{ p.especie }}</p>
@@ -47,7 +47,7 @@
         <div class="form-group">
           <label for="paciente"><strong>Seleccionar Paciente:</strong></label>
           <select id="paciente" [(ngModel)]="pacienteSeleccionado" (ngModelChange)="seleccionarPaciente($event)">
-            <option [ngValue]="null">-- Selecciona un paciente --</option>
+            <option [ngValue]="null" disabled>-- Selecciona un paciente --</option>
             <option *ngFor="let p of pacientes()" [ngValue]="p">
               {{ p.nombre }} - {{ p.raza }} ({{ p.propietario }})
             </option>
@@ -66,11 +66,11 @@
           <div class="subvista">
             <div *ngIf="subvista === 'info'">
               <h3>📄 Información del Paciente</h3>
-              <p><strong>Nombre:</strong> {{ pacienteSeleccionado.nombre }}</p>
-              <p><strong>Edad:</strong> {{ pacienteSeleccionado.edad }} años</p>
-              <p><strong>Raza:</strong> {{ pacienteSeleccionado.raza }}</p>
-              <p><strong>Especie:</strong> {{ pacienteSeleccionado.especie }}</p>
-              <p><strong>Propietario:</strong> {{ pacienteSeleccionado.propietario }}</p>
+              <p><strong>Nombre:</strong> {{ pacienteSeleccionado?.nombre }}</p>
+              <p><strong>Edad:</strong> {{ pacienteSeleccionado?.edad }} años</p>
+              <p><strong>Raza:</strong> {{ pacienteSeleccionado?.raza }}</p>
+              <p><strong>Especie:</strong> {{ pacienteSeleccionado?.especie }}</p>
+              <p><strong>Propietario:</strong> {{ pacienteSeleccionado?.propietario }}</p>
             </div>
 
             <div *ngIf="subvista === 'alergias'">
@@ -87,6 +87,7 @@
         </div>
       </div>
     </section>
+
 
     <!-- SEGUIMIENTO -->
     <section *ngIf="selected === 'seguimiento'">
