@@ -74,27 +74,39 @@ export class VeterinarianDashboardComponent implements OnInit {
       this.stats.completedToday = citas.filter(c => c.estadoCita === 'COMPLETADA').length;
       this.stats.emergencies = citas.filter(c => c.motivo?.toLowerCase() === 'emergencia').length;
 
-      // Obtener todas las mascotas del veterinario
+      // Obtener todas las mascotas del veterinario para obtener los nombres
       this.mascotaService.listarMascotasVet().subscribe((mascotasResponse: any) => {
         const mascotas = mascotasResponse.data;
         console.log('Mascotas del veterinario:', mascotas);
 
-        // Procesar las citas con los datos de mascotas disponibles
-        this.todayAppointments = citas.map(cita => {
-          // Buscar la mascota correspondiente
-          const mascota = mascotas.find((m: any) => m.mascotaId === cita.mascotaId);
+        // Obtener los pacientes del veterinario (que incluye nombres de mascotas y propietarios)
+        this.mascotaService.listarPacientesVet(veterinarioId).subscribe((pacientesResponse: any) => {
+          const pacientes = pacientesResponse.data;
+          console.log('Pacientes del veterinario:', pacientes);
 
-          return {
-            id: cita.citaId ?? 0,
-            time: cita.fechaRegistro.substring(11, 16),
-            pet: mascota?.nombre || 'Mascota',
-            owner: 'Cliente', // Temporalmente mostramos "Cliente" hasta que se resuelva el problema de permisos
-            type: cita.motivo,
-            status: cita.estadoCita.toLowerCase() as any
-          };
+          // Procesar las citas combinando datos de mascotas y pacientes
+          this.todayAppointments = citas.map(cita => {
+            // Buscar la mascota por ID para obtener el nombre
+            const mascota = mascotas.find((m: any) => m.mascotaId === cita.mascotaId);
+            const nombreMascota = mascota?.nombre || 'Mascota';
+
+            // Buscar el paciente por nombre de mascota para obtener el propietario
+            const paciente = pacientes.find((p: any) =>
+              p.nombreMascota && p.nombreMascota.toLowerCase() === nombreMascota.toLowerCase()
+            );
+
+            return {
+              id: cita.citaId ?? 0,
+              time: cita.fechaRegistro.substring(11, 16),
+              pet: nombreMascota,
+              owner: paciente?.nombrePropietario || 'Cliente',
+              type: cita.motivo,
+              status: cita.estadoCita.toLowerCase() as any
+            };
+          });
+
+          console.log('Citas procesadas con datos completos:', this.todayAppointments);
         });
-
-        console.log('Citas procesadas con datos de mascotas:', this.todayAppointments);
       });
     });
   }
