@@ -65,8 +65,27 @@ export class CitaService {
     return this.http.get<Cita>(`${this.baseUrl}/Cita/cliente/${id}`);
   }
 
-  //! Método para cambiar el estado de una cita, falta probarlo
-  cambiarEstadoCita(id: number, estado: string): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/estado/${id}`, { estado });
+  //! Método para cambiar el estado de una cita, pero con la id de la cita
+  //! El estado puede ser PENDIENTE, TRIAJE, CONVETERINARIO, COMPLETADA
+  cambiarEstadoCita(id: number, estado: string): Observable<Cita> {
+    return this.http.put<Cita>(`${this.baseUrl}/estado/${id}/${estado}`, {}, {
+      params: { nuevoEstado: estado }
+    });
   }
+  /* espera algo como esto:
+  {
+  "codigo": 0,
+  "message": "string",
+  "data": {
+    "citaId": 0, // no necesario enviar
+    "fechaRegistro": "2025-07-17T04:40:56.717Z", // se llena automáticamente
+    "tipoServicioId": 0,
+    "mascotaId": 0,
+    "clienteId": 0,
+    "veterinarioId": 0,
+    "motivo": "string",
+    "estadoCita": "PENDIENTE"
+  }
+}
+  */
 }

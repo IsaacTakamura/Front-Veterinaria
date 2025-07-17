@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { TriajeService } from '../../../core/services/triaje.service';
 import { MascotaService } from '../../../core/services/mascota.service';
+import { CitaService } from '../../../core/services/cita.service';
 import { Triaje } from '../../shared/interfaces/triaje.model';
 import { Mascota } from '../../shared/interfaces/mascota.model';
 
@@ -39,7 +40,8 @@ export class TriajeModalComponent {
   constructor(
     private fb: FormBuilder,
     private triajeService: TriajeService,
-    private mascotaService: MascotaService
+    private mascotaService: MascotaService,
+    private citaService: CitaService
   ) {
     this.triajeForm = this.fb.group({
       temperatura: ['', [Validators.required, Validators.min(30), Validators.max(45)]],
@@ -120,9 +122,8 @@ export class TriajeModalComponent {
         this.triajeService.actualizarTriaje(this.triajeExistente()!.triajeId!, datosTriaje).subscribe({
           next: (response) => {
             console.log('Triaje actualizado exitosamente:', response);
-            this.cargando.set(false);
-            this.cerrarModal();
-            this.triajeActualizado.emit(response);
+            // Cambiar estado de la cita a TRIAJE
+            this.cambiarEstadoCitaATriaje();
           },
           error: (error) => {
             console.error('Error al actualizar triaje:', error);
@@ -142,9 +143,8 @@ export class TriajeModalComponent {
         this.triajeService.crearTriaje(datosTriaje).subscribe({
           next: (response) => {
             console.log('Triaje creado exitosamente:', response);
-            this.cargando.set(false);
-            this.cerrarModal();
-            this.triajeCreado.emit(response);
+            // Cambiar estado de la cita a TRIAJE
+            this.cambiarEstadoCitaATriaje();
           },
           error: (error) => {
             console.error('Error al crear triaje:', error);
@@ -153,6 +153,42 @@ export class TriajeModalComponent {
         });
       }
     }
+  }
+
+  // Método para cambiar el estado de la cita a TRIAJE
+  private cambiarEstadoCitaATriaje(): void {
+    if (!this.cita?.citaId) {
+      console.error('No se puede cambiar el estado: falta citaId');
+      this.cargando.set(false);
+      this.cerrarModal();
+      return;
+    }
+
+    this.citaService.cambiarEstadoCita(this.cita.citaId, 'TRIAJE').subscribe({
+      next: (response) => {
+        console.log('Estado de cita cambiado a TRIAJE exitosamente:', response);
+        this.cargando.set(false);
+        this.cerrarModal();
+        // Emitir el evento correspondiente según el modo
+        if (this.esModoEdicion()) {
+          this.triajeActualizado.emit(response);
+        } else {
+          this.triajeCreado.emit(response);
+        }
+      },
+      error: (error) => {
+        console.error('Error al cambiar estado de la cita:', error);
+        this.cargando.set(false);
+        // Aún cerramos el modal aunque falle el cambio de estado
+        this.cerrarModal();
+        // Emitir el evento correspondiente según el modo
+        if (this.esModoEdicion()) {
+          this.triajeActualizado.emit(null);
+        } else {
+          this.triajeCreado.emit(null);
+        }
+      }
+    });
   }
 
   // Método para cerrar el modal
