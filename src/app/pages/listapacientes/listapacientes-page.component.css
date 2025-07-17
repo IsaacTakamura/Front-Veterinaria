@@ -13,7 +13,7 @@ body {
   height: 100%;
   background-color: #f2fdfc;
   font-family: 'Segoe UI', sans-serif;
-  overflow-x: hidden;
+  overflow-x: hidden; /* Evitar scroll horizontal */
 }
 
 /* Contenedor principal */
