@@ -100,6 +100,15 @@ export class CitaService {
   }
 }
   */
+
+  // cambiar estado por cita id para veterinario
+  cambiarEstadoCitaVeterinario(citaId: number, estado: string): Observable<Cita> {
+    return this.http.put<Cita>(`${this.apiVet}/estadoCita/${citaId}/${estado}`, {}, {
+      headers: this.getHeaders(),
+      params: { nuevoEstado: estado }
+    });
+  }
+
    //? Listar citas para veterinario
   listarCitasVeterinario(clienteId: number): Observable<Cita[]> {
     return this.http.get<Cita[]>(`${this.apiVet}/listarCitas`, {
@@ -175,4 +184,7 @@ export class CitaService {
   }
 }
   */
+
+
+
 }

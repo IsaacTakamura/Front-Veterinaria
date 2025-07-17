@@ -125,5 +125,25 @@ export class MascotaService {
 }
   */
 
-
+  // Listar mascotas por id para veterinario
+  listarMascotaPorIdVeterinario(id: number): Observable<{ data: Mascota }> {
+    return this.http.get<{ data: Mascota }>(`${this.apiVet}/buscar/mascotabyId/${id}`, {
+      headers: this.getHeaders()
+    });
+  }
+  /*
+  Se espera algo como esto:
+  {
+  "codigo": 0,
+  "message": "string",
+  "data": {
+    "mascotaId": 0,
+    "nombre": "string",
+    "edad": 0,
+    "estado": "VIVO",
+    "razaId": 0,
+    "clienteId": 0
+  }
+}
+  */
 }
