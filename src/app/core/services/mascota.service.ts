@@ -3,12 +3,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Paciente } from 'src/app/components/shared/interfaces/paciente.model';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { Mascota } from 'src/app/components/shared/interfaces/mascota.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MascotaService {
   private baseUrl = '/api/v1/asistente';
+  private apiVet = '/api/v1/vet';
 
   constructor(
     private http: HttpClient,

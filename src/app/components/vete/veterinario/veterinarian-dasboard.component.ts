@@ -90,7 +90,7 @@ export class VeterinarianDashboardComponent implements OnInit {
         citas.forEach((cita, idx) => {
           const citaConNombres: CitaConNombres = { ...cita };
           // Obtener nombre de mascota
-          this.mascotaService.listarMascotaPorId(cita.mascotaId).subscribe({
+          this.mascotaService.listarCasosClinicos(cita.mascotaId).subscribe({
             next: (resMascota: { data: Mascota }) => {
               citaConNombres.nombreMascota = resMascota.data.nombre;
               // Obtener nombre de cliente
