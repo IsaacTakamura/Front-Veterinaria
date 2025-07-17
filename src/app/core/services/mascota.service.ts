@@ -125,7 +125,7 @@ export class MascotaService {
 }
   */
 
-  //? Listar citas? - endpoint sin uso definido, pero se puede usar para listar citas de una mascota
+  //? Listar citas? (Repetido) - endpoint sin uso definido, pero se puede usar para listar citas de una mascota
   listarMascotasPorCliente(clienteId: number): Observable<Mascota[]> {
     return this.http.get<Mascota[]>(`${this.apiVet}/listarCitas`, {
       headers: this.getHeaders()
@@ -150,7 +150,7 @@ export class MascotaService {
   ]
 }
   */
-  //? Listar citas hoy, otro endpoint sin uso definido, pero se puede usar para listar citas de hoy
+  //? Listar citas hoy - (Repetido), otro endpoint sin uso definido, pero se puede usar para listar citas de hoy
   listarMascotasHoy(): Observable<Mascota[]> {
     return this.http.get<Mascota[]>(`${this.apiVet}/Listarcitas/hoy`, {
       headers: this.getHeaders()
@@ -177,7 +177,7 @@ export class MascotaService {
 }
   */
 
-  //? Listar cita por id, otro endpoint sin uso definido, pero se puede usar para listar citas por id de cita
+  //? Listar cita por id - (Repetido), otro endpoint sin uso definido, pero se puede usar para listar citas por id de cita
   listarCitaporId(citaId: number): Observable<{ data: Mascota }> {
     return this.http.get<{ data: Mascota }>(`${this.apiVet}/listarCita/${citaId}`, {
       headers: this.getHeaders()
