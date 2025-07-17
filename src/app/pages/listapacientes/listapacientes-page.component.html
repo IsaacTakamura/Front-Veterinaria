@@ -28,11 +28,40 @@
         </div>
 
         <div class="card" *ngFor="let p of pacientesFiltrados">
-          <h3>🐾 {{ p.nombre }} <span class="status">({{ p.estado }})</span></h3>
-          <p><strong>Edad:</strong> {{ p.edad }} años</p>
-          <p><strong>Raza:</strong> {{ p.raza }}</p>
-          <p><strong>Especie:</strong> {{ p.especie }}</p>
-          <p><strong>Propietario:</strong> {{ p.propietario }}</p>
+          <h3>
+            <app-icon-listapacientes style="vertical-align: middle; margin-right: 6px;"></app-icon-listapacientes>
+            {{ p.nombreMascota }}
+          </h3>
+          <div class="datos-paciente-grid">
+            <div class="columna">
+              <p class="dato-mini">
+                <app-icon-vet-dashboard style="vertical-align: middle; margin-right: 4px;"></app-icon-vet-dashboard>
+                <strong>Especie:</strong> {{ p.especie }}
+              </p>
+              <p class="dato-mini">
+                <app-icon-stethoscope style="vertical-align: middle; margin-right: 4px;"></app-icon-stethoscope>
+                <strong>Raza:</strong> {{ p.raza }}
+              </p>
+              <p class="dato-mini">
+                <app-icon-calendar style="vertical-align: middle; margin-right: 4px;"></app-icon-calendar>
+                <strong>Edad:</strong> {{ p.edad }} años
+              </p>
+            </div>
+            <div class="columna">
+              <p class="dato-mini">
+                <app-icon-users style="vertical-align: middle; margin-right: 4px;"></app-icon-users>
+                <strong>Propietario:</strong> {{ p.propietario }}
+              </p>
+              <p class="dato-mini">
+                <app-icon-shield style="vertical-align: middle; margin-right: 4px;"></app-icon-shield>
+                <strong>Teléfono:</strong> {{ p.telefono }}
+              </p>
+              <p class="dato-mini">
+                <app-icon-document [color]="'#10b981'" style="vertical-align: middle; margin-right: 4px;"></app-icon-document>
+                <strong>Fecha de registro:</strong> {{ p.fechaRegistro }}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -49,7 +78,7 @@
           <select id="paciente" [(ngModel)]="pacienteSeleccionado" (ngModelChange)="seleccionarPaciente($event)">
             <option [ngValue]="null">-- Selecciona un paciente --</option>
             <option *ngFor="let p of pacientes()" [ngValue]="p">
-              {{ p.nombre }} - {{ p.raza }} ({{ p.propietario }})
+              {{ p.nombreMascota }} - {{ p.raza }} ({{ p.propietario }})
             </option>
           </select>
         </div>
@@ -66,7 +95,7 @@
           <div class="subvista">
             <div *ngIf="subvista === 'info'">
               <h3>📄 Información del Paciente</h3>
-              <p><strong>Nombre:</strong> {{ pacienteSeleccionado.nombre }}</p>
+              <p><strong>Nombre:</strong> {{ pacienteSeleccionado.nombreMascota }}</p>
               <p><strong>Edad:</strong> {{ pacienteSeleccionado.edad }} años</p>
               <p><strong>Raza:</strong> {{ pacienteSeleccionado.raza }}</p>
               <p><strong>Especie:</strong> {{ pacienteSeleccionado.especie }}</p>

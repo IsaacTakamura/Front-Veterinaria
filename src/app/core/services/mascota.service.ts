@@ -146,4 +146,46 @@ export class MascotaService {
   }
 }
   */
+
+  // Listar razas para veterinario
+  listarRazasVeterinario(): Observable<Raza[]> {
+    return this.http.get<Raza[]>(`${this.apiVet}/listarRazasVet`, {
+      headers: this.getHeaders()
+    });
+  }
+  /*
+  Se espera algo como esto:
+    {
+  "codigo": 0,
+  "message": "string",
+  "data": [
+    {
+      "razaId": 0,
+      "nombre": "string",
+      "especieId": 0
+    }
+  ]
+}
+  */
+
+  // Listar especies para veterinario
+  listarEspeciesVeterinario(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiVet}/listarEspeciesVet`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  /*
+  Se espera algo como esto:
+    {
+  "codigo": 0,
+  "message": "string",
+  "data": [
+    {
+      "especieId": 0,
+      "nombre": "string"
+    }
+  ]
+}
+  */
 }
