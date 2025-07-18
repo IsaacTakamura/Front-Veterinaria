@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Mascota } from '../../components/shared/interfaces/mascota.model';
 import { Raza } from '../../components/shared/interfaces/Raza.model';
 import { Paciente } from 'src/app/components/shared/interfaces/paciente.model';
+import { Cliente } from '../../components/shared/interfaces/cliente.model';
 import { AuthService } from 'src/app/core/services/auth.service'; // ✅ Importa correctamente
 
 @Injectable({
@@ -50,6 +51,11 @@ export class MascotaService {
 
   listarMascotaPorId(id: number): Observable<{ data: Mascota }> {
     return this.http.get<{ data: Mascota }>(`${this.apiAsistente}/mascota/${id}`);
+  }
+
+  // Método para veterinario
+  listarMascotasVet() {
+    return this.http.get<{ codigo: number; message: string; data: any[] }>(`/api/v1/vet/listar`);
   }
 
   // Visualizacion de mascota para veterinario
@@ -125,5 +131,28 @@ export class MascotaService {
 }
   */
 
+  // Método para obtener resumen de mascotas y dueños para veterinario
+  listarResumenMascotasVet() {
+    return this.http.get<{ codigo: number; message: string; data: any[] }>(`/api/v1/vet/resumen`);
+  }
+
+  // Método para obtener pacientes del veterinario
+  listarPacientesVet(veterinarioId: number) {
+    return this.http.get<{ codigo: number; message: string; data: any[] }>(`/api/v1/vet/pacientes/${veterinarioId}`);
+  }
+
+  // Método para veterinario: obtener mascota por ID
+  listarMascotaPorIdVet(id: number): Observable<{ data: Mascota }> {
+    return this.http.get<{ data: Mascota }>(`${this.apiVet}/mascota/${id}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  // Método para veterinario: obtener cliente por ID
+  listarClientePorIdVet(id: number): Observable<{ data: Cliente }> {
+    return this.http.get<{ data: Cliente }>(`${this.apiVet}/cliente/${id}`, {
+      headers: this.getHeaders()
+    });
+  }
 
 }
