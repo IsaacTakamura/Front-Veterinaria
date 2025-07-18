@@ -1,41 +1,191 @@
-<h3>🌡️ Triaje Actual</h3>
+<div class="triaje-container">
+  <!-- Header con icono -->
+  <div class="triaje-header">
+    <div class="header-icon">
+      <span class="icon">🌡️</span>
+    </div>
+    <h3 class="header-title">Triaje Actual</h3>
+    <div class="header-badge" *ngIf="triaje">
+      <span class="badge-text">Activo</span>
+    </div>
+  </div>
 
-<ng-container *ngIf="!cargando; else cargandoTriajeTpl">
-  <ng-container *ngIf="triaje; else sinTriajeTpl">
-    <div *ngIf="!modoEdicion">
-      <p><strong>Temperatura:</strong> {{ triaje.temperatura }} °C</p>
-      <p><strong>Peso:</strong> {{ triaje.peso }} kg</p>
-      <p><strong>Frecuencia Cardiaca:</strong> {{ triaje.frecuenciaCardiaca }} lpm</p>
-      <p><strong>Frecuencia Respiratoria:</strong> {{ triaje.frecuenciaRespiratoria }} rpm</p>
-      <p><strong>Observaciones:</strong> {{ triaje.observaciones }}</p>
-      <button class="primario" (click)="onCambiarModoEdicion(true)">Actualizar Triaje</button>
-    </div>
-    <div *ngIf="modoEdicion" class="formulario-edicion">
-      <div class="form-group">
-        <label>Temperatura: <input type="number" [(ngModel)]="triaje.temperatura"></label>
+  <!-- Loading State -->
+  <ng-container *ngIf="!cargando; else cargandoTriajeTpl">
+
+    <!-- Triaje Existe -->
+    <ng-container *ngIf="triaje; else sinTriajeTpl">
+
+      <!-- Modo Visualización -->
+      <div *ngIf="!modoEdicion" class="triaje-display">
+        <div class="vital-signs-grid">
+          <div class="vital-card">
+            <div class="vital-icon">🌡️</div>
+            <div class="vital-info">
+              <span class="vital-label">Temperatura</span>
+              <span class="vital-value">{{ triaje.temperatura }} °C</span>
+            </div>
+          </div>
+
+          <div class="vital-card">
+            <div class="vital-icon">⚖️</div>
+            <div class="vital-info">
+              <span class="vital-label">Peso</span>
+              <span class="vital-value">{{ triaje.peso }} kg</span>
+            </div>
+          </div>
+
+          <div class="vital-card">
+            <div class="vital-icon">💓</div>
+            <div class="vital-info">
+              <span class="vital-label">Frecuencia Cardíaca</span>
+              <span class="vital-value">{{ triaje.frecuenciaCardiaca }} lpm</span>
+            </div>
+          </div>
+
+          <div class="vital-card">
+            <div class="vital-icon">🫁</div>
+            <div class="vital-info">
+              <span class="vital-label">Frecuencia Respiratoria</span>
+              <span class="vital-value">{{ triaje.frecuenciaRespiratoria }} rpm</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="observations-section" *ngIf="triaje.observaciones">
+          <div class="observation-header">
+            <span class="observation-icon">📝</span>
+            <span class="observation-label">Observaciones</span>
+          </div>
+          <div class="observation-content">
+            {{ triaje.observaciones }}
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn-update" (click)="onCambiarModoEdicion(true)">
+            <span class="btn-icon">✏️</span>
+            <span class="btn-text">Actualizar Triaje</span>
+          </button>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Peso: <input type="number" [(ngModel)]="triaje.peso"></label>
+
+      <!-- Modo Edición -->
+      <div *ngIf="modoEdicion" class="triaje-edit">
+        <div class="edit-header">
+          <span class="edit-icon">✏️</span>
+          <span class="edit-title">Editar Triaje</span>
+        </div>
+
+        <div class="edit-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">
+                <span class="label-icon">🌡️</span>
+                Temperatura (°C)
+              </label>
+              <input
+                type="number"
+                [(ngModel)]="triaje.temperatura"
+                class="form-input"
+                step="0.1"
+                min="0"
+                max="50"
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <span class="label-icon">⚖️</span>
+                Peso (kg)
+              </label>
+              <input
+                type="number"
+                [(ngModel)]="triaje.peso"
+                class="form-input"
+                step="0.1"
+                min="0"
+                max="200"
+              >
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">
+                <span class="label-icon">💓</span>
+                Frecuencia Cardíaca (lpm)
+              </label>
+              <input
+                type="number"
+                [(ngModel)]="triaje.frecuenciaCardiaca"
+                class="form-input"
+                min="0"
+                max="300"
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <span class="label-icon">🫁</span>
+                Frecuencia Respiratoria (rpm)
+              </label>
+              <input
+                type="number"
+                [(ngModel)]="triaje.frecuenciaRespiratoria"
+                class="form-input"
+                min="0"
+                max="100"
+              >
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">
+              <span class="label-icon">📝</span>
+              Observaciones
+            </label>
+            <textarea
+              [(ngModel)]="triaje.observaciones"
+              class="form-textarea"
+              rows="3"
+              placeholder="Ingrese observaciones adicionales..."
+            ></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-save" (click)="onActualizarTriaje()">
+              <span class="btn-icon">💾</span>
+              <span class="btn-text">Guardar Cambios</span>
+            </button>
+            <button class="btn-cancel" (click)="onCambiarModoEdicion(false)">
+              <span class="btn-icon">❌</span>
+              <span class="btn-text">Cancelar</span>
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Frecuencia Cardiaca: <input type="number" [(ngModel)]="triaje.frecuenciaCardiaca"></label>
+
+    </ng-container>
+
+    <!-- Sin Triaje -->
+    <ng-template #sinTriajeTpl>
+      <div class="no-triaje">
+        <div class="no-triaje-icon">📋</div>
+        <h4 class="no-triaje-title">Sin Triaje Registrado</h4>
+        <p class="no-triaje-description">
+          No hay un triaje actual registrado para esta mascota.
+        </p>
       </div>
-      <div class="form-group">
-        <label>Frecuencia Respiratoria: <input type="number" [(ngModel)]="triaje.frecuenciaRespiratoria"></label>
-      </div>
-      <div class="form-group">
-        <label>Observaciones: <input type="text" [(ngModel)]="triaje.observaciones"></label>
-      </div>
-      <div class="botones">
-        <button class="primario" (click)="onActualizarTriaje()">Guardar</button>
-        <button class="secundario" (click)="onCambiarModoEdicion(false)">Cancelar</button>
-      </div>
-    </div>
+    </ng-template>
+
   </ng-container>
-  <ng-template #sinTriajeTpl>
-    <p>No hay triaje registrado para esta mascota.</p>
+
+  <!-- Loading Template -->
+  <ng-template #cargandoTriajeTpl>
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Cargando triaje...</p>
+    </div>
   </ng-template>
-</ng-container>
-<ng-template #cargandoTriajeTpl>
-  <p>Cargando triaje...</p>
-</ng-template>
+</div>
