@@ -264,12 +264,11 @@ export class ListapacientesPageComponent implements OnInit {
         const casoId = resp.data?.casoClinicoId;
         if (casoId) {
           // Luego registrar la visita
-          const nuevaVisita: Visita = {
-            visitaId: 0,
+          const nuevaVisita = {
             casoClinicoId: casoId,
             tipoVisitaId: this.tipoVisitaNuevaConsulta!.tipoVisitaId
           };
-          this.historialClinicoService.crearVisita(nuevaVisita).subscribe({
+          this.historialClinicoService.crearVisita(nuevaVisita as any).subscribe({
             next: () => {
               this.cargarHistorialVisitas(this.pacienteSeleccionado!.mascotaId);
               this.cargarCasosClinicos(this.pacienteSeleccionado!.mascotaId);
