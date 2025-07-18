@@ -1,54 +1,145 @@
-<h3>📝 Registrar Nueva Consulta</h3>
-
-<div class="formulario-nueva-consulta">
-  <div class="form-group">
-    <label>Tipo de Visita:</label>
-    <select [(ngModel)]="tipoVisitaSeleccionado" (ngModelChange)="onTipoVisitaChange($event)">
-      <option [ngValue]="null">-- Selecciona un tipo de visita --</option>
-      <option *ngFor="let tipo of tiposVisita" [ngValue]="tipo">{{ tipo.nombre }}</option>
-    </select>
-  </div>
-
-  <div class="form-group">
-    <label>Descripción del Caso Clínico:</label>
-    <textarea
-      rows="3"
-      [(ngModel)]="descripcion"
-      (ngModelChange)="onDescripcionChange($event)"
-      placeholder="Describe el caso clínico...">
-    </textarea>
-  </div>
-
-  <!-- Sección de signos vitales -->
-  <div class="form-group">
-    <label>Signos Vitales:</label>
-    <div class="signo-vital-row">
-      <select [(ngModel)]="signoVitalSeleccionado">
-        <option [ngValue]="null">-- Tipo de signo vital --</option>
-        <option *ngFor="let tipo of tiposSignoVital" [ngValue]="tipo">{{ tipo.nombre }}</option>
-      </select>
-      <input type="text" [(ngModel)]="valorSignoVital" placeholder="Valor" />
-      <button type="button" class="btn-mint" (click)="agregarSignoVital()" [disabled]="!signoVitalSeleccionado || !valorSignoVital">Agregar</button>
-      <button type="button" class="btn-lila" (click)="mostrarInputNuevoTipo()">+ Nuevo tipo</button>
+<div class="nueva-consulta-container">
+  <div class="header-section">
+    <div class="header-left">
+      <div class="icon-container">
+        <span class="medical-icon">🩺</span>
+      </div>
+      <div class="title-container">
+        <h2 class="title">Nueva Consulta Médica</h2>
+        <p class="subtitle">Registre la información clínica del paciente</p>
+      </div>
     </div>
-    <div *ngIf="mostrarNuevoTipo" class="nuevo-tipo-row">
-      <input type="text" [(ngModel)]="nombreNuevoTipo" placeholder="Nombre nuevo tipo" />
-      <button type="button" class="btn-lila" (click)="crearNuevoTipo()" [disabled]="!nombreNuevoTipo.trim()">Crear</button>
-      <button type="button" class="btn-cancelar" (click)="mostrarNuevoTipo = false">Cancelar</button>
-    </div>
-    <div *ngIf="signosVitales.length > 0" class="signos-agregados">
-      <div *ngFor="let sv of signosVitales; let i = index" class="signo-agregado-card">
-        <span class="tipo">{{ sv.tipo.nombre }}</span>
-        <span class="valor">{{ sv.valor }}</span>
-        <button type="button" class="btn-cancelar" (click)="eliminarSignoVital(i)">Eliminar</button>
+    <div class="header-right">
+      <div class="tipo-visita-header">
+        <div class="section-header">
+          <span class="section-icon">📋</span>
+          <h3>Tipo de Visita</h3>
+        </div>
+        <div class="input-group">
+          <select [(ngModel)]="tipoVisitaSeleccionado" (ngModelChange)="onTipoVisitaChange($event)" class="glass-select">
+            <option [ngValue]="null">Seleccione el tipo de visita</option>
+            <option *ngFor="let tipo of tiposVisita" [ngValue]="tipo">{{ tipo.nombre }}</option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
 
-  <button
-    class="primario"
-    (click)="onRegistrarConsulta()"
-    [disabled]="!tipoVisitaSeleccionado || !descripcion">
-    Registrar Consulta
-  </button>
+  <div class="form-container">
+    <!-- Descripción del Caso -->
+    <div class="form-section">
+      <div class="section-header">
+        <span class="section-icon">📝</span>
+        <h3>Descripción del Caso Clínico</h3>
+      </div>
+      <div class="input-group">
+        <textarea
+          [(ngModel)]="descripcion"
+          (ngModelChange)="onDescripcionChange($event)"
+          placeholder="Describa detalladamente el caso clínico, síntomas observados y motivo de la consulta..."
+          class="glass-textarea"
+          rows="4">
+        </textarea>
+      </div>
+    </div>
+
+    <!-- Signos Vitales -->
+    <div class="form-section signos-vitales-section">
+      <div class="section-header">
+        <span class="section-icon">❤️</span>
+        <h3>Signos Vitales</h3>
+        <span class="section-badge">{{ signosVitales.length }} registrados</span>
+      </div>
+
+      <!-- Agregar Signo Vital -->
+      <div class="signo-vital-form">
+        <div class="input-row">
+          <div class="select-wrapper">
+            <select [(ngModel)]="signoVitalSeleccionado" class="glass-select">
+              <option [ngValue]="null">Tipo de signo vital</option>
+              <option *ngFor="let tipo of tiposSignoVital" [ngValue]="tipo">{{ tipo.nombre }}</option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              [(ngModel)]="valorSignoVital"
+              placeholder="Valor"
+              class="glass-input" />
+          </div>
+          <button
+            type="button"
+            class="btn-add"
+            (click)="agregarSignoVital()"
+            [disabled]="!signoVitalSeleccionado || !valorSignoVital">
+            <span class="btn-icon">➕</span>
+            <span class="btn-text">Agregar</span>
+          </button>
+        </div>
+
+        <!-- Nuevo Tipo de Signo Vital -->
+        <div class="nuevo-tipo-section">
+          <button
+            type="button"
+            class="btn-new-type"
+            (click)="mostrarInputNuevoTipo()">
+            <span class="btn-icon">🆕</span>
+            <span class="btn-text">Crear Nuevo Tipo</span>
+          </button>
+        </div>
+
+        <div *ngIf="mostrarNuevoTipo" class="nuevo-tipo-form" [@slideInOut]>
+          <div class="input-row">
+            <input
+              type="text"
+              [(ngModel)]="nombreNuevoTipo"
+              placeholder="Nombre del nuevo tipo de signo vital"
+              class="glass-input" />
+            <button
+              type="button"
+              class="btn-create"
+              (click)="crearNuevoTipo()"
+              [disabled]="!nombreNuevoTipo.trim()">
+              <span class="btn-icon">✅</span>
+              <span class="btn-text">Crear</span>
+            </button>
+            <button
+              type="button"
+              class="btn-cancel"
+              (click)="mostrarNuevoTipo = false">
+              <span class="btn-icon">❌</span>
+              <span class="btn-text">Cancelar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de Signos Vitales Agregados -->
+      <div *ngIf="signosVitales.length > 0" class="signos-list" [@fadeInUp]>
+        <div *ngFor="let sv of signosVitales; let i = index" class="signo-card" [@slideInRight]>
+          <div class="signo-info">
+            <span class="signo-tipo">{{ sv.tipo.nombre }}</span>
+            <span class="signo-valor">{{ sv.valor }}</span>
+          </div>
+          <button
+            type="button"
+            class="btn-remove"
+            (click)="eliminarSignoVital(i)">
+            <span class="remove-icon">🗑️</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón de Registro -->
+    <div class="action-section">
+      <button
+        class="btn-register"
+        (click)="onRegistrarConsulta()"
+        [disabled]="!tipoVisitaSeleccionado || !descripcion">
+        <span class="btn-icon">💾</span>
+        <span class="btn-text">Registrar Consulta</span>
+      </button>
+    </div>
+  </div>
 </div>
