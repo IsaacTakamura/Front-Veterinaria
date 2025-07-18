@@ -55,14 +55,16 @@
   border-radius: 18px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.08), 0 1.5px 4px rgba(0,152,121,0.08);
   border: 1.5px solid #e0e0e0;
-  padding: 22px 20px 16px 20px;
-  min-width: 320px;
-  max-width: 370px;
-  flex: 1 1 320px;
+  padding: 28px 32px 24px 32px;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  min-height: 120px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
   transition: box-shadow 0.2s;
+  margin: 0 auto;
 }
 
 .visita-card-ios:hover {
@@ -167,6 +169,44 @@
   margin-top: 20px;
 }
 
+/* Contenedor vertical */
+.cards-container-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+/* Paginación */
+.paginacion-visitas {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 24px 0 0 0;
+}
+.paginacion-visitas button {
+  background: #fff;
+  border: 1.5px solid #009879;
+  color: #003366;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.paginacion-visitas button:disabled {
+  background: #e0e0e0;
+  color: #aaa;
+  cursor: not-allowed;
+}
+.paginacion-visitas button.activa {
+  background: #009879;
+  color: #fff;
+  border-color: #003366;
+}
+
 @media (max-width: 700px) {
   .cards-container {
     flex-direction: column;
@@ -176,5 +216,8 @@
     min-width: 0;
     max-width: 100%;
     width: 100%;
+  }
+  .cards-container-vertical {
+    gap: 14px;
   }
 }

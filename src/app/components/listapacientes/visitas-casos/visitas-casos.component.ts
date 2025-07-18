@@ -22,6 +22,32 @@ export class VisitasCasosComponent implements OnChanges {
 
   tipoVisitaSeleccionado: TipoVisita | null = null;
   visitasMascota: VisitaExtendida[] = [];
+  // Paginación
+  paginaActual: number = 1;
+  visitasPorPagina: number = 5;
+
+  get totalPaginas(): number {
+    return Math.ceil(this.visitasMascota.length / this.visitasPorPagina) || 1;
+  }
+
+  get visitasPaginaActual(): VisitaExtendida[] {
+    const inicio = (this.paginaActual - 1) * this.visitasPorPagina;
+    return this.visitasMascota.slice(inicio, inicio + this.visitasPorPagina);
+  }
+
+  cambiarPagina(delta: number) {
+    const nuevaPagina = this.paginaActual + delta;
+    if (nuevaPagina >= 1 && nuevaPagina <= this.totalPaginas) {
+      this.paginaActual = nuevaPagina;
+    }
+  }
+
+  irAPagina(pagina: number) {
+    if (pagina >= 1 && pagina <= this.totalPaginas) {
+      this.paginaActual = pagina;
+    }
+  }
+
   cargandoVisitas: boolean = false;
   casosClinicos: CasoClinico[] = [];
   todasVisitas: Visita[] = [];
