@@ -8,6 +8,7 @@ import { Cliente } from '../../components/shared/interfaces/cliente.model'; // A
 })
 export class ClienteService {
   private baseUrl = '/api/v1/asistente';
+  private apiVet = '/api/v1/vet';
 
   constructor(private http: HttpClient) {}
 
@@ -33,4 +34,27 @@ export class ClienteService {
   listarClientePorId(id: number): Observable<{ data: Cliente }> {
     return this.http.get<{ data: Cliente }>(`${this.baseUrl}/cliente/${id}`);
   }
+
+  //* Endpoints para veterinario
+
+  // Listar cliente por id para veterinario
+  listarClientePorIdVeterinario(id: number): Observable<{ data: Cliente }> {
+    return this.http.get<{ data: Cliente }>(`${this.apiVet}/buscar/clienteById/${id}`);
+  }
+  /*
+    Se espera algo como:
+    {
+  "codigo": 0,
+  "message": "string",
+  "data": {
+    "clienteId": 0,
+    "nombre": "string",
+    "apellido": "string",
+    "direccion": "string",
+    "telefono": "string",
+    "email": "string",
+    "ciudad": "string"
+  }
+}
+  */
 }
