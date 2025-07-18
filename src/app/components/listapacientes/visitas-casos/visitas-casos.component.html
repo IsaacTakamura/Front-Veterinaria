@@ -1,0 +1,48 @@
+<h3>🏥 Visitas y Casos Clínicos</h3>
+
+<div *ngIf="tiposVisita.length > 0">
+  <h4>Tipos de Visita Disponibles:</h4>
+  <div class="tipos-visita">
+    <button
+      *ngFor="let tipo of tiposVisita"
+      class="tipo-visita-btn"
+      [class.activo]="tipoVisitaSeleccionado?.tipoVisitaId === tipo.tipoVisitaId"
+      (click)="onSeleccionarTipoVisita(tipo)">
+      {{ tipo.nombre }}
+    </button>
+  </div>
+</div>
+
+<div *ngIf="tipoVisitaSeleccionado" class="visitas-seccion">
+  <h4>Visitas de tipo: <span class="tipo-seleccionado">{{ tipoVisitaSeleccionado.nombre }}</span></h4>
+
+  <ng-container *ngIf="!cargandoVisitas; else cargandoVisitasTpl">
+    <div *ngIf="visitasDelTipo.length > 0; else sinVisitasTpl">
+      <div *ngFor="let visita of visitasDelTipo" class="visita-card">
+        <div class="visita-header">
+          <h5>Visita #{{ visita.visitaId }}</h5>
+          <span class="caso-id">Caso Clínico #{{ visita.casoClinicoId }}</span>
+        </div>
+        <div class="tipo-visita-nombre">
+          <strong>Tipo de Visita:</strong> {{ visita.nombreTipoVisita }}
+        </div>
+        <div class="caso-clinico">
+          <p><strong>Descripción del Caso:</strong> {{ visita.descripcionCasoClinico }}</p>
+        </div>
+        <div *ngIf="visita.signoVital && visita.signoVital.length > 0" class="signos-vitales">
+          <h6>Signos Vitales:</h6>
+          <div *ngFor="let signo of visita.signoVital" class="signo-vital">
+            <span class="tipo-signo">{{ signo.tipoSignoVital.nombre }}:</span>
+            <span class="valor-signo">{{ signo.valor }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #sinVisitasTpl>
+      <p class="sin-visitas">No hay visitas registradas para este tipo de visita.</p>
+    </ng-template>
+  </ng-container>
+  <ng-template #cargandoVisitasTpl>
+    <p>Cargando visitas...</p>
+  </ng-template>
+</div>

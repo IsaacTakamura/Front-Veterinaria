@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Cita } from '../../shared/interfaces/cita.model';
+import { CitaConNombres } from '../../shared/interfaces/cita-con-nombres.model';
 
 @Component({
   selector: 'app-vete-modal-citas-hoy',
@@ -27,8 +28,8 @@ import { Cita } from '../../shared/interfaces/cita.model';
             <tbody>
               <tr *ngFor="let cita of citas">
                 <td>{{ cita.fechaRegistro | date:'shortTime' }}</td>
-                <td>{{ cita.mascotaId }}</td>
-                <td>{{ cita.clienteId }}</td>
+                <td>{{ cita.nombreMascota }}</td>
+                <td>{{ cita.nombreCliente }}</td>
                 <td>{{ cita.motivo }}</td>
                 <td>{{ cita.estadoCita }}</td>
               </tr>
@@ -44,7 +45,7 @@ import { Cita } from '../../shared/interfaces/cita.model';
   styleUrls: ['./vete-modal-citasHoy.component.css']
 })
 export class VeteModalCitasHoyComponent {
-  @Input() citas: Cita[] = [];
+  @Input() citas: CitaConNombres[] = [];
   @Output() close = new EventEmitter<void>();
 
   onClose() {

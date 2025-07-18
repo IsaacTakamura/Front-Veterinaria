@@ -19,27 +19,28 @@ export class MascotaSelectorComponent {
   resultados: Mascota[] = [];
   mostrarModal = false;
 
-  constructor(private mascotaService: MascotaService) {
-    this.searchControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      filter(nombre => nombre !== null && nombre !== '' && nombre.trim().length > 0),
-      switchMap(nombre => this.mascotaService.buscarPorNombre(nombre!))
-    ).subscribe({
-      next: (response) => {
-        // Verificar si response.data es un array o un objeto individual
-        if (response.data) {
-          this.resultados = Array.isArray(response.data) ? response.data : [response.data];
-        } else {
+  constructor(private mascotaService: MascotaService) {}
+
+  buscar() {
+    const nombre = this.searchControl.value;
+    if (nombre && nombre.trim().length > 0) {
+      this.mascotaService.buscarPorNombre(nombre).subscribe({
+        next: (response) => {
+          if (response.data) {
+            this.resultados = Array.isArray(response.data) ? response.data : [response.data];
+          } else {
+            this.resultados = [];
+          }
+          console.log('Resultados mascotas:', this.resultados);
+        },
+        error: (error) => {
+          console.error('Error en búsqueda de mascotas:', error);
           this.resultados = [];
         }
-        console.log('Resultados mascotas:', this.resultados);
-      },
-      error: (error) => {
-        console.error('Error en búsqueda de mascotas:', error);
-        this.resultados = [];
-      }
-    });
+      });
+    } else {
+      this.resultados = [];
+    }
   }
 
   seleccionar(mascota: Mascota) {

@@ -104,30 +104,54 @@ nav button:hover {
 
 /* Tarjeta paciente HORIZONTAL */
 .card {
-  background: white;
-  border-left: 5px solid #00cec9;
-  border-radius: 10px;
-  padding: 20px;
-  margin-top: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  align-items: center;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  padding: 1.5rem 1.5rem 1.2rem 1.5rem;
+  margin-bottom: 1.5rem;
+  transition: box-shadow 0.2s;
+  border: 1px solid #e5e7eb;
 }
-
+.card:hover {
+  box-shadow: 0 8px 32px rgba(37,99,235,0.10);
+  border-color: #a5b4fc;
+}
 .card h3 {
-  margin: 0;
-  font-size: 18px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1.1rem;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.5rem;
+  color: #2563eb;
 }
-
 .card p {
-  margin: 0;
-  font-size: 14px;
-  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.08rem;
+  margin-bottom: 0.5rem;
+  color: #374151;
+}
+.card p strong {
+  font-weight: 600;
+  color: #111827;
+  min-width: 120px;
+  display: inline-block;
+}
+.card svg {
+  flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  .card {
+    padding: 1rem 0.5rem;
+  }
+  .card h3 {
+    font-size: 1.1rem;
+  }
+  .card p strong {
+    min-width: 90px;
+  }
 }
 
 /* Estado activo */
@@ -638,4 +662,50 @@ select {
 
 .subvista button.primario:hover {
   background-color: #009970;
+}
+
+.datos-paciente-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 2.5rem;
+  margin-bottom: 0.2rem;
+}
+.columna {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.dato-mini {
+  font-size: 0.97rem;
+  margin-bottom: 0.2rem;
+  color: #4b5563;
+}
+.dato-mini strong {
+  font-size: 0.97rem;
+  font-weight: 500;
+  color: #10b981 !important;
+  min-width: 80px;
+}
+.dato-mini app-icon-vet-dashboard svg,
+.dato-mini app-icon-stethoscope svg,
+.dato-mini app-icon-calendar svg,
+.dato-mini app-icon-document svg {
+  stroke: #10b981;
+}
+.dato-mini app-icon-users svg,
+.dato-mini app-icon-shield svg {
+  stroke: #10b981;
+}
+.card h3 app-icon-listapacientes svg {
+  fill: #2563eb;
+}
+@media (max-width: 700px) {
+  .datos-paciente-grid {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .columna {
+    gap: 0.1rem;
+  }
 }
