@@ -93,7 +93,7 @@ export class TriajeService {
   // Listar triaje para mascota por id de mascota para veterinario
   listarTriajePorMascotaIdVeterinario(mascotaId: number): Observable<Triaje[]> {
     // GET /api/v1/vet/triaje/mascota/{mascotaId}
-    return this.http.get<Triaje[]>(`${this.apiVet}/triaje/mascota/${mascotaId}`, {
+    return this.http.get<Triaje[]>(`${this.apiVet}/Listartriaje/mascota/${mascotaId}`, {
       headers: this.getHeaders()
     });
   }

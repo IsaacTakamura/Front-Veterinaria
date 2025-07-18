@@ -87,7 +87,8 @@
           <div class="navegacion">
             <ul>
               <li [class.active]="subvista === 'info'" (click)="cambiarSubvista('info')">📄 Info del Paciente</li>
-              <li [class.active]="subvista === 'alergias'" (click)="cambiarSubvista('alergias')">🌡️ Alergias</li>
+              <li [class.active]="subvista === 'triaje'" (click)="cambiarSubvista('triaje')">🌡️ Triaje Actual</li>
+              <li [class.active]="subvista === 'visitas'" (click)="cambiarSubvista('visitas')">🏥 Visitas y Casos Clínicos</li>
               <li [class.active]="subvista === 'nueva'" (click)="cambiarSubvista('nueva')">📝 Nueva Consulta</li>
             </ul>
           </div>
@@ -111,15 +112,68 @@
               </div>
             </div>
 
-            <div *ngIf="subvista === 'alergias'">
-              <h3>🌡️ Alergias</h3>
-              <p>No se han registrado alergias aún.</p>
+            <div *ngIf="subvista === 'triaje'">
+              <h3>🌡️ Triaje Actual</h3>
+              <ng-container *ngIf="!cargandoTriaje; else cargandoTriajeTpl">
+                <ng-container *ngIf="triajeMascota; else sinTriajeTpl">
+                  <div *ngIf="!modoEdicionTriaje">
+                    <p><strong>Temperatura:</strong> {{ triajeMascota.temperatura }} °C</p>
+                    <p><strong>Peso:</strong> {{ triajeMascota.peso }} kg</p>
+                    <p><strong>Frecuencia Cardiaca:</strong> {{ triajeMascota.frecuenciaCardiaca }} lpm</p>
+                    <p><strong>Frecuencia Respiratoria:</strong> {{ triajeMascota.frecuenciaRespiratoria }} rpm</p>
+                    <p><strong>Observaciones:</strong> {{ triajeMascota.observaciones }}</p>
+                    <button class="primario" (click)="modoEdicionTriaje = true">Actualizar Triaje</button>
+                  </div>
+                  <div *ngIf="modoEdicionTriaje">
+                    <label>Temperatura: <input type="number" [(ngModel)]="triajeMascota.temperatura"></label>
+                    <label>Peso: <input type="number" [(ngModel)]="triajeMascota.peso"></label>
+                    <label>Frecuencia Cardiaca: <input type="number" [(ngModel)]="triajeMascota.frecuenciaCardiaca"></label>
+                    <label>Frecuencia Respiratoria: <input type="number" [(ngModel)]="triajeMascota.frecuenciaRespiratoria"></label>
+                    <label>Observaciones: <input type="text" [(ngModel)]="triajeMascota.observaciones"></label>
+                    <button class="primario" (click)="actualizarTriajeMascota(triajeMascota)">Guardar</button>
+                    <button class="secundario" (click)="modoEdicionTriaje = false">Cancelar</button>
+                  </div>
+                </ng-container>
+                <ng-template #sinTriajeTpl>
+                  <p>No hay triaje registrado para esta mascota.</p>
+                </ng-template>
+              </ng-container>
+              <ng-template #cargandoTriajeTpl>
+                <p>Cargando triaje...</p>
+              </ng-template>
+            </div>
+
+            <div *ngIf="subvista === 'visitas'">
+              <h3>🏥 Visitas y Casos Clínicos</h3>
+              <div *ngIf="tiposVisita.length > 0">
+                <div *ngFor="let tipo of tiposVisita">
+                  <button class="secundario" style="margin-bottom: 6px;" (click)="tipoVisitaSeleccionado = tipo">{{ tipo.nombre }}</button>
+                </div>
+              </div>
+              <div *ngIf="tipoVisitaSeleccionado">
+                <h5 style="margin-top: 12px; color: #00b894;">Casos Clínicos para: {{ tipoVisitaSeleccionado.nombre }}</h5>
+                <div *ngFor="let caso of casosClinicos">
+                  <ng-container *ngIf="casoRelacionadoConTipoVisita(caso, tipoVisitaSeleccionado)">
+                    <div style="margin-bottom: 10px; padding: 8px; border: 1px solid #b2d8f7; border-radius: 6px; background: #eaf6ff;">
+                      <p><strong>Descripción:</strong> {{ caso.descripcion }}</p>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
             </div>
 
             <div *ngIf="subvista === 'nueva'">
               <h3>📝 Registrar Nueva Consulta</h3>
-              <textarea rows="5" placeholder="Escribe aquí los hallazgos..."></textarea>
-              <button class="primario">Guardar Consulta</button>
+              <label>Tipo de Visita:
+                <select [(ngModel)]="tipoVisitaNuevaConsulta">
+                  <option [ngValue]="null">-- Selecciona un tipo de visita --</option>
+                  <option *ngFor="let tipo of tiposVisita" [ngValue]="tipo">{{ tipo.nombre }}</option>
+                </select>
+              </label>
+              <label>Descripción del Caso Clínico:
+                <textarea rows="3" [(ngModel)]="descripcionNuevaConsulta" placeholder="Describe el caso clínico..."></textarea>
+              </label>
+              <button class="primario" (click)="registrarNuevaConsulta()" [disabled]="!tipoVisitaNuevaConsulta || !descripcionNuevaConsulta">Registrar Consulta</button>
             </div>
           </div>
         </div>

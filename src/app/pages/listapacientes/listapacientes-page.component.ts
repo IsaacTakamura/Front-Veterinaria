@@ -17,9 +17,14 @@ import { IconCalendarComponent } from 'src/app/components/icons/icon-calendar.co
 import { IconUsersComponent } from 'src/app/components/icons/icon-users.Component';
 import { IconShieldComponent } from 'src/app/components/icons/icon-shield.component';
 import { IconDocumentComponent } from 'src/app/components/icons/icon-document.component';
+import { TriajeService } from 'src/app/core/services/triaje.service';
+import { HistorialClinicoService } from 'src/app/core/services/historial-clinico.service';
+import { Triaje } from 'src/app/components/shared/interfaces/triaje.model';
+import { Visita, TipoVisita, CasoClinico } from 'src/app/components/shared/interfaces/historial.model';
 
 export interface PacienteCitaHoy {
-  clienteId: number; // <--- NUEVO
+  clienteId: number;
+  mascotaId: number; // <--- NUEVO
   nombreMascota: string;
   especie: string;
   raza: string;
@@ -52,13 +57,26 @@ export class ListapacientesPageComponent implements OnInit {
   busqueda: string = '';
   selected: 'pacientes' | 'consulta' | 'seguimiento' = 'pacientes';
   pacienteSeleccionado: PacienteCitaHoy | null = null;
-  subvista: 'info' | 'alergias' | 'nueva' = 'info';
+  subvista: 'info' | 'triaje' | 'visitas' | 'nueva' = 'info';
   propietarioSeleccionado: Cliente | null = null; // <--- NUEVO
+  triajeMascota: Triaje | null = null;
+  cargandoTriaje: boolean = false;
+  modoEdicionTriaje: boolean = false;
+  historialVisitas: Visita[] = [];
+  tiposVisita: TipoVisita[] = [];
+  casosClinicos: CasoClinico[] = [];
+  visitaSeleccionada: Visita | null = null;
+  tipoVisitaSeleccionado: TipoVisita | null = null;
+  casoClinicoSeleccionado: CasoClinico | null = null;
+  descripcionNuevaConsulta: string = '';
+  tipoVisitaNuevaConsulta: TipoVisita | null = null;
 
   constructor(
     private citaService: CitaService,
     private mascotaService: MascotaService,
-    private clienteService: ClienteService
+    private clienteService: ClienteService,
+    private triajeService: TriajeService,
+    private historialClinicoService: HistorialClinicoService
   ) {}
 
   ngOnInit(): void {
@@ -88,7 +106,8 @@ export class ListapacientesPageComponent implements OnInit {
                 const cliente = clientes[i];
                 const raza = razas.find(r => r.razaId === mascota.razaId);
                 return {
-                  clienteId: cliente?.clienteId || 0, // <--- NUEVO
+                  clienteId: cliente?.clienteId || 0,
+                  mascotaId: mascota?.mascotaId || 0, // <--- NUEVO
                   nombreMascota: mascota?.nombre || '',
                   especie: raza ? (raza.especieId === 1 ? 'Perro' : 'Gato') : '',
                   raza: raza?.nombre || '',
@@ -118,7 +137,7 @@ export class ListapacientesPageComponent implements OnInit {
     this.subvista = 'info';
   }
 
-  cambiarSubvista(v: 'info' | 'alergias' | 'nueva') {
+  cambiarSubvista(v: 'info' | 'triaje' | 'visitas' | 'nueva') {
     this.subvista = v;
   }
 
@@ -126,28 +145,137 @@ export class ListapacientesPageComponent implements OnInit {
     this.pacienteSeleccionado = p;
     this.subvista = 'info';
     this.propietarioSeleccionado = null;
+    this.triajeMascota = null;
+    this.historialVisitas = [];
+    this.tiposVisita = [];
+    this.casosClinicos = [];
+    this.visitaSeleccionada = null;
+    this.tipoVisitaSeleccionado = null;
+    this.casoClinicoSeleccionado = null;
+    this.descripcionNuevaConsulta = '';
+    this.tipoVisitaNuevaConsulta = null;
     // Buscar información completa del propietario
-    if (p && p.propietario) {
-      // Buscar el cliente por nombre y apellido (si tienes el id mejor, pero aquí solo nombre)
-      // Si tienes el id, deberías guardarlo en PacienteCitaHoy y usarlo aquí
-      // Suponiendo que el nombre es único (mejorar si tienes el id)
-      // Aquí, como en cargarPacientesCitasHoy ya tienes el cliente, puedes guardar el id también
-      // Pero para hacerlo bien, mejor guardar el clienteId en PacienteCitaHoy
-      // Así que primero, modifica PacienteCitaHoy:
-      // clienteId: number;
-      // Y en cargarPacientesCitasHoy, asígnalo
-      // Y aquí:
-      if ((p as any).clienteId) {
-        this.clienteService.listarClientePorIdVeterinario((p as any).clienteId).subscribe({
-          next: (resp) => {
-            this.propietarioSeleccionado = resp.data;
-          },
-          error: () => {
-            this.propietarioSeleccionado = null;
+    if (p && p.clienteId) {
+      this.clienteService.listarClientePorIdVeterinario(p.clienteId).subscribe({
+        next: (resp) => {
+          this.propietarioSeleccionado = resp.data;
+        },
+        error: () => {
+          this.propietarioSeleccionado = null;
+        }
+      });
+    }
+    // Cargar triaje de la mascota
+    if (p && p.mascotaId) {
+      this.cargarTriajeMascota(p.mascotaId);
+      this.cargarHistorialVisitas(p.mascotaId);
+      this.cargarTiposVisita();
+      this.cargarCasosClinicos(p.mascotaId);
+    }
+  }
+
+  cargarTriajeMascota(mascotaId: number) {
+    this.cargandoTriaje = true;
+    this.triajeService.listarTriajePorMascotaIdVeterinario(mascotaId).subscribe({
+      next: (triajes) => {
+        this.triajeMascota = triajes && triajes.length > 0 ? triajes[0] : null;
+        this.cargandoTriaje = false;
+      },
+      error: () => {
+        this.triajeMascota = null;
+        this.cargandoTriaje = false;
+      }
+    });
+  }
+
+  actualizarTriajeMascota(triaje: Triaje) {
+    if (!triaje.triajeId) return;
+    this.triajeService.actualizarTriajeVeterinario(triaje.triajeId, triaje).subscribe({
+      next: (nuevoTriaje) => {
+        this.triajeMascota = nuevoTriaje;
+        this.modoEdicionTriaje = false;
+      }
+    });
+  }
+
+  cargarHistorialVisitas(mascotaId: number) {
+    this.historialClinicoService.listarCasosClinicosPorMascotaId(mascotaId).subscribe({
+      next: (response) => {
+        // Manejar tanto si viene como array directo o envuelto en objeto
+        this.historialVisitas = Array.isArray(response) ? response : (response as any)?.data || [];
+      },
+      error: () => {
+        this.historialVisitas = [];
+      }
+    });
+  }
+
+  cargarTiposVisita() {
+    this.historialClinicoService.listarTiposVisita().subscribe({
+      next: (resp) => {
+        this.tiposVisita = resp.data || [];
+      },
+      error: () => {
+        this.tiposVisita = [];
+      }
+    });
+  }
+
+  cargarCasosClinicos(mascotaId: number) {
+    this.historialClinicoService.listarCasosClinicosPorMascotaId(mascotaId).subscribe({
+      next: (response) => {
+        // Manejar tanto si viene como array directo o envuelto en objeto
+        const visitas = Array.isArray(response) ? response : (response as any)?.data || [];
+        // Extraer casos clínicos únicos de las visitas
+        const casosMap = new Map<number, CasoClinico>();
+        visitas.forEach((v: any) => {
+          if (v.casoClinico && !casosMap.has(v.casoClinico.casoClinicoId)) {
+            casosMap.set(v.casoClinico.casoClinicoId, v.casoClinico);
           }
         });
+        this.casosClinicos = Array.from(casosMap.values());
+      },
+      error: () => {
+        this.casosClinicos = [];
       }
-    }
+    });
+  }
+
+  registrarNuevaConsulta() {
+    if (!this.pacienteSeleccionado || !this.tipoVisitaNuevaConsulta || !this.descripcionNuevaConsulta) return;
+    // Primero registrar el caso clínico
+    const nuevoCaso: CasoClinico = {
+      casoClinicoId: 0,
+      descripcion: this.descripcionNuevaConsulta,
+      mascotaId: this.pacienteSeleccionado.mascotaId
+    };
+    // Usar el método registrarCasoClinico que espera un CasoClinico
+    (this.historialClinicoService as any).registrarCasoClinico(nuevoCaso).subscribe({
+      next: (resp: any) => {
+        const casoId = resp.data?.casoClinicoId;
+        if (casoId) {
+          // Luego registrar la visita
+          const nuevaVisita: Visita = {
+            visitaId: 0,
+            casoClinicoId: casoId,
+            tipoVisitaId: this.tipoVisitaNuevaConsulta!.tipoVisitaId
+          };
+          this.historialClinicoService.crearVisita(nuevaVisita).subscribe({
+            next: () => {
+              this.cargarHistorialVisitas(this.pacienteSeleccionado!.mascotaId);
+              this.cargarCasosClinicos(this.pacienteSeleccionado!.mascotaId);
+              this.descripcionNuevaConsulta = '';
+              this.tipoVisitaNuevaConsulta = null;
+            }
+          });
+        }
+      }
+    });
+  }
+
+  casoRelacionadoConTipoVisita(caso: CasoClinico, tipo: TipoVisita | null): boolean {
+    if (!tipo) return false;
+    return this.historialVisitas.some(v => v.casoClinicoId === caso.casoClinicoId && v.tipoVisitaId === tipo.tipoVisitaId);
   }
 
   get pacientesFiltrados(): PacienteCitaHoy[] {
