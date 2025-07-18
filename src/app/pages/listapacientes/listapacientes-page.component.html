@@ -112,7 +112,7 @@
             <app-visitas-casos
               *ngIf="subvista === 'visitas'"
               [tiposVisita]="tiposVisita"
-              [mascotaId]="pacienteSeleccionado?.mascotaId || 0"
+              [mascotaId]="pacienteSeleccionado.mascotaId || 0"
               (seleccionarTipoVisita)="tipoVisitaSeleccionado = $event">
             </app-visitas-casos>
 
