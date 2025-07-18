@@ -49,3 +49,98 @@
   background-color: #ccc;
   cursor: not-allowed;
 }
+
+.signo-vital-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.signo-vital-row select,
+.signo-vital-row input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1.5px solid #ccc;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.btn-mint {
+  background: #2ee59d;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-mint:hover:not(:disabled) {
+  background: #1fc77a;
+}
+
+.btn-lila {
+  background: #b388ff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-lila:hover:not(:disabled) {
+  background: #8f5fff;
+}
+
+.btn-cancelar {
+  background: #fff;
+  color: #b388ff;
+  border: 1.5px solid #b388ff;
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-left: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-cancelar:hover:not(:disabled) {
+  background: #f3eaff;
+  color: #8f5fff;
+}
+
+.nuevo-tipo-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.signos-agregados {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.signo-agregado-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff6e9;
+  border: 1.5px solid #ffe082;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 15px;
+  box-shadow: 0 2px 8px rgba(179,136,255,0.07);
+}
+.signo-agregado-card .tipo {
+  color: #b388ff;
+  font-weight: 600;
+}
+.signo-agregado-card .valor {
+  color: #2ee59d;
+  font-weight: 600;
+  margin-left: 8px;
+}

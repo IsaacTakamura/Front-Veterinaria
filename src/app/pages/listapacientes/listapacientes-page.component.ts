@@ -19,8 +19,11 @@ import { IconShieldComponent } from 'src/app/components/icons/icon-shield.compon
 import { IconDocumentComponent } from 'src/app/components/icons/icon-document.component';
 import { TriajeService } from 'src/app/core/services/triaje.service';
 import { HistorialClinicoService } from 'src/app/core/services/historial-clinico.service';
+import { SignosVitalesService } from 'src/app/core/services/signosVitales.service';
 import { Triaje } from 'src/app/components/shared/interfaces/triaje.model';
 import { Visita, TipoVisita, CasoClinico } from 'src/app/components/shared/interfaces/historial.model';
+import { TipoSignoVital } from 'src/app/components/shared/interfaces/tipoSignoVital';
+import { SignoVital } from 'src/app/components/shared/interfaces/SignoVital.model';
 import { InfoPacienteComponent } from '../../components/listapacientes/info-paciente/info-paciente.component';
 import { TriajeActualComponent } from '../../components/listapacientes/triaje-actual/triaje-actual.component';
 import { VisitasCasosComponent } from '../../components/listapacientes/visitas-casos/visitas-casos.component';
@@ -78,17 +81,21 @@ export class ListapacientesPageComponent implements OnInit {
   casoClinicoSeleccionado: CasoClinico | null = null;
   descripcionNuevaConsulta: string = '';
   tipoVisitaNuevaConsulta: TipoVisita | null = null;
+  tiposSignoVital: TipoSignoVital[] = [];
+  signosVitalesNuevaConsulta: any[] = [];
 
   constructor(
     private citaService: CitaService,
     private mascotaService: MascotaService,
     private clienteService: ClienteService,
     private triajeService: TriajeService,
-    private historialClinicoService: HistorialClinicoService
+    private historialClinicoService: HistorialClinicoService,
+    private signosVitalesService: SignosVitalesService
   ) {}
 
   ngOnInit(): void {
     this.cargarPacientesCitasHoy();
+    this.cargarTiposSignoVital();
   }
 
   cargarPacientesCitasHoy() {
@@ -139,6 +146,34 @@ export class ListapacientesPageComponent implements OnInit {
     });
   }
 
+  cargarTiposSignoVital() {
+    this.signosVitalesService.listarTiposSignosVitales().subscribe({
+      next: (response) => {
+        this.tiposSignoVital = Array.isArray(response) ? response : (response as any)?.data || [];
+      },
+      error: () => {
+        this.tiposSignoVital = [];
+      }
+    });
+  }
+
+  onNuevoTipoSignoVital(nombre: string) {
+    const nuevoTipo: Partial<TipoSignoVital> = { nombre };
+    this.signosVitalesService.crearTipoSignoVital(nuevoTipo as any).subscribe({
+      next: (response) => {
+        // Recargar la lista de tipos
+        this.cargarTiposSignoVital();
+      },
+      error: () => {
+        console.error('Error al crear nuevo tipo de signo vital');
+      }
+    });
+  }
+
+  onSignosVitalesChange(signosVitales: any[]) {
+    this.signosVitalesNuevaConsulta = signosVitales;
+  }
+
   cambiarVista(v: 'pacientes' | 'consulta' | 'seguimiento') {
     this.selected = v;
     this.pacienteSeleccionado = null;
@@ -162,6 +197,7 @@ export class ListapacientesPageComponent implements OnInit {
     this.casoClinicoSeleccionado = null;
     this.descripcionNuevaConsulta = '';
     this.tipoVisitaNuevaConsulta = null;
+    this.signosVitalesNuevaConsulta = [];
     // Buscar información completa del propietario
     if (p && p.clienteId) {
       this.clienteService.listarClientePorIdVeterinario(p.clienteId).subscribe({
@@ -253,12 +289,13 @@ export class ListapacientesPageComponent implements OnInit {
 
   registrarNuevaConsulta() {
     if (!this.pacienteSeleccionado || !this.tipoVisitaNuevaConsulta || !this.descripcionNuevaConsulta) return;
+
     // Primero registrar el caso clínico
     const nuevoCaso: Partial<CasoClinico> = {
       descripcion: this.descripcionNuevaConsulta,
       mascotaId: this.pacienteSeleccionado.mascotaId
     };
-    // Usar el método registrarCasoClinico que espera un CasoClinico
+
     (this.historialClinicoService as any).registrarCasoClinico(nuevoCaso).subscribe({
       next: (resp: any) => {
         const casoId = resp.data?.casoClinicoId;
@@ -268,12 +305,35 @@ export class ListapacientesPageComponent implements OnInit {
             casoClinicoId: casoId,
             tipoVisitaId: this.tipoVisitaNuevaConsulta!.tipoVisitaId
           };
+
           this.historialClinicoService.crearVisita(nuevaVisita as any).subscribe({
-            next: () => {
-              this.cargarHistorialVisitas(this.pacienteSeleccionado!.mascotaId);
-              this.cargarCasosClinicos(this.pacienteSeleccionado!.mascotaId);
-              this.descripcionNuevaConsulta = '';
-              this.tipoVisitaNuevaConsulta = null;
+            next: (respVisita: any) => {
+              const visitaId = respVisita.data?.visitaId;
+              if (visitaId && this.signosVitalesNuevaConsulta.length > 0) {
+                // Registrar los signos vitales
+                const signosPromises = this.signosVitalesNuevaConsulta.map(sv => {
+                  const nuevoSigno: any = {
+                    tipoSignoVitalId: sv.tipo.tipoSignoVitalId,
+                    valor: parseFloat(sv.valor),
+                    visitaId: visitaId
+                  };
+                  return this.signosVitalesService.crearSignoVital(nuevoSigno as any).toPromise();
+                });
+
+                Promise.all(signosPromises).then(() => {
+                  this.cargarHistorialVisitas(this.pacienteSeleccionado!.mascotaId);
+                  this.cargarCasosClinicos(this.pacienteSeleccionado!.mascotaId);
+                  this.descripcionNuevaConsulta = '';
+                  this.tipoVisitaNuevaConsulta = null;
+                  this.signosVitalesNuevaConsulta = [];
+                });
+              } else {
+                this.cargarHistorialVisitas(this.pacienteSeleccionado!.mascotaId);
+                this.cargarCasosClinicos(this.pacienteSeleccionado!.mascotaId);
+                this.descripcionNuevaConsulta = '';
+                this.tipoVisitaNuevaConsulta = null;
+                this.signosVitalesNuevaConsulta = [];
+              }
             }
           });
         }

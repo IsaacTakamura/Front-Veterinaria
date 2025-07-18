@@ -17,7 +17,7 @@ export class SignosVitalesService {
     return this.http.post<{ data: any }>(`${this.apiUrl}/CrearTipoSignoVital`, tipoSignoVital);
     /* Se espera, algo como esto:
       {
-        "tipoSignoVitalId": 0,
+        "tipoSignoVitalId": 0, // Se genera automaticamente
         "nombre": "string"
       }
     */
@@ -45,7 +45,7 @@ export class SignosVitalesService {
     return this.http.post<{ data: any }>(`${this.apiUrl}/crearSignoVital`, signoVital);
     /* Se espera, algo como esto:
       {
-        "signoVitalId": 0,
+        "signoVitalId": 0, // Se genera automaticamente
         "tipoSignoVitalId": 0,
         "valor": 0
       }

@@ -19,6 +19,32 @@
     </textarea>
   </div>
 
+  <!-- Sección de signos vitales -->
+  <div class="form-group">
+    <label>Signos Vitales:</label>
+    <div class="signo-vital-row">
+      <select [(ngModel)]="signoVitalSeleccionado">
+        <option [ngValue]="null">-- Tipo de signo vital --</option>
+        <option *ngFor="let tipo of tiposSignoVital" [ngValue]="tipo">{{ tipo.nombre }}</option>
+      </select>
+      <input type="text" [(ngModel)]="valorSignoVital" placeholder="Valor" />
+      <button type="button" class="btn-mint" (click)="agregarSignoVital()" [disabled]="!signoVitalSeleccionado || !valorSignoVital">Agregar</button>
+      <button type="button" class="btn-lila" (click)="mostrarInputNuevoTipo()">+ Nuevo tipo</button>
+    </div>
+    <div *ngIf="mostrarNuevoTipo" class="nuevo-tipo-row">
+      <input type="text" [(ngModel)]="nombreNuevoTipo" placeholder="Nombre nuevo tipo" />
+      <button type="button" class="btn-lila" (click)="crearNuevoTipo()" [disabled]="!nombreNuevoTipo.trim()">Crear</button>
+      <button type="button" class="btn-cancelar" (click)="mostrarNuevoTipo = false">Cancelar</button>
+    </div>
+    <div *ngIf="signosVitales.length > 0" class="signos-agregados">
+      <div *ngFor="let sv of signosVitales; let i = index" class="signo-agregado-card">
+        <span class="tipo">{{ sv.tipo.nombre }}</span>
+        <span class="valor">{{ sv.valor }}</span>
+        <button type="button" class="btn-cancelar" (click)="eliminarSignoVital(i)">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
   <button
     class="primario"
     (click)="onRegistrarConsulta()"
