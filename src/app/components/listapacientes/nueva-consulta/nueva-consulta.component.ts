@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 import { TipoVisita } from '../../shared/interfaces/historial.model';
 import { TipoSignoVital } from '../../shared/interfaces/tipoSignoVital';
 
@@ -10,33 +9,7 @@ import { TipoSignoVital } from '../../shared/interfaces/tipoSignoVital';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './nueva-consulta.component.html',
-  styleUrls: ['./nueva-consulta.component.css'],
-  animations: [
-    trigger('slideInOut', [
-      transition(':enter', [
-        style({ height: 0, opacity: 0 }),
-        animate('300ms ease-out', style({ height: '*', opacity: 1 }))
-      ]),
-      transition(':leave', [
-        animate('300ms ease-in', style({ height: 0, opacity: 0 }))
-      ])
-    ]),
-    trigger('fadeInUp', [
-      transition(':enter', [
-        style({ transform: 'translateY(20px)', opacity: 0 }),
-        animate('400ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
-      ])
-    ]),
-    trigger('slideInRight', [
-      transition(':enter', [
-        style({ transform: 'translateX(-20px)', opacity: 0 }),
-        animate('300ms ease-out', style({ transform: 'translateX(0)', opacity: 1 }))
-      ]),
-      transition(':leave', [
-        animate('200ms ease-in', style({ transform: 'translateX(20px)', opacity: 0 }))
-      ])
-    ])
-  ]
+  styleUrls: ['./nueva-consulta.component.css']
 })
 export class NuevaConsultaComponent {
   @Input() tiposVisita: TipoVisita[] = [];

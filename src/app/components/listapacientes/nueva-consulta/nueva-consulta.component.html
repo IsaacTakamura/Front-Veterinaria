@@ -88,7 +88,7 @@
           </button>
         </div>
 
-        <div *ngIf="mostrarNuevoTipo" class="nuevo-tipo-form" [@slideInOut]>
+        <div *ngIf="mostrarNuevoTipo" class="nuevo-tipo-form">
           <div class="input-row">
             <input
               type="text"
@@ -115,8 +115,8 @@
       </div>
 
       <!-- Lista de Signos Vitales Agregados -->
-      <div *ngIf="signosVitales.length > 0" class="signos-list" [@fadeInUp]>
-        <div *ngFor="let sv of signosVitales; let i = index" class="signo-card" [@slideInRight]>
+      <div *ngIf="signosVitales.length > 0" class="signos-list">
+        <div *ngFor="let sv of signosVitales; let i = index" class="signo-card">
           <div class="signo-info">
             <span class="signo-tipo">{{ sv.tipo.nombre }}</span>
             <span class="signo-valor">{{ sv.valor }}</span>
