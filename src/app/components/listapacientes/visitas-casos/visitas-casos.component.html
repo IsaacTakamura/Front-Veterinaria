@@ -23,15 +23,16 @@
           <h5>Visita #{{ visita.visitaId }}</h5>
           <span class="caso-id">Caso Clínico #{{ visita.casoClinicoId }}</span>
         </div>
-
-        <div *ngIf="visita.casoClinico" class="caso-clinico">
-          <p><strong>Descripción del Caso:</strong> {{ visita.casoClinico.descripcion }}</p>
+        <div class="tipo-visita-nombre">
+          <strong>Tipo de Visita:</strong> {{ visita.nombreTipoVisita }}
         </div>
-
+        <div class="caso-clinico">
+          <p><strong>Descripción del Caso:</strong> {{ visita.descripcionCasoClinico }}</p>
+        </div>
         <div *ngIf="visita.signoVital && visita.signoVital.length > 0" class="signos-vitales">
           <h6>Signos Vitales:</h6>
           <div *ngFor="let signo of visita.signoVital" class="signo-vital">
-            <span class="tipo-signo">{{ signo.tipoSignoVital?.nombre }}:</span>
+            <span class="tipo-signo">{{ signo.tipoSignoVital.nombre }}:</span>
             <span class="valor-signo">{{ signo.valor }}</span>
           </div>
         </div>

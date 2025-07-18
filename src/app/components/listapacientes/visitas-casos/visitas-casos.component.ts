@@ -1,7 +1,13 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { forkJoin } from 'rxjs';
 import { TipoVisita, CasoClinico, Visita } from '../../shared/interfaces/historial.model';
 import { HistorialClinicoService } from '../../../core/services/historial-clinico.service';
+
+interface VisitaExtendida extends Visita {
+  nombreTipoVisita?: string;
+  descripcionCasoClinico?: string;
+}
 
 @Component({
   selector: 'app-visitas-casos',
@@ -10,16 +16,26 @@ import { HistorialClinicoService } from '../../../core/services/historial-clinic
   templateUrl: './visitas-casos.component.html',
   styleUrls: ['./visitas-casos.component.css']
 })
-export class VisitasCasosComponent {
+export class VisitasCasosComponent implements OnChanges {
   @Input() tiposVisita: TipoVisita[] = [];
   @Input() mascotaId: number = 0;
   @Output() seleccionarTipoVisita = new EventEmitter<TipoVisita>();
 
   tipoVisitaSeleccionado: TipoVisita | null = null;
-  visitasDelTipo: Visita[] = [];
+  visitasDelTipo: VisitaExtendida[] = [];
   cargandoVisitas: boolean = false;
+  casosClinicos: CasoClinico[] = [];
 
   constructor(private historialClinicoService: HistorialClinicoService) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['mascotaId'] && this.mascotaId) {
+      this.casosClinicos = [];
+      this.tipoVisitaSeleccionado = null;
+      this.visitasDelTipo = [];
+      this.cargarCasosClinicos();
+    }
+  }
 
   onSeleccionarTipoVisita(tipo: TipoVisita) {
     this.tipoVisitaSeleccionado = tipo;
@@ -27,22 +43,59 @@ export class VisitasCasosComponent {
     this.cargarVisitasPorTipo(tipo.tipoVisitaId);
   }
 
+  cargarCasosClinicos() {
+    this.historialClinicoService.listarCasosClinicosPorMascotaId(this.mascotaId).subscribe({
+      next: (response) => {
+        const casos = Array.isArray(response) ? response : (response as any)?.data || [];
+        this.casosClinicos = casos;
+      },
+      error: () => {
+        this.casosClinicos = [];
+      }
+    });
+  }
+
   cargarVisitasPorTipo(tipoVisitaId: number) {
     this.cargandoVisitas = true;
     this.visitasDelTipo = [];
-
-    // Primero cargar todas las visitas de la mascota
-    this.historialClinicoService.listarCasosClinicosPorMascotaId(this.mascotaId).subscribe({
+    this.historialClinicoService.listarVisitas().subscribe({
       next: (response) => {
-        // Manejar tanto si viene como array directo o envuelto en objeto
         const visitas = Array.isArray(response) ? response : (response as any)?.data || [];
-
-        // Filtrar visitas que coincidan con el tipo de visita seleccionado
-        this.visitasDelTipo = visitas.filter((visita: any) =>
-          visita.tipoVisitaId === tipoVisitaId
+        const casoIds = this.casosClinicos.map(c => c.casoClinicoId);
+        const visitasFiltradas = visitas.filter((visita: any) =>
+          casoIds.includes(visita.casoClinicoId) && visita.tipoVisitaId === tipoVisitaId
         );
-
-        this.cargandoVisitas = false;
+        // Llamadas paralelas para enriquecer cada visita
+        const llamadas = visitasFiltradas.map((visita: any) =>
+          forkJoin({
+            tipo: this.historialClinicoService.listarTipoVisitaPorId(visita.tipoVisitaId),
+            caso: this.historialClinicoService.listarCasoClinicoPorId(visita.casoClinicoId)
+          })
+        );
+        if (llamadas.length === 0) {
+          this.visitasDelTipo = [];
+          this.cargandoVisitas = false;
+          return;
+        }
+        forkJoin(llamadas).subscribe(
+          (resultados => {
+            const res: any[] = resultados as any[];
+            this.visitasDelTipo = visitasFiltradas.map((visita: any, i: number) => {
+              const tipo = res[i].tipo?.data?.nombre || '';
+              const caso = res[i].caso?.data?.descripcion || '';
+              return {
+                ...visita,
+                nombreTipoVisita: tipo,
+                descripcionCasoClinico: caso
+              };
+            });
+            this.cargandoVisitas = false;
+          }),
+          () => {
+            this.visitasDelTipo = [];
+            this.cargandoVisitas = false;
+          }
+        );
       },
       error: () => {
         this.visitasDelTipo = [];
