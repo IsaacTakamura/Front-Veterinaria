@@ -90,16 +90,32 @@ export class VeterinarianDashboardComponent implements OnInit {
             const mascota = mascotas.find((m: any) => m.mascotaId === cita.mascotaId);
             const nombreMascota = mascota?.nombre || 'Mascota';
 
+            console.log(`Cita ${cita.citaId}: Buscando mascota con ID ${cita.mascotaId}, nombre encontrado: "${nombreMascota}"`);
+
             // Buscar el paciente por nombre de mascota para obtener el propietario
-            const paciente = pacientes.find((p: any) =>
-              p.nombreMascota && p.nombreMascota.toLowerCase() === nombreMascota.toLowerCase()
-            );
+            const paciente = pacientes.find((p: any) => {
+              const match = p.nombreMascota && p.nombreMascota.toLowerCase() === nombreMascota.toLowerCase();
+              console.log(`Comparando: "${p.nombreMascota}" (paciente) vs "${nombreMascota}" (mascota) = ${match}`);
+              return match;
+            });
+
+            console.log(`Cita ${cita.citaId}: Paciente encontrado:`, paciente);
+
+            // Determinar el nombre del propietario
+            let nombrePropietario = 'Cliente';
+            if (paciente?.nombrePropietario) {
+              nombrePropietario = paciente.nombrePropietario;
+            } else {
+              // Si no encontramos el paciente, mostrar información útil
+              console.log(`⚠️ Mascota "${nombreMascota}" no encontrada en la lista de pacientes del veterinario ${veterinarioId}`);
+              nombrePropietario = `Cliente (ID: ${cita.clienteId})`;
+            }
 
             return {
               id: cita.citaId ?? 0,
               time: cita.fechaRegistro.substring(11, 16),
               pet: nombreMascota,
-              owner: paciente?.nombrePropietario || 'Cliente',
+              owner: nombrePropietario,
               type: cita.motivo,
               status: cita.estadoCita.toLowerCase() as any
             };
