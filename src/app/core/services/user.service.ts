@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { User } from '../models/user.model'; // ajusta ruta según ubicación
 
 
@@ -59,11 +60,6 @@ actualizarUsuario(data: {
     headers: { 'Content-Type': 'application/json' }
   });
 }
-
-
-
-
-
 
   /**
    * (Opcional) Método futuro para reactivar un usuario.

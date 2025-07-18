@@ -47,6 +47,26 @@ export class CatalogManagementComponent implements OnInit {
   modalRazaVisible = false;
   modalAsignarRazaVisible = false; // Nuevo modal para asignar raza existente
 
+  // Modal de confirmación personalizado
+  modalConfirmacionVisible = false;
+  confirmacionData: {
+    titulo: string;
+    mensaje: string;
+    detalles?: string;
+    tipoAccion: 'eliminar-especie' | 'eliminar-raza' | 'eliminar-servicio' | 'otro';
+    icono: string;
+    colorBoton: string;
+    onConfirm: () => void;
+    datosElemento?: any;
+  } = {
+    titulo: '',
+    mensaje: '',
+    tipoAccion: 'otro',
+    icono: '⚠️',
+    colorBoton: 'bg-red-600 hover:bg-red-700',
+    onConfirm: () => {}
+  };
+
   nuevaEspecie: Partial<Especie> = { nombre: '' };
   nuevaRaza: Partial<Raza> = { nombre: '', especieId: 0 };
   asignacionRaza: {
@@ -107,8 +127,26 @@ export class CatalogManagementComponent implements OnInit {
     this.isLoading = true;
     this.cargarDescripcionesLocales();
     this.verificarAutenticacion();
+    this.cargarTodosLosDatos();
+  }
+
+  // Método para cargar todos los datos del catálogo
+  cargarTodosLosDatos(): void {
+    console.log('📋 Cargando todos los datos del catálogo...');
+    this.isLoading = true;
+    
+    // Cargar servicios
     this.obtenerTiposServicios();
+    
+    // Cargar especies y razas
     this.obtenerDatosEspeciesYRazas();
+  }
+
+  // Método para refrescar todos los datos
+  refrescarDatos(): void {
+    console.log('🔄 Refrescando todos los datos del catálogo...');
+    this.cargarTodosLosDatos();
+    this.mostrarNotificacionExito('Datos actualizados correctamente');
   }
 
   // Verificación de autenticación simplificada
@@ -179,32 +217,73 @@ export class CatalogManagementComponent implements OnInit {
 
   // Eliminar tipo de servicio
   eliminarTipoServicio(tipoServicioId: number): void {
-    if (confirm('¿Estás seguro de que deseas eliminar este tipo de servicio? Esta acción no se puede deshacer.')) {
-      // TODO: Implementar llamada a la API cuando esté disponible
-      // this.tipoServicioService.eliminarTipoServicio(tipoServicioId).subscribe({
-      //   next: () => {
-      //     this.obtenerTiposServicios();
-      //     this.mostrarNotificacionExito('Tipo de servicio eliminado correctamente');
-      //   },
-      //   error: (err) => {
-      //     console.error('Error al eliminar tipo de servicio', err);
-      //     this.mostrarNotificacionError('Error al eliminar el tipo de servicio', err);
-      //   }
-      // });
-      
-      // Simulación temporal: eliminar de la lista local y mostrar notificación
-      const servicioEliminado = this.tiposServicios.find(s => s.tipoServicioId === tipoServicioId);
-      this.tiposServicios = this.tiposServicios.filter(s => s.tipoServicioId !== tipoServicioId);
-      
-      // Eliminar también la descripción local
-      this.descripcionesLocales.delete(tipoServicioId);
-      this.guardarDescripcionesLocales();
-      
-      const nombreServicio = servicioEliminado?.nombre || 'Servicio';
-      this.mostrarNotificacionExito(`Tipo de servicio "${nombreServicio}" eliminado correctamente`);
-      
-      console.log(`✅ Tipo de servicio eliminado localmente: ID ${tipoServicioId}`);
+    const servicioAEliminar = this.tiposServicios.find(s => s.tipoServicioId === tipoServicioId);
+    
+    if (!servicioAEliminar) {
+      this.mostrarNotificacionError('Servicio no encontrado', { error: { message: 'No se pudo encontrar el servicio a eliminar' } });
+      return;
     }
+
+    // Mostrar modal de confirmación personalizado
+    this.mostrarConfirmacion({
+      titulo: '🗑️ Eliminar Tipo de Servicio',
+      mensaje: `¿Estás seguro de que deseas eliminar el servicio "${servicioAEliminar.nombre}"?`,
+      detalles: 'Esta acción no se puede deshacer y el servicio será eliminado permanentemente.',
+      tipoAccion: 'eliminar-servicio',
+      icono: '🗑️',
+      colorBoton: 'bg-red-600 hover:bg-red-700',
+      datosElemento: { servicio: servicioAEliminar },
+      onConfirm: () => this.ejecutarEliminacionServicio(tipoServicioId, servicioAEliminar)
+    });
+  }
+
+  // Método separado para ejecutar la eliminación real del servicio
+  private ejecutarEliminacionServicio(tipoServicioId: number, servicioAEliminar: any): void {
+    const nombreServicio = servicioAEliminar?.nombre || 'Servicio';
+    
+    console.log(`🔄 Eliminando tipo de servicio: ID ${tipoServicioId} - "${nombreServicio}"`);
+    this.isLoading = true;
+    
+    this.tipoServicioService.eliminarTipoServicio(tipoServicioId).subscribe({
+      next: (response) => {
+        console.log('✅ Tipo de servicio eliminado exitosamente:', response);
+        
+        // Eliminar de la lista local
+        this.tiposServicios = this.tiposServicios.filter(s => s.tipoServicioId !== tipoServicioId);
+        
+        // Eliminar también la descripción local
+        this.descripcionesLocales.delete(tipoServicioId);
+        this.guardarDescripcionesLocales();
+        
+        this.isLoading = false;
+        this.mostrarNotificacionExito(`✅ Tipo de servicio "${nombreServicio}" eliminado correctamente`);
+      },
+      error: (err) => {
+        console.error('❌ Error al eliminar tipo de servicio:', err);
+        this.isLoading = false;
+        
+        // Verificar si el error es por que el servicio ya no existe
+        if (err.status === 404) {
+          // Si es 404, significa que ya fue eliminado, actualizar la lista
+          this.tiposServicios = this.tiposServicios.filter(s => s.tipoServicioId !== tipoServicioId);
+          this.descripcionesLocales.delete(tipoServicioId);
+          this.guardarDescripcionesLocales();
+          this.mostrarNotificacionExito(`✅ Tipo de servicio "${nombreServicio}" eliminado correctamente`);
+        } else {
+          // Para otros errores, mostrar mensaje de error
+          let mensajeError = 'Error al eliminar el tipo de servicio';
+          if (err.status === 400) {
+            mensajeError = 'No se puede eliminar este servicio porque está siendo utilizado';
+          } else if (err.status === 403) {
+            mensajeError = 'No tienes permisos para eliminar servicios';
+          } else if (err.status === 500) {
+            mensajeError = 'Error interno del servidor';
+          }
+          
+          this.mostrarNotificacionError(mensajeError, err);
+        }
+      }
+    });
   }
 
   // Eliminar especie y sus razas vinculadas
@@ -212,43 +291,126 @@ export class CatalogManagementComponent implements OnInit {
     const especieAEliminar = this.especies.find(e => e.especieId === especieId);
     const razasVinculadas = this.getRazasPorEspecie(especieId);
     
-    let mensajeConfirmacion = `¿Estás seguro de que deseas eliminar la especie "${especieAEliminar?.nombre}"?`;
+    if (!especieAEliminar) {
+      this.mostrarNotificacionError('Especie no encontrada', { error: { message: 'No se pudo encontrar la especie a eliminar' } });
+      return;
+    }
+
+    // Construir mensaje de confirmación
+    let detalles = '';
     if (razasVinculadas.length > 0) {
-      mensajeConfirmacion += `\n\nEsto también eliminará ${razasVinculadas.length} raza(s) vinculada(s): ${razasVinculadas.map(r => r.nombre).join(', ')}`;
+      detalles = `Esto también eliminará ${razasVinculadas.length} raza(s) vinculada(s):\n${razasVinculadas.map(r => `• ${r.nombre}`).join('\n')}`;
     }
-    mensajeConfirmacion += '\n\nEsta acción no se puede deshacer.';
+
+    // Mostrar modal de confirmación personalizado
+    this.mostrarConfirmacion({
+      titulo: '🗑️ Eliminar Especie',
+      mensaje: `¿Estás seguro de que deseas eliminar la especie "${especieAEliminar.nombre}"?`,
+      detalles: detalles,
+      tipoAccion: 'eliminar-especie',
+      colorBoton: 'bg-red-600 hover:bg-red-700',
+      datosElemento: { especie: especieAEliminar, razas: razasVinculadas },
+      onConfirm: () => this.ejecutarEliminacionEspecie(especieId, especieAEliminar, razasVinculadas)
+    });
+  }
+
+  // Método separado para ejecutar la eliminación real
+  private ejecutarEliminacionEspecie(especieId: number, especieAEliminar: any, razasVinculadas: any[]): void {
+    console.log('🔄 Ejecutando eliminación de especie:', { especieId, razasVinculadas });
     
-    if (confirm(mensajeConfirmacion)) {
-      // TODO: Implementar llamada a la API cuando esté disponible
-      // this.catalogoService.eliminarEspecie(especieId).subscribe({
-      //   next: () => {
-      //     this.obtenerDatosEspeciesYRazas();
-      //     this.mostrarNotificacionExito(`Especie "${especieAEliminar?.nombre}" eliminada correctamente`);
-      //   },
-      //   error: (err) => {
-      //     console.error('Error al eliminar especie', err);
-      //     this.mostrarNotificacionError('Error al eliminar la especie', err);
-      //   }
-      // });
-      
-      // Simulación temporal: eliminar de las listas locales
-      this.especies = this.especies.filter(e => e.especieId !== especieId);
-      this.razas = this.razas.filter(r => r.especieId !== especieId);
-      
-      // Eliminar emoji asociado si existe
-      this.emojiService.obtenerTodosLosEmojisAsignados().delete(especieId);
-      
-      const nombreEspecie = especieAEliminar?.nombre || 'Especie';
-      const cantidadRazas = razasVinculadas.length;
-      
-      let mensajeExito = `Especie "${nombreEspecie}" eliminada correctamente`;
-      if (cantidadRazas > 0) {
-        mensajeExito += ` junto con ${cantidadRazas} raza(s) vinculada(s)`;
+    // Mostrar loading
+    this.isLoading = true;
+    
+    this.catalogoService.eliminarEspecieConRazas(especieId, razasVinculadas).subscribe({
+      next: () => {
+        console.log('✅ Eliminación exitosa, actualizando tabla...');
+        this.isLoading = false;
+        this.obtenerDatosEspeciesYRazas();
+        
+        const nombreEspecie = especieAEliminar?.nombre || 'Especie';
+        const cantidadRazas = razasVinculadas.length;
+        
+        let mensajeExito = `✅ Especie "${nombreEspecie}" eliminada correctamente`;
+        if (cantidadRazas > 0) {
+          mensajeExito += ` junto con ${cantidadRazas} raza(s) asociada(s)`;
+        }
+        
+        this.mostrarNotificacionExito(mensajeExito);
+      },
+      error: (err) => {
+        console.error('Error al eliminar especie con razas', err);
+        this.isLoading = false;
+        
+        // SIEMPRE intentar actualizar la tabla después de un "error", porque puede ser un falso negativo
+        setTimeout(() => {
+          console.log('🔄 Actualizando tabla después del error para verificar si la eliminación fue exitosa...');
+          this.obtenerDatosEspeciesYRazas();
+        }, 1000);
+        
+        // Si el método con razas falla, intentar el método directo
+        if (err.status === 500) {
+          console.log('🔄 Método con razas falló, intentando eliminación directa...');
+          
+          this.catalogoService.eliminarEspecie(especieId).subscribe({
+            next: () => {
+              console.log('✅ Eliminación directa exitosa, actualizando tabla...');
+              this.obtenerDatosEspeciesYRazas();
+              const nombreEspecie = especieAEliminar?.nombre || 'Especie';
+              this.mostrarNotificacionExito(`✅ Especie "${nombreEspecie}" eliminada correctamente`);
+            },
+            error: (err2) => {
+              console.error('Error en eliminación directa también', err2);
+              
+              // Incluso si el segundo método falla, actualizar la tabla
+              setTimeout(() => {
+                console.log('🔄 Actualizando tabla después del segundo error...');
+                this.obtenerDatosEspeciesYRazas();
+              }, 1000);
+              
+              // Solo mostrar error si realmente no se pudo eliminar
+              this.verificarSiEspecieEliminada(especieId, especieAEliminar?.nombre).then(eliminada => {
+                if (!eliminada) {
+                  this.mostrarNotificacionError('❌ Error al eliminar la especie', err2);
+                }
+              });
+            }
+          });
+        } else {
+          // Para otros errores, verificar si realmente no se eliminó
+          this.verificarSiEspecieEliminada(especieId, especieAEliminar?.nombre).then(eliminada => {
+            if (!eliminada) {
+              this.mostrarNotificacionError('❌ Error al eliminar la especie', err);
+            }
+          });
+        }
       }
-      
-      this.mostrarNotificacionExito(mensajeExito);
-      console.log(`✅ Especie eliminada localmente: ID ${especieId}, Razas eliminadas: ${cantidadRazas}`);
-    }
+    });
+  }
+
+  // Método auxiliar para verificar si una especie fue realmente eliminada
+  private async verificarSiEspecieEliminada(especieId: number, nombreEspecie?: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      // Esperar un momento y luego verificar si la especie ya no existe
+      setTimeout(() => {
+        this.catalogoService.listarEspecies().subscribe({
+          next: (especies) => {
+            const especieExiste = especies.some(e => e.especieId === especieId);
+            if (!especieExiste) {
+              console.log('✅ Verificación: La especie fue eliminada correctamente');
+              this.mostrarNotificacionExito(`Especie "${nombreEspecie || 'Especie'}" eliminada correctamente`);
+              resolve(true);
+            } else {
+              console.log('❌ Verificación: La especie aún existe');
+              resolve(false);
+            }
+          },
+          error: () => {
+            console.log('❌ Error al verificar si la especie fue eliminada');
+            resolve(false);
+          }
+        });
+      }, 2000);
+    });
   }
 
   // Método para mostrar tablas detalladas y reiniciar paginación
@@ -524,6 +686,7 @@ export class CatalogManagementComponent implements OnInit {
 
   // Métodos para modal de asignar raza
   abrirModalAsignarRaza(especie: any) {
+    console.log('🔄 Abriendo modal de gestión de razas para especie:', especie);
     this.asignacionRaza = {
       especieId: especie.especieId,
       razaId: 0,
@@ -533,22 +696,122 @@ export class CatalogManagementComponent implements OnInit {
   }
 
   cerrarModalAsignarRaza() {
+    console.log('🔄 Cerrando modal de asignar raza...');
+    
+    // Opcional: Aquí podrías enviar los cambios al backend si tuvieras una API para ello
+    // Por ahora, los cambios se mantienen solo en el frontend
+    
     this.modalAsignarRazaVisible = false;
     this.asignacionRaza = {
       especieId: 0,
       razaId: 0,
       especieNombre: ''
     };
+    
+    console.log('✅ Modal cerrado, cambios de asignación mantenidos localmente');
   }
 
   getRazasNoAsignadas() {
-    const razasAsignadas = this.getRazasPorEspecie(this.asignacionRaza.especieId);
-    const idsAsignados = razasAsignadas.map(r => r.razaId);
-    // Mostrar todas las razas que no están asignadas a esta especie específica
-    return this.razas.filter(raza => 
-      !idsAsignados.includes(raza.razaId) && 
-      raza.especieId !== this.asignacionRaza.especieId
+    // REGLA: Una raza ya asignada a una especie NO puede ser reasignada a otra especie
+    // Solo mostrar razas que NO tienen especieId válido (razas huérfanas) o que están marcadas como temporales
+    const razasDisponibles = this.razas.filter(raza => {
+      // Excluir razas que ya tienen una especieId válida (ya están asignadas a una especie real)
+      const tieneEspecieValida = raza.especieId && 
+                                 raza.especieId !== 999999 && // ID temporal para "sin asignar"
+                                 raza.especieId !== this.asignacionRaza.especieId;
+      
+      // Solo incluir si NO tiene especie válida (está disponible)
+      return !tieneEspecieValida;
+    });
+    
+    console.log('🔍 Razas disponibles para asignar:', {
+      total: this.razas.length,
+      disponibles: razasDisponibles.length,
+      especieActual: this.asignacionRaza.especieId,
+      razasDisponibles: razasDisponibles.map(r => ({ id: r.razaId, nombre: r.nombre, especieId: r.especieId }))
+    });
+    
+    return razasDisponibles;
+  }
+
+  // Obtener razas ya asignadas a la especie actual
+  getRazasAsignadasAEspecieActual() {
+    const razasAsignadas = this.razas.filter(raza => 
+      raza.especieId === this.asignacionRaza.especieId
     );
+    
+    console.log('🔍 Razas asignadas a especie actual:', {
+      especieId: this.asignacionRaza.especieId,
+      especieNombre: this.asignacionRaza.especieNombre,
+      razasAsignadas: razasAsignadas.map(r => ({ id: r.razaId, nombre: r.nombre }))
+    });
+    
+    return razasAsignadas;
+  }
+
+  // Obtener razas libres (sin asignar a ninguna especie)
+  getRazasLibres() {
+    const razasLibres = this.razas.filter(raza => 
+      !raza.especieId || raza.especieId === 999999 // ID temporal para "sin asignar"
+    );
+    
+    console.log('🔍 Razas libres (disponibles):', {
+      total: this.razas.length,
+      libres: razasLibres.length,
+      razasLibres: razasLibres.map(r => ({ id: r.razaId, nombre: r.nombre }))
+    });
+    
+    return razasLibres;
+  }
+
+  // Liberar una raza de la especie actual (quitarle la asignación)
+  liberarRazaDeEspecie(raza: any): void {
+    console.log('🔄 Liberando raza de especie:', raza);
+    
+    if (!raza || !raza.razaId) {
+      console.error('❌ Raza inválida para liberar:', raza);
+      this.mostrarNotificacionError('Error al liberar raza', { error: { message: 'Datos de raza inválidos' } });
+      return;
+    }
+
+    // Buscar la raza en el array local y quitar su asignación
+    const razaIndex = this.razas.findIndex(r => r.razaId === raza.razaId);
+    if (razaIndex !== -1) {
+      // Marcar como no asignada (usar ID temporal)
+      this.razas[razaIndex].especieId = 999999; // ID temporal para "sin asignar"
+      console.log(`✅ Raza "${raza.nombre}" liberada de "${this.asignacionRaza.especieNombre}"`);
+      
+      this.mostrarNotificacionExito(`✅ Raza "${raza.nombre}" liberada exitosamente. Ahora está disponible para otras especies.`);
+    } else {
+      console.error('❌ No se encontró la raza en el array local:', raza.razaId);
+      this.mostrarNotificacionError('Error al liberar raza', { error: { message: 'Raza no encontrada en la lista local' } });
+    }
+  }
+
+  // Liberar una raza directamente desde la tabla principal
+  liberarRazaDeEspecieDirecto(raza: any, especieId: number): void {
+    console.log('🔄 Liberando raza directamente desde tabla:', { raza, especieId });
+    
+    if (!raza || !raza.razaId) {
+      console.error('❌ Raza inválida para liberar:', raza);
+      this.mostrarNotificacionError('Error al liberar raza', { error: { message: 'Datos de raza inválidos' } });
+      return;
+    }
+
+    // Buscar la raza en el array local y quitar su asignación
+    const razaIndex = this.razas.findIndex(r => r.razaId === raza.razaId);
+    if (razaIndex !== -1) {
+      // Marcar como no asignada (usar ID temporal)
+      this.razas[razaIndex].especieId = 999999; // ID temporal para "sin asignar"
+      
+      const nombreEspecie = this.especies.find(e => e.especieId === especieId)?.nombre || 'la especie';
+      console.log(`✅ Raza "${raza.nombre}" liberada de "${nombreEspecie}"`);
+      
+      this.mostrarNotificacionExito(`✅ Raza "${raza.nombre}" liberada de ${nombreEspecie}. Ahora está disponible en "Razas Disponibles".`);
+    } else {
+      console.error('❌ No se encontró la raza en el array local:', raza.razaId);
+      this.mostrarNotificacionError('Error al liberar raza', { error: { message: 'Raza no encontrada en la lista local' } });
+    }
   }
 
   seleccionarRazaParaAsignar(raza: any) {
@@ -1044,7 +1307,9 @@ export class CatalogManagementComponent implements OnInit {
 
   getRazasPorEspecie(id: number | undefined): Raza[] {
     if (!id) return [];
-    return this.razas.filter(r => r.especieId === id);
+    const razasFiltradas = this.razas.filter(r => r.especieId === id);
+    console.log(`🔍 Razas encontradas para especie ${id}:`, razasFiltradas);
+    return razasFiltradas;
   }
 
   getEspecieNombre(especieId: number): string {
@@ -1093,42 +1358,203 @@ export class CatalogManagementComponent implements OnInit {
     }
   }
 
-  // Método para asignar una raza a una especie
+  // Método para asignar una raza a una especie (solo en la asignación, no en la base de datos)
   asignarRazaAEspecie(raza: any): void {
-    // Simulamos la asignación localmente
-    const razaIndex = this.razas.findIndex(r => r.razaId === raza.razaId);
-    if (razaIndex !== -1) {
-      this.razas[razaIndex].especieId = this.asignacionRaza.especieId;
+    console.log('🔄 Asignando raza a especie (solo asignación):', { raza, asignacion: this.asignacionRaza });
+    
+    // Validar que tenemos la información necesaria
+    if (!raza || !raza.razaId) {
+      console.error('❌ Raza inválida para asignar:', raza);
+      this.mostrarNotificacionError('Error al asignar raza', { error: { message: 'Datos de raza inválidos' } });
+      return;
+    }
+
+    // VALIDAR REGLA: No se puede reasignar una raza que ya está asignada a otra especie
+    if (raza.especieId && raza.especieId !== 999999 && raza.especieId !== this.asignacionRaza.especieId) {
+      const especieOriginal = this.especies.find(e => e.especieId === raza.especieId);
+      this.mostrarNotificacionError(
+        `❌ La raza "${raza.nombre}" ya está asignada a "${especieOriginal?.nombre || 'otra especie'}"`, 
+        { error: { message: 'No se puede reasignar una raza ya asignada' } }
+      );
+      return;
     }
     
-    this.mostrarNotificacionExito(
-      `Raza "${raza.nombre}" asignada a "${this.asignacionRaza.especieNombre}" exitosamente`
-    );
+    // Buscar la raza en el array local y cambiar su especieId
+    const razaIndex = this.razas.findIndex(r => r.razaId === raza.razaId);
+    if (razaIndex !== -1) {
+      // Cambiar la asignación a la especie seleccionada
+      this.razas[razaIndex].especieId = this.asignacionRaza.especieId;
+      console.log(`✅ Raza "${raza.nombre}" asignada a especie ${this.asignacionRaza.especieId}`);
+      
+      this.mostrarNotificacionExito(`✅ Raza "${raza.nombre}" asignada a "${this.asignacionRaza.especieNombre}" exitosamente`);
+    } else {
+      console.error('❌ No se encontró la raza en el array local:', raza.razaId);
+      this.mostrarNotificacionError('Error al asignar raza', { error: { message: 'Raza no encontrada en la lista local' } });
+    }
+    
+    // NO recargar todos los datos, solo actualizar la vista local
+    // this.cargarRazas(); // ❌ Esto causa que se pierdan los cambios locales
   }
 
-  // Método para remover una raza de una especie
+  // Método para remover una raza de una especie (solo en la asignación, no de la base de datos)
   removerRazaDeEspecie(raza: any): void {
-    // Simulamos la remoción localmente
-    const razaIndex = this.razas.findIndex(r => r.razaId === raza.razaId);
-    if (razaIndex !== -1) {
-      // Reasignar la raza a una especie diferente o simular la remoción
-      const otraEspecie = this.especies.find(e => e.especieId !== this.asignacionRaza.especieId);
-      if (otraEspecie && otraEspecie.especieId) {
-        this.razas[razaIndex].especieId = otraEspecie.especieId;
-      }
+    console.log('🔄 Removiendo raza de especie (solo asignación):', { raza, asignacion: this.asignacionRaza });
+    
+    // Validar que tenemos la información necesaria
+    if (!raza || !raza.razaId) {
+      console.error('❌ Raza inválida para remover:', raza);
+      this.mostrarNotificacionError('Error al remover raza', { error: { message: 'Datos de raza inválidos' } });
+      return;
     }
     
-    this.mostrarNotificacionExito(
-      `Raza "${raza.nombre}" removida de "${this.asignacionRaza.especieNombre}" exitosamente`
-    );
+    // Buscar la raza en el array local y cambiar su especieId
+    const razaIndex = this.razas.findIndex(r => r.razaId === raza.razaId);
+    if (razaIndex !== -1) {
+      // En lugar de eliminar, cambiamos la especie asignada a una diferente
+      // Para simular que la raza ya no está asignada a esta especie
+      const otraEspecie = this.especies.find(e => e.especieId !== this.asignacionRaza.especieId);
+      
+      if (otraEspecie && otraEspecie.especieId) {
+        // Cambiar la asignación a otra especie (simulación)
+        this.razas[razaIndex].especieId = otraEspecie.especieId;
+        console.log(`✅ Raza "${raza.nombre}" reasignada temporalmente a especie ${otraEspecie.especieId}`);
+      } else {
+        // Si no hay otra especie, crear una temporal
+        this.razas[razaIndex].especieId = 999999; // ID temporal para "sin asignar"
+        console.log(`✅ Raza "${raza.nombre}" marcada como sin asignar`);
+      }
+      
+      this.mostrarNotificacionExito(`Raza "${raza.nombre}" removida de "${this.asignacionRaza.especieNombre}" exitosamente`);
+    } else {
+      console.error('❌ No se encontró la raza en el array local:', raza.razaId);
+      this.mostrarNotificacionError('Error al remover raza', { error: { message: 'Raza no encontrada en la lista local' } });
+    }
     
-    // Recargar los datos para reflejar los cambios
-    this.cargarRazas();
+    // NO recargar todos los datos, solo actualizar la vista local
+    // this.cargarRazas(); // ❌ Esto causa que se pierdan los cambios locales
+  }
+
+  // Eliminar raza individual
+  eliminarRaza(razaId: number): void {
+    const razaAEliminar = this.razas.find(r => r.razaId === razaId);
+    const especieNombre = this.getEspecieNombre(razaAEliminar?.especieId || 0);
+    
+    if (!razaAEliminar) {
+      this.mostrarNotificacionError('Raza no encontrada', { error: { message: 'No se pudo encontrar la raza a eliminar' } });
+      return;
+    }
+
+    // Mostrar modal de confirmación personalizado
+    this.mostrarConfirmacion({
+      titulo: '🗑️ Eliminar Raza',
+      mensaje: `¿Estás seguro de que deseas eliminar la raza "${razaAEliminar.nombre}"?`,
+      detalles: `Esta raza pertenece a la especie "${especieNombre}"`,
+      tipoAccion: 'eliminar-raza',
+      colorBoton: 'bg-red-600 hover:bg-red-700',
+      datosElemento: { raza: razaAEliminar, especieNombre },
+      onConfirm: () => this.ejecutarEliminacionRaza(razaId, razaAEliminar)
+    });
+  }
+
+  // Método separado para ejecutar la eliminación real de raza
+  private ejecutarEliminacionRaza(razaId: number, razaAEliminar: any): void {
+    console.log('🔄 Ejecutando eliminación de raza:', { razaId, raza: razaAEliminar });
+    
+    // Mostrar loading
+    this.isLoading = true;
+    
+    this.catalogoService.eliminarRaza(razaId).subscribe({
+      next: () => {
+        console.log('✅ Raza eliminada exitosamente, actualizando tabla...');
+        this.isLoading = false;
+        this.obtenerDatosEspeciesYRazas();
+        this.mostrarNotificacionExito(`✅ Raza "${razaAEliminar?.nombre}" eliminada correctamente`);
+      },
+      error: (err) => {
+        console.error('Error al eliminar raza:', err);
+        this.isLoading = false;
+        
+        // SIEMPRE actualizar la tabla después de un "error", porque puede ser un falso negativo
+        setTimeout(() => {
+          console.log('🔄 Actualizando tabla después del error para verificar si la eliminación fue exitosa...');
+          this.obtenerDatosEspeciesYRazas();
+        }, 1000);
+        
+        // Verificar si realmente no se eliminó
+        this.verificarSiRazaEliminada(razaId, razaAEliminar?.nombre).then(eliminada => {
+          if (!eliminada) {
+            this.mostrarNotificacionError('❌ Error al eliminar la raza', err);
+          }
+        });
+      }
+    });
+  }
+
+  // Método auxiliar para verificar si una raza fue realmente eliminada
+  private async verificarSiRazaEliminada(razaId: number, nombreRaza?: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      // Esperar un momento y luego verificar si la raza ya no existe
+      setTimeout(() => {
+        this.catalogoService.listarRazas().subscribe({
+          next: (razas) => {
+            const razaExiste = razas.some(r => r.razaId === razaId);
+            if (!razaExiste) {
+              console.log('✅ Verificación: La raza fue eliminada correctamente');
+              this.mostrarNotificacionExito(`Raza "${nombreRaza || 'Raza'}" eliminada correctamente`);
+              resolve(true);
+            } else {
+              console.log('❌ Verificación: La raza aún existe');
+              resolve(false);
+            }
+          },
+          error: () => {
+            console.log('❌ Error al verificar si la raza fue eliminada');
+            resolve(false);
+          }
+        });
+      }, 2000);
+    });
   }
 
   // Método para tracking en ngFor para mejor performance
   trackByRazaId(index: number, raza: any): number {
     return raza.razaId;
+  }
+
+  // ========== MODAL DE CONFIRMACIÓN PERSONALIZADO ==========
+  
+  mostrarConfirmacion(config: {
+    titulo: string;
+    mensaje: string;
+    detalles?: string;
+    tipoAccion: 'eliminar-especie' | 'eliminar-raza' | 'eliminar-servicio' | 'otro';
+    icono?: string;
+    colorBoton?: string;
+    onConfirm: () => void;
+    datosElemento?: any;
+  }): void {
+    this.confirmacionData = {
+      titulo: config.titulo,
+      mensaje: config.mensaje,
+      detalles: config.detalles,
+      tipoAccion: config.tipoAccion,
+      icono: config.icono || (config.tipoAccion.includes('eliminar') ? '🗑️' : '⚠️'),
+      colorBoton: config.colorBoton || 'bg-red-600 hover:bg-red-700',
+      onConfirm: config.onConfirm,
+      datosElemento: config.datosElemento
+    };
+    this.modalConfirmacionVisible = true;
+  }
+
+  cerrarModalConfirmacion(): void {
+    this.modalConfirmacionVisible = false;
+  }
+
+  confirmarAccion(): void {
+    if (this.confirmacionData.onConfirm) {
+      this.confirmacionData.onConfirm();
+    }
+    this.cerrarModalConfirmacion();
   }
 
 }

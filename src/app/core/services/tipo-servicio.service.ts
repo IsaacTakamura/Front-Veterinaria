@@ -16,4 +16,8 @@ export class TipoServicioService {
   crearTipoServicio(tipo: TipoServicio): Observable<any> {
     return this.http.post(`${this.apiUrl}/crearTipoServicio`, tipo);
   }
+
+  eliminarTipoServicio(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/eliminarTipoServicio/${id}`);
+  }
 }
