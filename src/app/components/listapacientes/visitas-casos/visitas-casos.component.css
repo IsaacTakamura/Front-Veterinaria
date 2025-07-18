@@ -1,0 +1,40 @@
+.secundario {
+  background-color: white;
+  color: #0984e3;
+  border: 1px solid #0984e3;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 6px;
+  margin-right: 8px;
+}
+
+.secundario:hover {
+  background-color: #e0f0ff;
+}
+
+h5 {
+  margin-top: 12px;
+  color: #00b894;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.caso-clinico {
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #b2d8f7;
+  border-radius: 6px;
+  background: #eaf6ff;
+}
+
+.caso-clinico p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.caso-clinico p strong {
+  font-weight: 600;
+  color: #333;
+}

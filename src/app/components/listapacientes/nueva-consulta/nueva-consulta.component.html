@@ -1,0 +1,28 @@
+<h3>📝 Registrar Nueva Consulta</h3>
+
+<div class="formulario-nueva-consulta">
+  <div class="form-group">
+    <label>Tipo de Visita:</label>
+    <select [(ngModel)]="tipoVisitaSeleccionado" (ngModelChange)="onTipoVisitaChange($event)">
+      <option [ngValue]="null">-- Selecciona un tipo de visita --</option>
+      <option *ngFor="let tipo of tiposVisita" [ngValue]="tipo">{{ tipo.nombre }}</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Descripción del Caso Clínico:</label>
+    <textarea
+      rows="3"
+      [(ngModel)]="descripcion"
+      (ngModelChange)="onDescripcionChange($event)"
+      placeholder="Describe el caso clínico...">
+    </textarea>
+  </div>
+
+  <button
+    class="primario"
+    (click)="onRegistrarConsulta()"
+    [disabled]="!tipoVisitaSeleccionado || !descripcion">
+    Registrar Consulta
+  </button>
+</div>

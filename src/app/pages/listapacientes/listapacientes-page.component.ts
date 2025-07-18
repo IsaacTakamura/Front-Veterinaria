@@ -21,6 +21,10 @@ import { TriajeService } from 'src/app/core/services/triaje.service';
 import { HistorialClinicoService } from 'src/app/core/services/historial-clinico.service';
 import { Triaje } from 'src/app/components/shared/interfaces/triaje.model';
 import { Visita, TipoVisita, CasoClinico } from 'src/app/components/shared/interfaces/historial.model';
+import { InfoPacienteComponent } from '../../components/listapacientes/info-paciente/info-paciente.component';
+import { TriajeActualComponent } from '../../components/listapacientes/triaje-actual/triaje-actual.component';
+import { VisitasCasosComponent } from '../../components/listapacientes/visitas-casos/visitas-casos.component';
+import { NuevaConsultaComponent } from '../../components/listapacientes/nueva-consulta/nueva-consulta.component';
 
 export interface PacienteCitaHoy {
   clienteId: number;
@@ -46,7 +50,11 @@ export interface PacienteCitaHoy {
     IconCalendarComponent,
     IconUsersComponent,
     IconShieldComponent,
-    IconDocumentComponent
+    IconDocumentComponent,
+    InfoPacienteComponent,
+    TriajeActualComponent,
+    VisitasCasosComponent,
+    NuevaConsultaComponent
   ],
   templateUrl: './listapacientes-page.component.html',
   styleUrls: ['./listapacientes-page.component.css']
@@ -177,7 +185,9 @@ export class ListapacientesPageComponent implements OnInit {
   cargarTriajeMascota(mascotaId: number) {
     this.cargandoTriaje = true;
     this.triajeService.listarTriajePorMascotaIdVeterinario(mascotaId).subscribe({
-      next: (triajes) => {
+      next: (response) => {
+        // Manejar tanto si viene como array directo o envuelto en objeto
+        const triajes = Array.isArray(response) ? response : (response as any)?.data || [];
         this.triajeMascota = triajes && triajes.length > 0 ? triajes[0] : null;
         this.cargandoTriaje = false;
       },
@@ -271,11 +281,6 @@ export class ListapacientesPageComponent implements OnInit {
         }
       }
     });
-  }
-
-  casoRelacionadoConTipoVisita(caso: CasoClinico, tipo: TipoVisita | null): boolean {
-    if (!tipo) return false;
-    return this.historialVisitas.some(v => v.casoClinicoId === caso.casoClinicoId && v.tipoVisitaId === tipo.tipoVisitaId);
   }
 
   get pacientesFiltrados(): PacienteCitaHoy[] {

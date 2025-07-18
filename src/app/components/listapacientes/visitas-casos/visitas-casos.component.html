@@ -1,0 +1,18 @@
+<h3>🏥 Visitas y Casos Clínicos</h3>
+
+<div *ngIf="tiposVisita.length > 0">
+  <div *ngFor="let tipo of tiposVisita">
+    <button class="secundario" (click)="onSeleccionarTipoVisita(tipo)">{{ tipo.nombre }}</button>
+  </div>
+</div>
+
+<div *ngIf="tipoVisitaSeleccionado">
+  <h5>Casos Clínicos para: {{ tipoVisitaSeleccionado.nombre }}</h5>
+  <div *ngFor="let caso of casosClinicos">
+    <ng-container *ngIf="casoRelacionadoConTipoVisita(caso, tipoVisitaSeleccionado)">
+      <div class="caso-clinico">
+        <p><strong>Descripción:</strong> {{ caso.descripcion }}</p>
+      </div>
+    </ng-container>
+  </div>
+</div>

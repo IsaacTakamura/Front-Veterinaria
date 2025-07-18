@@ -1,0 +1,17 @@
+<div *ngIf="paciente">
+  <h3>📄 Información del Paciente</h3>
+  <p><strong>Nombre:</strong> {{ paciente.nombreMascota }}</p>
+  <p><strong>Edad:</strong> {{ paciente.edad }} años</p>
+  <p><strong>Raza:</strong> {{ paciente.raza }}</p>
+  <p><strong>Especie:</strong> {{ paciente.especie }}</p>
+  <p><strong>Propietario:</strong> {{ paciente.propietario }}</p>
+
+  <div *ngIf="propietario" class="propietario-block">
+    <h4>Información del Propietario</h4>
+    <p><strong>Nombre:</strong> {{ propietario.nombre }} {{ propietario.apellido }}</p>
+    <p *ngIf="propietario.direccion"><strong>Dirección:</strong> {{ propietario.direccion }}</p>
+    <p *ngIf="propietario.telefono"><strong>Teléfono:</strong> {{ propietario.telefono }}</p>
+    <p *ngIf="propietario.email"><strong>Email:</strong> {{ propietario.email }}</p>
+    <p *ngIf="propietario.ciudad"><strong>Ciudad:</strong> {{ propietario.ciudad }}</p>
+  </div>
+</div>
