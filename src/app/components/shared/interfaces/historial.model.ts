@@ -13,6 +13,19 @@ export interface TipoVisita {
   nombre: string;
 }
 
+// Interfaz para Tipo de Signo Vital
+export interface TipoSignoVital {
+  tipoSignoVitalId: number;
+  nombre: string;
+}
+
+// Interfaz para Signo Vital
+export interface SignoVital {
+  signoVitalId: number;
+  tipoSignoVital: TipoSignoVital;
+  valor: number;
+}
+
 // Interfaz para Visita
 export interface Visita {
   visitaId: number;
@@ -20,6 +33,7 @@ export interface Visita {
   tipoVisitaId?: number;
   tipoVisita?: TipoVisita;
   casoClinico?: CasoClinico;
+  signoVital?: SignoVital[];
   fecha?: string;
 }
 

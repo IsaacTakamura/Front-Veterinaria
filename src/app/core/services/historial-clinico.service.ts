@@ -95,35 +95,140 @@ export class HistorialClinicoService {
     return this.http.get<{ data: { servicioId: number; nombre: string }[] }>(`${this.apiVet}/ListarServicios`);
   }
 
-  //! Crear tipo de visita, si tiene esa palabra CreatTipoVisita no cambiar
+  //! Crear tipo de visita para veterinario, si tiene esa palabra CreatTipoVisita no cambiar
   crearTipoVisita(tipoVisita: { nombre: string }): Observable<{ data: any }> {
     return this.http.post<{ data: any }>(`${this.apiVet}/CreatTipoVisita`, tipoVisita);
   }
+  /*
+    espera algo como:
+    {
+  "tipoVisitaId": 0,
+  "nombre": "string"
+}
+  */
 
   // Listar tipos de visita
   listarTiposVisita(): Observable<{ data: { tipoVisitaId: number; nombre: string }[] }> {
     return this.http.get<{ data: { tipoVisitaId: number; nombre: string }[] }>(`${this.apiVet}/listarTiposVisitas`);
   }
+  /*
+    se recibe algo como:
+    {
+  "codigo": 0,
+  "message": "string",
+  "data": [
+    {
+      "tipoVisitaId": 0,
+      "nombre": "string"
+    }
+  ]
+}
+  */
 
-  // Listar tipos de visita por id
+  // Listar tipos de visita por id para veterinario
   listarTipoVisitaPorId(tipoVisitaId: number): Observable<{ data: { tipoVisitaId: number; nombre: string } }> {
     return this.http.get<{ data: { tipoVisitaId: number; nombre: string } }>(`${this.apiVet}/visita/tipoVisita/${tipoVisitaId}`);
   }
+  /*{
+  "codigo": 0,
+  "message": "string",
+  "data": [
+    {
+      "visitaId": 0,
+      "casoClinicoId": 0,
+      "signoVital": [
+        {
+          "signoVitalId": 0,
+          "tipoSignoVital": {
+            "tipoSignoVitalId": 0,
+            "nombre": "string"
+          },
+          "valor": 0
+        }
+      ],
+      "tipoVisitaId": 0
+    }
+  ]
+}*/
 
-  // Crear visita
+  // Crear visita para veterinario
   crearVisita(visita: Visita): Observable<{ data: any }> {
     return this.http.post<{ data: any }>(`${this.apiVet}/crearVisita`, visita);
   }
+  /*
+    espera algo como:
+    {
+  "visitaId": 0,
+  "casoClinicoId": 0,
+  "signoVital": [
+    {
+      "signoVitalId": 0,
+      "tipoSignoVital": {
+        "tipoSignoVitalId": 0,
+        "nombre": "string"
+      },
+      "valor": 0
+    }
+  ],
+  "tipoVisitaId": 0
+}
+  */
 
-  // Listar visita por id de visita
+  // Listar visita por id de visita para veterinario
   listarVisitaPorId(id: number): Observable<Visita> {
     return this.http.get<Visita>(`${this.apiVet}/visita/${id}`);
   }
+  /*
+    recibe algo como:
+    {
+  "codigo": 0,
+  "message": "string",
+  "data": {
+    "visitaId": 0,
+    "casoClinicoId": 0,
+    "signoVital": [
+      {
+        "signoVitalId": 0,
+        "tipoSignoVital": {
+          "tipoSignoVitalId": 0,
+          "nombre": "string"
+        },
+        "valor": 0
+      }
+    ],
+    "tipoVisitaId": 0
+  }
+}
+  */
 
-  //! Listar visitas, no cambiar ruta porque al final si es listarVisitass
+  //! Listar visitas para veterinario, no cambiar ruta porque al final si es listarVisitass
   listarVisitas(): Observable<Visita[]> {
     return this.http.get<Visita[]>(`${this.apiVet}/listarVisitass`);
   }
+  /*
+    Se recibe algo como:
+    {
+  "codigo": 0,
+  "message": "string",
+  "data": [
+    {
+      "visitaId": 0,
+      "casoClinicoId": 0,
+      "signoVital": [
+        {
+          "signoVitalId": 0,
+          "tipoSignoVital": {
+            "tipoSignoVitalId": 0,
+            "nombre": "string"
+          },
+          "valor": 0
+        }
+      ],
+      "tipoVisitaId": 0
+    }
+  ]
+}
+  */
 
   // Actualizar Caso Clínico
   actualizarCasoClinico(casoClinicoId: number, casoClinico: Visita): Observable<{ data: any }> {
