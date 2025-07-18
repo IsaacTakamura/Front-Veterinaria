@@ -43,7 +43,9 @@ export class PerfilService {
 
   // ========== EDITAR PERFIL PERSONAL ==========
   editarPerfil(perfil: PerfilPersonal): Observable<any> {
-    return this.http.put(`${this.baseUrl}/editarPerfil`, perfil).pipe(
+    // Usar el perfilId o usuarioId como parámetro en la URL
+    const perfilUsuarioId = perfil.perfilId || perfil.usuarioId;
+    return this.http.put(`${this.baseUrl}/editarPerfil/${perfilUsuarioId}`, perfil).pipe(
       catchError(error => {
         console.error('Error al editar perfil:', error);
         throw error;

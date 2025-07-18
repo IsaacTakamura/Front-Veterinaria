@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { UserService } from '../../../core/services/user.service';
 import { PerfilService } from '../../../core/services/perfil.service';
+import { VeterinarioService, CrearVeterinarioRequest } from '../../../core/services/veterinario.service';
 import { User, PerfilPersonal, UserWithProfile } from '../../../core/models/user.model';
 
 @Component({
@@ -22,6 +23,7 @@ export class UserManagementComponent implements OnInit {
 
   private userService = inject(UserService);
   private perfilService = inject(PerfilService);
+  private veterinarioService = inject(VeterinarioService);
 
   usuarios: UserWithProfile[] = [];
   usuariosFiltrados: UserWithProfile[] = [];
@@ -52,7 +54,8 @@ export class UserManagementComponent implements OnInit {
     telefonoEmergencia: '',
     direccion: '',
     alergias: '',
-    usuarioId: 0
+    usuarioId: 0,
+    dni: '' // Agregar DNI
   };
 
   roles = [
@@ -66,8 +69,25 @@ export class UserManagementComponent implements OnInit {
   
   // ========== VARIABLES PARA MODAL ==========
   mostrarModalExito: boolean = false;
+  mostrarModalError: boolean = false;
   mensajeModal: string = '';
   fechaActual: string = new Date().toLocaleDateString('es-ES');
+
+  // ========== VARIABLES PARA EDICIÓN AVANZADA ==========
+  mostrarFormularioRol: boolean = false;
+  mostrarFormularioPerfil: boolean = false;
+  
+  // Variable para editar perfil
+  perfilEnEdicion: PerfilPersonal = {
+    perfilId: 0,
+    nombres: '',
+    apellidos: '',
+    telefonoEmergencia: '',
+    direccion: '',
+    alergias: '',
+    usuarioId: 0,
+    dni: '' // Incluir DNI
+  };
 
   // ========== GETTERS PARA PAGINACIÓN ==========
   get usuariosPaginados(): UserWithProfile[] {
@@ -87,6 +107,279 @@ export class UserManagementComponent implements OnInit {
   get lastItemNumber(): number {
     const endIndex = this.page * this.itemsPerPage;
     return Math.min(endIndex, this.usuariosFiltrados.length);
+  }
+
+  // ========== MÉTODOS DE VALIDACIÓN ==========
+  
+  /**
+   * Genera el username automáticamente basado en nombre, apellido y rol
+   * Nueva política: 1 letra del nombre + primer apellido + sufijo del rol
+   * Ejemplo: Juan Carlos Chavez Perez + Veterinario = "jchavez-vet"
+   */
+  generarUsername(): void {
+    if (this.newPerfil.nombres && this.newPerfil.apellidos && this.newUser.rol) {
+      // Limpiar y normalizar textos
+      const nombres = this.newPerfil.nombres.trim().toLowerCase();
+      const apellidos = this.newPerfil.apellidos.trim().toLowerCase();
+      
+      // Tomar la 1ra letra del nombre
+      const primeraLetra = nombres.substring(0, 1);
+      
+      // Tomar el primer apellido solamente
+      const primerApellido = apellidos.split(' ')[0];
+      
+      // Determinar sufijo según el rol
+      let sufijo = '';
+      switch (this.newUser.rol) {
+        case 'ADMIN':
+          sufijo = 'adm';
+          break;
+        case 'VET':
+          sufijo = 'vet';
+          break;
+        case 'ASISTENTE':
+          sufijo = 'asist';
+          break;
+        default:
+          sufijo = 'user';
+      }
+      
+      // Generar username
+      this.newUser.username = `${primeraLetra}${primerApellido}-${sufijo}`;
+      
+      console.log(`🎯 Username generado: ${this.newUser.username} (${primeraLetra} + ${primerApellido} + -${sufijo})`);
+      console.log(`📝 Detalles: Nombre="${nombres}" → "${primeraLetra}" | Apellido="${apellidos}" → "${primerApellido}" | Rol="${this.newUser.rol}" → "${sufijo}"`);
+    }
+  }
+
+  /**
+   * Obtiene una vista previa del username que se generaría
+   */
+  getPreviewUsername(): string {
+    if (this.newPerfil.nombres && this.newPerfil.apellidos && this.newUser.rol) {
+      const nombres = this.newPerfil.nombres.trim().toLowerCase();
+      const apellidos = this.newPerfil.apellidos.trim().toLowerCase();
+      const primeraLetra = nombres.substring(0, 1);
+      const primerApellido = apellidos.split(' ')[0];
+      
+      let sufijo = '';
+      switch (this.newUser.rol) {
+        case 'ADMIN':
+          sufijo = 'adm';
+          break;
+        case 'VET':
+          sufijo = 'vet';
+          break;
+        case 'ASISTENTE':
+          sufijo = 'asist';
+          break;
+        default:
+          sufijo = 'user';
+      }
+      
+      return `${primeraLetra}${primerApellido}-${sufijo}`;
+    }
+    return '';
+  }
+
+  /**
+   * Valida que un texto solo contenga letras y espacios, máximo 40 caracteres
+   */
+  isValidText(text: string): boolean {
+    const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,40}$/;
+    return regex.test(text);
+  }
+
+  /**
+   * Valida que el teléfono tenga exactamente 9 dígitos
+   */
+  isValidPhone(phone: string): boolean {
+    const regex = /^[0-9]{9}$/;
+    return regex.test(phone);
+  }
+
+  /**
+   * Valida que la contraseña tenga al menos 8 caracteres
+   */
+  isValidPassword(password: string): boolean {
+    return password.length >= 8;
+  }
+
+  /**
+   * Valida que el DNI tenga exactamente 8 dígitos (solo para veterinarios)
+   */
+  isValidDni(dni: string): boolean {
+    const regex = /^[0-9]{8}$/;
+    return regex.test(dni);
+  }
+
+  /**
+   * Verifica si el DNI ya existe en el sistema
+   */
+  isDniDuplicado(dni: string): boolean {
+    if (!dni || dni.trim() === '') return false;
+    
+    return this.usuarios.some(user => 
+      user.perfil?.dni === dni.trim()
+    );
+  }
+
+  /**
+   * Verifica si ya existe un usuario con el mismo nombre completo
+   */
+  isNombreCompletoDuplicado(): boolean {
+    if (!this.newPerfil.nombres || !this.newPerfil.apellidos) return false;
+    
+    const nombreCompleto = `${this.newPerfil.nombres.trim().toLowerCase()} ${this.newPerfil.apellidos.trim().toLowerCase()}`;
+    
+    return this.usuarios.some(user => {
+      if (!user.perfil?.nombres || !user.perfil?.apellidos) return false;
+      const nombreExistente = `${user.perfil.nombres.trim().toLowerCase()} ${user.perfil.apellidos.trim().toLowerCase()}`;
+      return nombreExistente === nombreCompleto;
+    });
+  }
+
+  /**
+   * Valida que el formulario completo sea válido
+   */
+  isFormValid(): boolean {
+    // Validaciones básicas
+    const basicValid = this.newUser.username && 
+                      this.newUser.password && 
+                      this.newUser.rol &&
+                      this.newPerfil.nombres && 
+                      this.newPerfil.apellidos &&
+                      this.newPerfil.telefonoEmergencia &&
+                      this.newPerfil.direccion;
+
+    // Validaciones de formato
+    const formatValid = this.isValidText(this.newPerfil.nombres) &&
+                       this.isValidText(this.newPerfil.apellidos) &&
+                       this.isValidPhone(this.newPerfil.telefonoEmergencia || '') &&
+                       this.isValidPassword(this.newUser.password);
+
+    // Validación específica para veterinarios
+    const vetValid = this.newUser.rol !== 'VET' || 
+                    (this.newPerfil.dni && this.isValidDni(this.newPerfil.dni || ''));
+
+    // Validaciones de duplicados
+    const noDuplicados = !this.isNombreCompletoDuplicado() &&
+                        (this.newUser.rol !== 'VET' || !this.isDniDuplicado(this.newPerfil.dni || ''));
+
+    return !!(basicValid && formatValid && vetValid && noDuplicados);
+  }
+
+  /**
+   * Verifica si un veterinario necesita registrar su DNI o ya lo tiene
+   */
+  veterinarioNecesitaDni(usuario: UserWithProfile): boolean {
+    return usuario.rol === 'VET' && (!usuario.perfil?.dni || usuario.perfil.dni === '');
+  }
+
+  /**
+   * Obtiene el mensaje apropiado para el campo DNI según el estado del veterinario
+   */
+  getMensajeDniVeterinario(usuario: UserWithProfile): string {
+    if (usuario.rol !== 'VET') {
+      return '';
+    }
+    
+    if (this.veterinarioNecesitaDni(usuario)) {
+      return 'Como veterinario, debe registrar su DNI para completar su perfil profesional';
+    }
+    
+    return 'DNI registrado como veterinario';
+  }
+
+  /**
+   * Valida que el formulario de edición de perfil sea válido
+   */
+  isPerfilEdicionValid(): boolean {
+    // Validaciones básicas
+    const basicValid = this.perfilEnEdicion.nombres && 
+                      this.perfilEnEdicion.apellidos;
+
+    // Validaciones de formato
+    const formatValid = this.isValidText(this.perfilEnEdicion.nombres) &&
+                       this.isValidText(this.perfilEnEdicion.apellidos);
+
+    // Validación específica para veterinarios - DNI obligatorio
+    const vetValid = this.usuarioEnEdicion?.rol !== 'VET' || 
+                    (this.perfilEnEdicion.dni && this.isValidDni(this.perfilEnEdicion.dni || ''));
+
+    return !!(basicValid && formatValid && vetValid);
+  }
+
+  /**
+   * Obtiene información específica del veterinario desde la API
+   * Busca en toda la lista de veterinarios por coincidencia de nombre y apellido
+   */
+  obtenerInfoVeterinario(usuario: UserWithProfile): void {
+    if (usuario.rol !== 'VET' || !usuario.perfil?.nombres || !usuario.perfil?.apellidos) {
+      console.log('⚠️ Usuario no es veterinario o no tiene nombres/apellidos completos:', usuario);
+      return;
+    }
+
+    console.log(`🔍 Buscando DNI para veterinario: ${usuario.perfil.nombres} ${usuario.perfil.apellidos}`);
+    
+    // Obtener TODOS los veterinarios y buscar coincidencia exacta
+    this.veterinarioService.listarVeterinarios().subscribe({
+      next: (response) => {
+        console.log('✅ Respuesta completa de veterinarios:', response);
+        
+        if (response && response.data) {
+          // Manejar respuesta única o array
+          const veterinarios = Array.isArray(response.data) ? response.data : [response.data];
+          console.log('📋 Total veterinarios encontrados:', veterinarios.length);
+          
+          // Buscar coincidencia exacta por nombre Y apellido
+          const veterinarioEncontrado = veterinarios.find(vet => {
+            const nombreCoincide = vet.nombre?.toLowerCase().trim() === usuario.perfil!.nombres?.toLowerCase().trim();
+            const apellidoCoincide = vet.apellido?.toLowerCase().trim() === usuario.perfil!.apellidos?.toLowerCase().trim();
+            
+            console.log(`🔍 Comparando: "${vet.nombre}" === "${usuario.perfil!.nombres}" (${nombreCoincide}) && "${vet.apellido}" === "${usuario.perfil!.apellidos}" (${apellidoCoincide})`);
+            
+            return nombreCoincide && apellidoCoincide;
+          });
+
+          if (veterinarioEncontrado && veterinarioEncontrado.dni) {
+            console.log('✅ ¡COINCIDENCIA ENCONTRADA! DNI del veterinario:', veterinarioEncontrado.dni);
+            
+            // Actualizar el DNI en el perfil local
+            if (usuario.perfil) {
+              usuario.perfil.dni = veterinarioEncontrado.dni;
+              console.log(`🩺 DNI actualizado para veterinario ${usuario.perfil.nombres}: ${veterinarioEncontrado.dni}`);
+            }
+            
+            // Si este usuario está siendo editado, también actualizar perfilEnEdicion
+            if (this.usuarioEnEdicion && this.usuarioEnEdicion.usuarioId === usuario.usuarioId) {
+              this.perfilEnEdicion.dni = veterinarioEncontrado.dni;
+              console.log('📝 DNI actualizado en perfil de edición:', this.perfilEnEdicion.dni);
+            }
+            
+            // Forzar actualización de la vista
+            this.usuariosFiltrados = [...this.usuarios];
+            
+          } else {
+            console.log('❌ NO SE ENCONTRÓ COINCIDENCIA EXACTA');
+            console.log('Datos del usuario:', { 
+              nombres: usuario.perfil?.nombres, 
+              apellidos: usuario.perfil?.apellidos 
+            });
+            console.log('Veterinarios disponibles:', veterinarios.map(v => ({ 
+              nombre: v.nombre, 
+              apellido: v.apellido, 
+              dni: v.dni 
+            })));
+          }
+        } else {
+          console.log('⚠️ Respuesta de API sin datos válidos:', response);
+        }
+      },
+      error: (error) => {
+        console.error(`❌ Error al obtener lista de veterinarios:`, error);
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -145,6 +438,9 @@ export class UserManagementComponent implements OnInit {
             console.log('🎉 CARGA COMPLETA: Usuarios con perfiles combinados:', this.usuarios);
             console.log(`📊 Total: ${this.usuarios.length} usuarios, ${perfiles.length} perfiles`);
             this.usuariosFiltrados = [...this.usuarios]; // Inicializar filtrados
+            
+            // 🩺 PASO ADICIONAL: Cargar DNI de todos los veterinarios
+            this.cargarDniVeterinarios();
           },
           error: (perfilesError) => {
             console.error('❌ Error al cargar perfiles desde API de administración:', perfilesError);
@@ -166,6 +462,72 @@ export class UserManagementComponent implements OnInit {
         console.error('Detalles del error:', usuariosError.error || usuariosError.message);
         
         this.usuarios = [];
+      }
+    });
+  }
+
+  /**
+   * Carga el DNI de todos los veterinarios desde la API específica
+   * Método optimizado que obtiene toda la lista una sola vez y hace las comparaciones localmente
+   */
+  cargarDniVeterinarios(): void {
+    const veterinarios = this.usuarios.filter(user => user.rol === 'VET' && user.perfil);
+    
+    if (veterinarios.length === 0) {
+      console.log('ℹ️ No hay veterinarios para cargar DNI');
+      return;
+    }
+    
+    console.log(`🩺 Iniciando carga de DNI para ${veterinarios.length} veterinarios...`);
+    console.log('👥 Veterinarios a procesar:', veterinarios.map(v => ({
+      username: v.username,
+      nombres: v.perfil?.nombres,
+      apellidos: v.perfil?.apellidos,
+      dniActual: v.perfil?.dni
+    })));
+    
+    // Obtener TODA la lista de veterinarios una sola vez
+    this.veterinarioService.listarVeterinarios().subscribe({
+      next: (response) => {
+        console.log('✅ Lista completa de veterinarios obtenida:', response);
+        
+        if (response && response.data) {
+          const veterinariosAPI = Array.isArray(response.data) ? response.data : [response.data];
+          console.log('📋 Veterinarios en API:', veterinariosAPI);
+          
+          // Para cada usuario veterinario, buscar su DNI en la lista
+          veterinarios.forEach(usuarioVet => {
+            if (!usuarioVet.perfil?.dni || usuarioVet.perfil.dni === '') {
+              console.log(`🔍 Buscando DNI para: ${usuarioVet.perfil?.nombres} ${usuarioVet.perfil?.apellidos}`);
+              
+              // Buscar coincidencia exacta
+              const veterinarioEncontrado = veterinariosAPI.find(vetAPI => {
+                const nombreCoincide = vetAPI.nombre?.toLowerCase().trim() === usuarioVet.perfil!.nombres?.toLowerCase().trim();
+                const apellidoCoincide = vetAPI.apellido?.toLowerCase().trim() === usuarioVet.perfil!.apellidos?.toLowerCase().trim();
+                return nombreCoincide && apellidoCoincide;
+              });
+              
+              if (veterinarioEncontrado && veterinarioEncontrado.dni) {
+                usuarioVet.perfil!.dni = veterinarioEncontrado.dni;
+                console.log(`✅ DNI asignado a ${usuarioVet.perfil?.nombres}: ${veterinarioEncontrado.dni}`);
+              } else {
+                console.log(`❌ No se encontró coincidencia para: ${usuarioVet.perfil?.nombres} ${usuarioVet.perfil?.apellidos}`);
+              }
+            } else {
+              console.log(`✅ Veterinario ${usuarioVet.perfil?.nombres} ya tiene DNI: ${usuarioVet.perfil?.dni}`);
+            }
+          });
+          
+          // Forzar actualización de la vista
+          this.usuariosFiltrados = [...this.usuarios];
+          console.log('🎉 Proceso de carga de DNI completado');
+          
+        } else {
+          console.error('❌ Respuesta de API sin datos válidos');
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error al obtener lista de veterinarios:', error);
       }
     });
   }
@@ -233,7 +595,21 @@ export class UserManagementComponent implements OnInit {
     const usernameExists = this.usuarios.some(u => u.username.toLowerCase() === this.newUser.username.toLowerCase());
     if (usernameExists) {
       console.log('❌ VALIDACIÓN FALLÓ: Username ya existe');
-      console.log('❌ Ese nombre de usuario ya existe.');
+      this.mostrarError('❌ Ese nombre de usuario ya existe.');
+      return;
+    }
+
+    // Verificar si ya existe un usuario con el mismo nombre completo
+    if (this.isNombreCompletoDuplicado()) {
+      console.log('❌ VALIDACIÓN FALLÓ: Ya existe un usuario con ese nombre completo');
+      this.mostrarError('❌ Ya existe un usuario registrado con ese nombre y apellido.');
+      return;
+    }
+
+    // Verificar si el DNI ya existe (solo para veterinarios)
+    if (this.newUser.rol === 'VET' && this.isDniDuplicado(this.newPerfil.dni || '')) {
+      console.log('❌ VALIDACIÓN FALLÓ: DNI ya existe');
+      this.mostrarError('❌ Ya existe un veterinario registrado con ese DNI.');
       return;
     }
 
@@ -264,24 +640,52 @@ export class UserManagementComponent implements OnInit {
           this.perfilService.crearPerfil(this.newPerfil).subscribe({
             next: (perfilResponse) => {
               console.log('✅ PASO 2 COMPLETADO: Perfil creado en API de administración', perfilResponse);
-              console.log('🎉 PROCESO COMPLETO: Usuario y perfil creados exitosamente');
               
-              console.log('✅ Usuario y perfil creados exitosamente');
-              this.cargarUsuarios(); // Recargar la lista completa
-              this.resetearFormulario();
+              // PASO 3: Si es veterinario, crear también en la API de veterinarios
+              if (this.newUser.rol === 'VET') {
+                console.log('🚀 PASO 3: Creando veterinario en API específica...');
+                
+                const veterinarioData: CrearVeterinarioRequest = {
+                  dni: this.newPerfil.dni || '',
+                  nombre: this.newPerfil.nombres,
+                  apellido: this.newPerfil.apellidos
+                };
+                
+                this.veterinarioService.crearVeterinario(veterinarioData).subscribe({
+                  next: (vetResponse) => {
+                    console.log('✅ PASO 3 COMPLETADO: Veterinario creado en API específica', vetResponse);
+                    console.log('🎉 PROCESO COMPLETO: Usuario, perfil y veterinario creados exitosamente');
+                    this.mostrarExito('✅ Usuario veterinario creado exitosamente con DNI registrado');
+                    this.cargarUsuarios();
+                    this.resetearFormulario();
+                  },
+                  error: (vetError) => {
+                    console.error('❌ PASO 3 FALLÓ: Error al crear veterinario en API específica', vetError);
+                    console.log('⚠️ Usuario y perfil creados, pero hubo un problema al registrar como veterinario');
+                    this.mostrarExito('✅ Usuario creado exitosamente (pendiente registro completo de veterinario)');
+                    this.cargarUsuarios();
+                    this.resetearFormulario();
+                  }
+                });
+              } else {
+                console.log('🎉 PROCESO COMPLETO: Usuario y perfil creados exitosamente');
+                this.mostrarExito('✅ Usuario creado exitosamente');
+                this.cargarUsuarios();
+                this.resetearFormulario();
+              }
             },
             error: (perfilError) => {
               console.error('❌ PASO 2 FALLÓ: Error al crear perfil en API de administración', perfilError);
               console.error('Detalles del error:', perfilError.error || perfilError.message);
               
-              console.log('⚠️ Usuario creado exitosamente, pero hubo un problema al crear el perfil. Contacte al administrador.');
+              this.mostrarError('⚠️ Usuario creado pero hubo un problema al crear el perfil. Contacte al administrador.');
               this.cargarUsuarios(); // Recargar la lista aunque falle el perfil
               this.resetearFormulario();
             }
           });
         } else {
           console.error('❌ No se recibió usuarioId en la respuesta:', userResponse);
-          console.log('❌ Error: No se pudo obtener el ID del usuario creado.');
+          this.mostrarError('❌ Error: No se pudo obtener el ID del usuario creado.');
         }
       },
       error: (userError) => {
@@ -289,11 +693,11 @@ export class UserManagementComponent implements OnInit {
         console.error('Detalles del error:', userError.error || userError.message);
         
         if (userError.status === 409) {
-          console.log('❌ El nombre de usuario ya existe. Elija otro nombre.');
+          this.mostrarError('❌ El nombre de usuario ya existe. Elija otro nombre.');
         } else if (userError.status === 400) {
-          console.log('❌ Datos inválidos. Verifique todos los campos.');
+          this.mostrarError('❌ Datos inválidos. Verifique todos los campos.');
         } else {
-          console.log('❌ Error al crear usuario. Verifique su conexión e intente nuevamente.');
+          this.mostrarError('❌ Error al crear usuario. Verifique su conexión e intente nuevamente.');
         }
       }
     });
@@ -315,7 +719,8 @@ export class UserManagementComponent implements OnInit {
       telefonoEmergencia: '',
       direccion: '',
       alergias: '',
-      usuarioId: 0
+      usuarioId: 0,
+      dni: '' // Resetear también el DNI
     };
 
     this.page = 1;
@@ -370,18 +775,53 @@ iniciarEdicion(user: UserWithProfile): void {
   this.usuarioEnEdicion = {
     ...user,
     perfil: user.perfil ? { ...user.perfil } : undefined // Copia profunda del perfil también
-  };
+  } as any;
+  
+  // Almacenar el rol original para validación
+  (this.usuarioEnEdicion as any).rolOriginal = user.rol;
+  
+  // Resetear vistas del modal
+  this.mostrarFormularioRol = false;
+  this.mostrarFormularioPerfil = false;
+  
+  // Inicializar perfil en edición
+  if (user.perfil) {
+    this.perfilEnEdicion = { ...user.perfil };
+  } else {
+    this.perfilEnEdicion = {
+      perfilId: 0,
+      nombres: '',
+      apellidos: '',
+      telefonoEmergencia: '',
+      direccion: '',
+      alergias: '',
+      usuarioId: user.usuarioId || 0,
+      dni: '' // Inicializar DNI vacío para nuevos perfiles
+    };
+  }
+  
+  // Si es veterinario, cargar su DNI desde la API de veterinarios
+  if (user.rol === 'VET') {
+    this.obtenerInfoVeterinario(user);
+  }
   
   console.log('📝 Iniciando edición de usuario:', this.usuarioEnEdicion);
+  console.log('📝 Perfil en edición:', this.perfilEnEdicion);
 }
 
 /**
- * Guarda los cambios del usuario en edición
+ * Guarda los cambios del rol del usuario en edición
  * Envía los datos actualizados al backend y actualiza la lista local
- * Resetea el objeto de usuario en edición a null
  */
-guardarEdicion(): void {
+guardarEdicionRol(): void {
   if (!this.usuarioEnEdicion) return;
+
+  // Verificar si está intentando cambiar al mismo rol actual
+  if (!this.puedeCompartirRol(this.usuarioEnEdicion, this.usuarioEnEdicion.rol)) {
+    const mensaje = this.getMensajeValidacionRol(this.usuarioEnEdicion.rol);
+    this.mostrarConsejo(mensaje);
+    return;
+  }
 
   const payload = {
     usuarioId: this.usuarioEnEdicion.usuarioId!,
@@ -392,11 +832,22 @@ guardarEdicion(): void {
     fechaRegistro: this.usuarioEnEdicion.fechaRegistro || new Date().toISOString()
   };
 
-  console.log('📤 Guardando cambios de usuario:', payload);
+  console.log('📤 Guardando cambios de rol de usuario:', payload);
 
   this.userService.actualizarUsuario(payload).subscribe({
     next: (response) => {
-      console.log('✅ Usuario actualizado exitosamente:', response);
+      console.log('✅ Rol de usuario actualizado exitosamente:', response);
+      
+      // Verificar si cambió a veterinario y no tiene DNI
+      const cambioAVeterinario = payload.rol === 'VET' && 
+                                (!this.usuarioEnEdicion?.perfil?.dni || this.usuarioEnEdicion.perfil.dni === '');
+      
+      if (cambioAVeterinario) {
+        console.log('⚠️ Usuario cambió a veterinario pero no tiene DNI registrado');
+        this.mostrarConsejo('✅ Rol actualizado correctamente. 💡 Consejo: Deberás añadir tu DNI en los próximos días para completar tu perfil profesional y evitar problemas al iniciar sesión.');
+      } else {
+        this.mostrarExito('✅ Rol actualizado correctamente');
+      }
       
       // Actualizar solo los campos necesarios manteniendo el perfil y otros datos
       const idx = this.usuarios.findIndex(u => u.usuarioId === payload.usuarioId);
@@ -414,25 +865,119 @@ guardarEdicion(): void {
       // Refrescar lista de usuarios para asegurar sincronización
       this.cargarUsuarios();
       
-      this.usuarioEnEdicion = null;
-      console.log('✅ Usuario actualizado correctamente.');
+      this.cancelarEdicion();
+      console.log('✅ Rol de usuario actualizado correctamente.');
     },
     error: err => {
-      console.error('❌ Error al actualizar usuario:', err);
+      console.error('❌ Error al actualizar rol de usuario:', err);
       console.error('Detalles del error:', err.error || err.message);
-      console.error('❌ Error al actualizar el usuario. Verifique los datos e intente nuevamente.');
+      console.error('❌ Error al actualizar el rol del usuario. Verifique los datos e intente nuevamente.');
     }
   });
+}
+
+/**
+ * Guarda los cambios de información personal del usuario
+ * Utiliza la API PUT /api/v1/admin/editarPerfil/{perfilUsuarioId}
+ */
+guardarEdicionPerfil(): void {
+  if (!this.usuarioEnEdicion || !this.perfilEnEdicion.nombres || !this.perfilEnEdicion.apellidos) {
+    console.error('❌ Datos incompletos para guardar perfil');
+    return;
+  }
+
+  const perfilData = {
+    perfilId: this.perfilEnEdicion.perfilId,
+    nombres: this.perfilEnEdicion.nombres,
+    apellidos: this.perfilEnEdicion.apellidos,
+    telefonoEmergencia: this.perfilEnEdicion.telefonoEmergencia || '',
+    direccion: this.perfilEnEdicion.direccion || '',
+    alergias: this.perfilEnEdicion.alergias || '',
+    usuarioId: this.usuarioEnEdicion.usuarioId || 0,
+    dni: this.perfilEnEdicion.dni || '' // Incluir DNI
+  };
+
+  console.log('📤 Guardando información personal del usuario:', perfilData);
+
+  this.perfilService.editarPerfil(perfilData).subscribe({
+    next: (response) => {
+      console.log('✅ Información personal actualizada exitosamente:', response);
+      
+      // Si es veterinario y tiene DNI, crear/actualizar en API de veterinarios
+      if (this.usuarioEnEdicion?.rol === 'VET' && this.perfilEnEdicion.dni) {
+        const veterinarioData: CrearVeterinarioRequest = {
+          dni: this.perfilEnEdicion.dni,
+          nombre: this.perfilEnEdicion.nombres,
+          apellido: this.perfilEnEdicion.apellidos
+        };
+        
+        console.log('🏥 Actualizando datos de veterinario en API específica...');
+        this.veterinarioService.crearVeterinario(veterinarioData).subscribe({
+          next: (vetResponse) => {
+            console.log('✅ Datos de veterinario actualizados exitosamente:', vetResponse);
+          },
+          error: (vetError) => {
+            console.error('⚠️ Error al actualizar datos de veterinario (no crítico):', vetError);
+          }
+        });
+      }
+      
+      // Actualizar el perfil en la lista local
+      const idx = this.usuarios.findIndex(u => u.usuarioId === this.usuarioEnEdicion!.usuarioId);
+      if (idx !== -1) {
+        this.usuarios[idx].perfil = response.data || perfilData;
+        console.log('✅ Perfil actualizado en la lista local:', this.usuarios[idx]);
+      }
+      
+      // Refrescar lista de usuarios para asegurar sincronización
+      this.cargarUsuarios();
+      
+      this.cancelarEdicion();
+      console.log('✅ Información personal actualizada correctamente.');
+    },
+    error: err => {
+      console.error('❌ Error al actualizar información personal:', err);
+      console.error('Detalles del error:', err.error || err.message);
+      console.error('❌ Error al actualizar la información personal. Verifique los datos e intente nuevamente.');
+    }
+  });
+}
+
+/**
+ * Método legacy - mantener compatibilidad
+ * Redirige a guardarEdicionRol para retrocompatibilidad
+ */
+guardarEdicion(): void {
+  this.guardarEdicionRol();
 }
 
 
 
   /**
    * Cancela la edición del usuario actual
-   * Resetea el objeto de usuario en edición a null
+   * Resetea todas las variables de edición
    */
   cancelarEdicion(): void {
     this.usuarioEnEdicion = null;
+    this.mostrarFormularioRol = false;
+    this.mostrarFormularioPerfil = false;
+    this.perfilEnEdicion = {
+      perfilId: 0,
+      nombres: '',
+      apellidos: '',
+      telefonoEmergencia: '',
+      direccion: '',
+      alergias: '',
+      usuarioId: 0
+    };
+  }
+
+  /**
+   * Vuelve al menú principal de edición
+   */
+  volverAlMenu(): void {
+    this.mostrarFormularioRol = false;
+    this.mostrarFormularioPerfil = false;
   }
 
   togglePasswordVisibility(): void {
@@ -546,39 +1091,65 @@ cambiarEstadoToggle(user: UserWithProfile): void {
   }
 
   /**
-   * Exportar tabla completa a Excel con formato profesional
+   * Exportar tabla completa a Excel con formato simple y columna DNI para veterinarios
    */
   exportarTablaCompleta(): void {
     try {
-      // Preparar datos para Excel con headers profesionales
-      const datosExcel = this.usuariosFiltrados.map(user => ({
-        'ID': user.usuarioId,
-        'Usuario': user.username,
-        'Nombres': user.perfil?.nombres || 'No registrado',
-        'Apellidos': user.perfil?.apellidos || 'No registrado', 
-        'Rol': this.getRolLegible(user.rol),
-        'Teléfono Emergencia': user.perfil?.telefonoEmergencia || 'No registrado',
-        'Dirección': user.perfil?.direccion || 'No registrado',
-        'Estado': user.estado,
-        'Fecha Registro': this.formatDate(user.fechaRegistro || ''),
-        'Tiempo Transcurrido': this.getTimeAgo(user.fechaRegistro || '')
-      }));
-
-      // Crear contenido CSV con formato UTF-8
-      const headers = Object.keys(datosExcel[0]).join(',');
-      const filas = datosExcel.map(fila => 
-        Object.values(fila).map(valor => 
-          typeof valor === 'string' && valor.includes(',') 
-            ? `"${valor}"` 
-            : valor
-        ).join(',')
-      );
-
-      const contenidoCSV = [headers, ...filas].join('\n');
+      // Detectar si hay veterinarios en la lista para incluir columna DNI
+      const hayVeterinarios = this.usuariosFiltrados.some(user => user.rol === 'VET');
       
-      // Crear blob con UTF-8 BOM para soporte de acentos
+      // Crear headers dinámicamente
+      const headers = [
+        'ID',
+        'USUARIO',
+        'NOMBRES',
+        'APELLIDOS',
+        'ROL',
+        'TELEFONO',
+        'DIRECCION',
+        'ESTADO',
+        'FECHA_REGISTRO'
+      ];
+      
+      // Agregar columna DNI solo si hay veterinarios
+      if (hayVeterinarios) {
+        headers.splice(5, 0, 'DNI'); // Insertar DNI después del ROL
+      }
+      
+      // Crear filas de datos
+      const rows = this.usuariosFiltrados.map(user => {
+        const row = [
+          user.usuarioId,
+          user.username,
+          user.perfil?.nombres || 'No registrado',
+          user.perfil?.apellidos || 'No registrado',
+          this.getRolLegible(user.rol),
+          user.perfil?.telefonoEmergencia || 'No registrado',
+          user.perfil?.direccion || 'No registrado',
+          user.estado,
+          this.formatDate(user.fechaRegistro || '')
+        ];
+        
+        // Insertar DNI solo si hay veterinarios
+        if (hayVeterinarios) {
+          const dni = user.rol === 'VET' ? (user.perfil?.dni || 'No registrado') : 'N/A';
+          row.splice(5, 0, dni); // Insertar DNI en la posición correcta
+        }
+        
+        return row;
+      });
+      
+      // Crear contenido CSV
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(cell => 
+          typeof cell === 'string' && cell.includes(',') ? `"${cell}"` : cell
+        ).join(','))
+      ].join('\n');
+      
+      // Agregar BOM para caracteres especiales
       const bom = '\uFEFF';
-      const blob = new Blob([bom + contenidoCSV], { 
+      const blob = new Blob([bom + csvContent], { 
         type: 'text/csv;charset=utf-8;' 
       });
 
@@ -586,13 +1157,13 @@ cambiarEstadoToggle(user: UserWithProfile): void {
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
       link.setAttribute('href', url);
-      link.setAttribute('download', `usuarios-sistema-${new Date().toISOString().split('T')[0]}.csv`);
+      link.setAttribute('download', `Usuarios-Sistema-Veterinaria-${new Date().toISOString().split('T')[0]}.csv`);
       link.style.visibility = 'hidden';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
-      console.log('✅ Exportación de tabla completa realizada exitosamente');
+      console.log('✅ Exportación completa realizada exitosamente');
     } catch (error) {
       console.error('❌ Error al exportar tabla completa:', error);
     }
@@ -601,11 +1172,55 @@ cambiarEstadoToggle(user: UserWithProfile): void {
   abrirModalInformacionCompleta(user: UserWithProfile): void {
     this.usuarioSeleccionado = user;
     this.modalInfoVisible = true;
+    
+    // Si es veterinario, cargar su información específica
+    this.obtenerInfoVeterinario(user);
   }
 
   cerrarModalInformacionCompleta(): void {
     this.modalInfoVisible = false;
     this.usuarioSeleccionado = null;
+  }
+
+  /**
+   * Métodos para modales de notificación
+   */
+  mostrarExito(mensaje: string): void {
+    this.mensajeModal = mensaje;
+    this.mostrarModalExito = true;
+    
+    // Auto-cerrar después de 3 segundos
+    setTimeout(() => {
+      this.mostrarModalExito = false;
+    }, 3000);
+  }
+
+  mostrarError(mensaje: string): void {
+    this.mensajeModal = mensaje;
+    this.mostrarModalError = true;
+    
+    // Auto-cerrar después de 5 segundos
+    setTimeout(() => {
+      this.mostrarModalError = false;
+    }, 5000);
+  }
+
+  mostrarConsejo(mensaje: string): void {
+    this.mensajeModal = mensaje;
+    this.mostrarModalExito = true; // Usar el modal de éxito para consejos amigables
+    
+    // Auto-cerrar después de 10 segundos para consejos
+    setTimeout(() => {
+      this.mostrarModalExito = false;
+    }, 10000);
+  }
+
+  cerrarModalExito(): void {
+    this.mostrarModalExito = false;
+  }
+
+  cerrarModalError(): void {
+    this.mostrarModalError = false;
   }
 
   // ========== MÉTODOS DE PAGINACIÓN ==========
@@ -635,7 +1250,7 @@ cambiarEstadoToggle(user: UserWithProfile): void {
   // ========== MÉTODO DE EXPORTACIÓN INDIVIDUAL ==========
   exportarUsuarioIndividual(user: UserWithProfile): void {
     try {
-      const datosUsuario = {
+      const datosUsuario: { [key: string]: any } = {
         'ID': user.usuarioId,
         'Usuario': user.username,
         'Nombres': user.perfil?.nombres || 'No registrado',
@@ -647,6 +1262,11 @@ cambiarEstadoToggle(user: UserWithProfile): void {
         'Fecha Registro': this.formatDate(user.fechaRegistro || ''),
         'Tiempo Transcurrido': this.getTimeAgo(user.fechaRegistro || '')
       };
+
+      // Agregar DNI solo si es veterinario
+      if (user.rol === 'VET') {
+        datosUsuario['DNI'] = user.perfil?.dni || 'No registrado';
+      }
 
       const headers = Object.keys(datosUsuario).join(',');
       const valores = Object.values(datosUsuario).map(valor => 
@@ -691,5 +1311,130 @@ cambiarEstadoToggle(user: UserWithProfile): void {
         user.perfil?.apellidos?.toLowerCase().includes(termino)
       );
     }
+  }
+
+  // ========== MÉTODOS DE EXPORTACIÓN POR TIPO ==========
+  
+  /**
+   * Exporta solo los usuarios administradores
+   */
+  exportarAdministradores(): void {
+    const administradores = this.usuariosFiltrados.filter(user => user.rol === 'ADMIN');
+    this.exportarPorTipo(administradores, 'Administradores');
+  }
+
+  /**
+   * Exporta solo los usuarios veterinarios con columna DNI
+   */
+  exportarVeterinarios(): void {
+    const veterinarios = this.usuariosFiltrados.filter(user => user.rol === 'VET');
+    this.exportarPorTipo(veterinarios, 'Veterinarios', true);
+  }
+
+  /**
+   * Exporta solo los usuarios asistentes
+   */
+  exportarAsistentes(): void {
+    const asistentes = this.usuariosFiltrados.filter(user => user.rol === 'ASISTENTE');
+    this.exportarPorTipo(asistentes, 'Asistentes');
+  }
+
+  /**
+   * Método genérico para exportar usuarios por tipo
+   */
+  private exportarPorTipo(usuarios: UserWithProfile[], tipoUsuario: string, incluirDNI: boolean = false): void {
+    try {
+      if (usuarios.length === 0) {
+        this.mostrarError(`No hay ${tipoUsuario.toLowerCase()} para exportar.`);
+        return;
+      }
+
+      // Crear headers dinámicamente
+      const headers = [
+        'ID',
+        'USUARIO',
+        'NOMBRES',
+        'APELLIDOS',
+        'TELEFONO',
+        'DIRECCION',
+        'ESTADO',
+        'FECHA_REGISTRO'
+      ];
+      
+      // Agregar columna DNI si se requiere
+      if (incluirDNI) {
+        headers.splice(4, 0, 'DNI'); // Insertar DNI después de apellidos
+      }
+      
+      // Crear filas de datos
+      const rows = usuarios.map(user => {
+        const row = [
+          user.usuarioId,
+          user.username,
+          user.perfil?.nombres || 'No registrado',
+          user.perfil?.apellidos || 'No registrado',
+          user.perfil?.telefonoEmergencia || 'No registrado',
+          user.perfil?.direccion || 'No registrado',
+          user.estado,
+          this.formatDate(user.fechaRegistro || '')
+        ];
+        
+        // Insertar DNI si se requiere
+        if (incluirDNI) {
+          const dni = user.perfil?.dni || 'No registrado';
+          row.splice(4, 0, dni); // Insertar DNI en la posición correcta
+        }
+        
+        return row;
+      });
+      
+      // Crear contenido CSV
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(cell => 
+          typeof cell === 'string' && cell.includes(',') ? `"${cell}"` : cell
+        ).join(','))
+      ].join('\n');
+      
+      // Agregar BOM para caracteres especiales
+      const bom = '\uFEFF';
+      const blob = new Blob([bom + csvContent], { 
+        type: 'text/csv;charset=utf-8;' 
+      });
+
+      // Descargar archivo
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `${tipoUsuario}-${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      this.mostrarExito(`✅ Lista de ${tipoUsuario.toLowerCase()} exportada exitosamente (${usuarios.length} registros)`);
+    } catch (error) {
+      console.error(`❌ Error al exportar ${tipoUsuario.toLowerCase()}:`, error);
+      this.mostrarError(`❌ Error al exportar lista de ${tipoUsuario.toLowerCase()}`);
+    }
+  }
+
+  /**
+   * Verifica si se puede cambiar al rol seleccionado (no puede ser el mismo rol actual)
+   */
+  puedeCompartirRol(usuario: any, nuevoRol: string): boolean {
+    if (!usuario || !usuario.rolOriginal) return true;
+    return usuario.rolOriginal !== nuevoRol;
+  }
+
+  /**
+   * Obtiene el mensaje de validación para el cambio de rol
+   */
+  getMensajeValidacionRol(rol: string): string {
+    if (!this.usuarioEnEdicion) return '';
+    
+    const rolLegible = this.getRolLegible(rol);
+    const nombreUsuario = this.usuarioEnEdicion.perfil?.nombres || this.usuarioEnEdicion.username || 'Este usuario';
+    return `${nombreUsuario} ya tiene el rol de ${rolLegible}. No se puede cambiar al mismo rol que ya posee.`;
   }
 }

@@ -17,6 +17,7 @@ export interface PerfilPersonal {
   direccion?: string;
   alergias?: string;
   usuarioId: number;
+  dni?: string; // Campo DNI para veterinarios
 }
 
 // ========== MODELO COMBINADO PARA UI ==========
