@@ -79,12 +79,12 @@ export class VeterinarianDashboardComponent implements OnInit {
       this.stats.emergencies = citas.filter(c => c.motivo?.toLowerCase() === 'emergencia').length;
 
       // Obtener todas las mascotas del veterinario para obtener los nombres
-      this.mascotaService.listarMascotasVet().subscribe((mascotasResponse: any) => {
+      this.mascotaService.listarMascotas().subscribe((mascotasResponse: any) => {
         const mascotas = mascotasResponse.data;
         console.log('Mascotas del veterinario:', mascotas);
 
         // Obtener los pacientes del veterinario (que incluye nombres de mascotas y propietarios)
-        this.mascotaService.listarPacientesVet(veterinarioId).subscribe((pacientesResponse: any) => {
+        this.mascotaService.listarPacientesPorVeterinario(veterinarioId).subscribe((pacientesResponse: any) => {
           const pacientes = pacientesResponse.data;
           console.log('Pacientes del veterinario:', pacientes);
 
