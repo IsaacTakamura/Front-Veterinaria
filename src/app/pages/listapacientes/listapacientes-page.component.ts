@@ -19,6 +19,7 @@ import { IconShieldComponent } from 'src/app/components/icons/icon-shield.compon
 import { IconDocumentComponent } from 'src/app/components/icons/icon-document.component';
 
 export interface PacienteCitaHoy {
+  clienteId: number; // <--- NUEVO
   nombreMascota: string;
   especie: string;
   raza: string;
@@ -52,6 +53,7 @@ export class ListapacientesPageComponent implements OnInit {
   selected: 'pacientes' | 'consulta' | 'seguimiento' = 'pacientes';
   pacienteSeleccionado: PacienteCitaHoy | null = null;
   subvista: 'info' | 'alergias' | 'nueva' = 'info';
+  propietarioSeleccionado: Cliente | null = null; // <--- NUEVO
 
   constructor(
     private citaService: CitaService,
@@ -86,6 +88,7 @@ export class ListapacientesPageComponent implements OnInit {
                 const cliente = clientes[i];
                 const raza = razas.find(r => r.razaId === mascota.razaId);
                 return {
+                  clienteId: cliente?.clienteId || 0, // <--- NUEVO
                   nombreMascota: mascota?.nombre || '',
                   especie: raza ? (raza.especieId === 1 ? 'Perro' : 'Gato') : '',
                   raza: raza?.nombre || '',
@@ -122,6 +125,29 @@ export class ListapacientesPageComponent implements OnInit {
   seleccionarPaciente(p: PacienteCitaHoy) {
     this.pacienteSeleccionado = p;
     this.subvista = 'info';
+    this.propietarioSeleccionado = null;
+    // Buscar información completa del propietario
+    if (p && p.propietario) {
+      // Buscar el cliente por nombre y apellido (si tienes el id mejor, pero aquí solo nombre)
+      // Si tienes el id, deberías guardarlo en PacienteCitaHoy y usarlo aquí
+      // Suponiendo que el nombre es único (mejorar si tienes el id)
+      // Aquí, como en cargarPacientesCitasHoy ya tienes el cliente, puedes guardar el id también
+      // Pero para hacerlo bien, mejor guardar el clienteId en PacienteCitaHoy
+      // Así que primero, modifica PacienteCitaHoy:
+      // clienteId: number;
+      // Y en cargarPacientesCitasHoy, asígnalo
+      // Y aquí:
+      if ((p as any).clienteId) {
+        this.clienteService.listarClientePorIdVeterinario((p as any).clienteId).subscribe({
+          next: (resp) => {
+            this.propietarioSeleccionado = resp.data;
+          },
+          error: () => {
+            this.propietarioSeleccionado = null;
+          }
+        });
+      }
+    }
   }
 
   get pacientesFiltrados(): PacienteCitaHoy[] {

@@ -100,6 +100,15 @@
               <p><strong>Raza:</strong> {{ pacienteSeleccionado.raza }}</p>
               <p><strong>Especie:</strong> {{ pacienteSeleccionado.especie }}</p>
               <p><strong>Propietario:</strong> {{ pacienteSeleccionado.propietario }}</p>
+
+              <div *ngIf="propietarioSeleccionado" class="propietario-block" style="margin-top: 18px; padding: 14px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e0e0e0;">
+                <h4 style="margin-top:0; margin-bottom: 10px; color: #0984e3;">Información del Propietario</h4>
+                <p><strong>Nombre:</strong> {{ propietarioSeleccionado.nombre }} {{ propietarioSeleccionado.apellido }}</p>
+                <p *ngIf="propietarioSeleccionado.direccion"><strong>Dirección:</strong> {{ propietarioSeleccionado.direccion }}</p>
+                <p *ngIf="propietarioSeleccionado.telefono"><strong>Teléfono:</strong> {{ propietarioSeleccionado.telefono }}</p>
+                <p *ngIf="propietarioSeleccionado.email"><strong>Email:</strong> {{ propietarioSeleccionado.email }}</p>
+                <p *ngIf="propietarioSeleccionado.ciudad"><strong>Ciudad:</strong> {{ propietarioSeleccionado.ciudad }}</p>
+              </div>
             </div>
 
             <div *ngIf="subvista === 'alergias'">
