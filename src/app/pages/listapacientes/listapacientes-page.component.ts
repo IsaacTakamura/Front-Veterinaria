@@ -254,8 +254,7 @@ export class ListapacientesPageComponent implements OnInit {
   registrarNuevaConsulta() {
     if (!this.pacienteSeleccionado || !this.tipoVisitaNuevaConsulta || !this.descripcionNuevaConsulta) return;
     // Primero registrar el caso clínico
-    const nuevoCaso: CasoClinico = {
-      casoClinicoId: 0,
+    const nuevoCaso: Partial<CasoClinico> = {
       descripcion: this.descripcionNuevaConsulta,
       mascotaId: this.pacienteSeleccionado.mascotaId
     };
