@@ -1,5 +1,5 @@
 export interface Raza {
-  razaId: number;
+  razaId?: number; // 🔧 CAMBIO: Hacer opcional como TipoServicio
   nombre: string;
-  especieId: number;
+  especieId: number; // Este sí se necesita para la relación
 }

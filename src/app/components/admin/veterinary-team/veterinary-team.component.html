@@ -1,0 +1,276 @@
+<!-- TABLA DE VETERINARIOS -->
+<div *ngIf="activeTab === 'tabla-veterinarios'" class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+  
+  <!-- Header con título y descripción -->
+  <div class="section-header px-6 py-6 border-b border-gray-200">
+    <div class="flex items-center gap-3 mb-3">
+      <div class="section-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 515.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 919.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+        </svg>
+      </div>
+      <h3 class="section-title">Equipo Veterinario</h3>
+    </div>
+    <p class="section-description">
+      Gestión del personal veterinario del centro. Los veterinarios se registran automáticamente cuando se crean usuarios con rol "VET".
+    </p>
+  </div>
+
+  <!-- Filtros y búsqueda -->
+  <div class="px-6 py-4 border-b border-gray-200">
+    <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+      <div class="flex-1 max-w-md">
+        <div class="relative">
+          <input
+            type="text"
+            [(ngModel)]="terminoBusqueda"
+            (input)="aplicarFiltros()"
+            placeholder="Buscar por nombre, apellido o DNI..."
+            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex gap-2">
+        <button
+          (click)="cargarVeterinarios()"
+          class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          [disabled]="cargandoVeterinarios()">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          {{ cargandoVeterinarios() ? 'Cargando...' : 'Refrescar' }}
+        </button>
+        <button
+          (click)="exportarVeterinarios()"
+          class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          Exportar CSV
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de veterinarios -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Apellido</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DNI</th>
+          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+        </tr>
+      </thead>
+      
+      <tbody class="bg-white divide-y divide-gray-200">
+        <!-- Estado de carga -->
+        <tr *ngIf="cargandoVeterinarios()">
+          <td colspan="5" class="px-6 py-12 text-center">
+            <div class="flex flex-col items-center">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+              <p class="text-gray-500">Cargando veterinarios...</p>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Estado vacío -->
+        <tr *ngIf="!cargandoVeterinarios() && veterinariosFiltrados.length === 0">
+          <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+            <div class="flex flex-col items-center">
+              <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 515.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 919.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>
+              <p class="text-lg font-medium text-gray-900 mb-2">No hay veterinarios registrados</p>
+              <p class="text-gray-500 max-w-sm">
+                Los veterinarios se registran automáticamente cuando se crea un usuario con rol VET en 
+                <span class="font-medium">"Gestión de Personal"</span>
+              </p>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Filas de veterinarios -->
+        @for (veterinario of veterinariosPaginados; track veterinario.veterinarioId) {
+          <tr [id]="'veterinario-' + veterinario.veterinarioId"
+              class="hover:bg-gray-50 transition-colors duration-150">
+            
+            <!-- ID -->
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  #{{ veterinario.veterinarioId }}
+                </span>
+              </div>
+            </td>
+
+            <!-- Nombre -->
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm font-medium text-gray-900">{{ veterinario.nombre }}</div>
+            </td>
+
+            <!-- Apellido -->
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">{{ veterinario.apellido }}</div>
+            </td>
+
+            <!-- DNI -->
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">{{ veterinario.dni || 'No especificado' }}</div>
+            </td>
+
+            <!-- Acciones -->
+            <td class="px-6 py-4 whitespace-nowrap text-center">
+              <div class="flex items-center justify-center">
+                <button
+                  type="button"
+                  (click)="verDetallesVeterinario(veterinario)"
+                  class="inline-flex items-center px-3 py-1 text-sm text-blue-700 hover:text-blue-900">
+                  <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                  </svg>
+                  Ver Información
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Controles de paginación -->
+  <div *ngIf="!cargandoVeterinarios() && veterinariosFiltrados.length > 0" class="mt-6 flex items-center justify-between">
+    <!-- Información de paginación -->
+    <div class="text-sm text-gray-700">
+      Mostrando <span class="font-medium">{{ primerElemento }}</span> a 
+      <span class="font-medium">{{ ultimoElemento }}</span> de 
+      <span class="font-medium">{{ veterinariosFiltrados.length }}</span> veterinarios
+    </div>
+
+    <!-- Controles de navegación -->
+    <div class="flex items-center space-x-2">
+      <button
+        (click)="paginaAnterior()"
+        [disabled]="paginaActual === 1"
+        class="relative inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-50 focus:z-10 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Anterior
+      </button>
+      
+      <div class="text-sm text-gray-700 px-4">
+        Página <span class="font-medium">{{ paginaActual }}</span> de 
+        <span class="font-medium">{{ totalPaginas }}</span>
+      </div>
+      
+      <button
+        (click)="paginaSiguiente()"
+        [disabled]="paginaActual === totalPaginas"
+        class="relative inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-50 focus:z-10 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
+        Siguiente
+        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de detalles del veterinario -->
+<div *ngIf="modalDetallesVisible" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
+  <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4" (click)="$event.stopPropagation()">
+    <!-- Header del modal -->
+    <div class="px-6 py-4 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-medium text-gray-900">Información del Veterinario</h3>
+        <button
+          type="button"
+          (click)="cerrarModalDetalles()"
+          class="text-gray-400 hover:text-gray-600 focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenido del modal -->
+    <div class="px-6 py-4">
+      @if (veterinarioSeleccionado) {
+        <div class="space-y-4">
+          <div class="text-center mb-4">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 mb-3">
+              <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>
+            </div>
+            <h4 class="text-xl font-semibold text-gray-900">
+              {{ veterinarioSeleccionado.nombre }} {{ veterinarioSeleccionado.apellido }}
+            </h4>
+          </div>
+
+          <div class="grid grid-cols-1 gap-3">
+            <div class="flex justify-between py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-500">ID Veterinario:</span>
+              <span class="text-sm text-gray-900">#{{ veterinarioSeleccionado.veterinarioId }}</span>
+            </div>
+            
+            <div class="flex justify-between py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-500">Nombre:</span>
+              <span class="text-sm text-gray-900">{{ veterinarioSeleccionado.nombre }}</span>
+            </div>
+            
+            <div class="flex justify-between py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-500">Apellido:</span>
+              <span class="text-sm text-gray-900">{{ veterinarioSeleccionado.apellido }}</span>
+            </div>
+            
+            <div class="flex justify-between py-2 border-b border-gray-100">
+              <span class="text-sm font-medium text-gray-500">DNI:</span>
+              <span class="text-sm text-gray-900">{{ veterinarioSeleccionado.dni || 'No especificado' }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Footer del modal -->
+    <div class="px-6 py-4 border-t border-gray-200 flex justify-end">
+      <button
+        type="button"
+        (click)="cerrarModalDetalles()"
+        class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Alertas -->
+<div *ngIf="modalExitoVisible" class="fixed bottom-4 right-4 z-50">
+  <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg flex items-center">
+    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+    </svg>
+    {{ mensajeModal }}
+  </div>
+</div>
+
+<div *ngIf="modalErrorVisible" class="fixed bottom-4 right-4 z-50">
+  <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg flex items-center">
+    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+    </svg>
+    {{ mensajeModal }}
+  </div>
+</div>

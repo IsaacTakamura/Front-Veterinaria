@@ -48,7 +48,7 @@ export class AgendarPageComponent implements OnInit {
 
   razas$: Observable<Raza[]>;
   tiposServicio$: Observable<{ tipoServicioId: number; nombre: string }[]> = of([]);
-  veterinarios: any[] = [];
+  veterinarios: Veterinario[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -89,7 +89,8 @@ export class AgendarPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.veterinarioService.listarVeterinarios().subscribe(res => {
-      this.veterinarios = res.data;
+      // Asegurar que res.data sea siempre un array
+      this.veterinarios = Array.isArray(res.data) ? res.data : [res.data];
     });
 
   }
