@@ -33,6 +33,13 @@ import { filter } from 'rxjs/operators';
       background: #f8fafc;
       padding-top: 64px;
     }
+    app-vete-sidebar {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      height: calc(100vh - 64px);
+      z-index: 10;
+    }
   `],
 })
 export class VeterinarioLayoutComponent {

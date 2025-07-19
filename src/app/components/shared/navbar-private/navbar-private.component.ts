@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIf } from '@angular/common';
 import { Router } from '@angular/router';
@@ -35,6 +35,14 @@ export class NavbarPrivateComponent implements OnInit {
 
   ngOnInit(): void {
     // User data now handled by SessionService
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown-container')) {
+      this.dropdownOpen.set(false);
+    }
   }
 
   cerrarSesion() {

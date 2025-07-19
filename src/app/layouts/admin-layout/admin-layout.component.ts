@@ -2,15 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { AdminSidebarComponent } from '../../components/shared/admin-sidebar/admin-sidebar.component';
-import { NavbarPrivateComponent } from '../../components/shared/navbar-private/navbar-private.component';
 import { SidebarStateService } from './sidebar-state.service';
 
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, AdminSidebarComponent, NavbarPrivateComponent],
+  imports: [CommonModule, RouterOutlet, AdminSidebarComponent],
   template: `
-    <app-navbar-private />
     <div class="layout-container">
       <app-admin-sidebar
         [activeSection]="activeSection"

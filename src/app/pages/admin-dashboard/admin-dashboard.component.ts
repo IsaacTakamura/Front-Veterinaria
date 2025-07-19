@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 // Importa los componentes que necesitas
 import { AdminSidebarComponent } from '../../components/shared/admin-sidebar/admin-sidebar.component';
-import { NavbarPrivateComponent } from '../../components/shared/navbar-private/navbar-private.component';
 import { UserManagementComponent } from '../../components/admin/user-management/user-management.component';
 import { CatalogManagementComponent } from '../../components/admin/catalog-management/catalog-management.component';
 import { VeterinaryTeamComponent } from '../../components/admin/veterinary-team/veterinary-team.component';
@@ -14,7 +13,6 @@ import { VeterinaryTeamComponent } from '../../components/admin/veterinary-team/
   imports: [
     CommonModule,
     AdminSidebarComponent,
-    NavbarPrivateComponent,
     UserManagementComponent,
     CatalogManagementComponent,
     VeterinaryTeamComponent,
