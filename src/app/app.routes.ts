@@ -9,6 +9,8 @@ import { AdminIndexPageComponent } from './pages/admin-index/admin-index-page.co
 import { AgendarPageComponent } from './pages/agendar/agendar-page.component';
 import { EnfermeraPageComponent } from './pages/enfermera/enfermera-page.component';
 import { AsistenteLayoutComponent } from './layouts/asistente-layout/asistente-layout.component';
+import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
+import { VeterinarioLayoutComponent } from './layouts/veterinario-layout/veterinario-layout.component';
 import { authGuard } from './core/guard/auth.guard';
 
 export const routes: Routes = [
@@ -16,9 +18,23 @@ export const routes: Routes = [
     path: '',
     component: IndexPageComponent,
   },
+  // Agrupar veterinario bajo su layout
   {
-    path: 'listapacientes',
-    component: ListapacientesPageComponent,
+    path: '',
+    component: VeterinarioLayoutComponent,
+    canActivate: [authGuard],
+    data: { roles: ['VET'] },
+    children: [
+      {
+        path: 'veterinario',
+        loadComponent: () =>
+          import('./pages/veterinario/veterinario-page.component').then((m) => m.VeterinarioPageComponent),
+      },
+      {
+        path: 'listapacientes',
+        component: ListapacientesPageComponent,
+      },
+    ],
   },
   {
     path: 'register',
@@ -33,14 +49,7 @@ export const routes: Routes = [
     path: 'receta',
     component: RecetaPageComponent,
   },
-  {
-    path: 'veterinario',
-    canActivate: [authGuard],
-    data: { roles: ['VET'] },
-    loadComponent: () =>
-      import('./pages/veterinario/veterinario-page.component').then((m) => m.VeterinarioPageComponent),
-  },
-  // Ruta de admin directa sin layout anidado
+  // Agrupar admin bajo su layout
   {
     path: 'admin',
     canActivate: [authGuard],
@@ -48,21 +57,20 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/admin-dashboard/admin-dashboard.component').then((m) => m.AdminDashboardComponent),
   },
+  // Agrupar asistente bajo su layout
   {
     path: '',
     component: AsistenteLayoutComponent,
+    canActivate: [authGuard],
+    data: { roles: ['ASISTENTE'] },
     children: [
       {
         path: 'enfermera',
-        canActivate: [authGuard],
-        data: { roles: ['ASISTENTE'] },
         loadComponent: () =>
           import('./pages/enfermera/enfermera-page.component').then((m) => m.EnfermeraPageComponent),
       },
       {
         path: 'agendar',
-        canActivate: [authGuard],
-        data: { roles: ['ASISTENTE'] },
         component: AgendarPageComponent,
       },
     ],

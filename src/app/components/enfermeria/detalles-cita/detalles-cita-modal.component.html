@@ -1,17 +1,12 @@
 <div
     *ngIf="isOpen()"
-    class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+    class="modal-overlay"
     (click)="closeModal($event)"
   >
     <div
-      class="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[85vh] overflow-y-auto"
+      class="modal-container"
       (click)="$event.stopPropagation()"
     >
-      <!-- Header -->
-      <div class="border-b p-3">
-        <h2 class="text-lg font-semibold">Detalles de la Cita</h2>
-        <p class="text-sm text-gray-500">Información completa de la cita agendada.</p>
-      </div>
 
       <!-- Content -->
       <div class="p-3 space-y-3">

@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-// Importa componentes funcionales
+// Importa los componentes que necesitas
 import { AdminSidebarComponent } from '../../components/shared/admin-sidebar/admin-sidebar.component';
 import { NavbarPrivateComponent } from '../../components/shared/navbar-private/navbar-private.component';
 import { UserManagementComponent } from '../../components/admin/user-management/user-management.component';
@@ -35,10 +35,10 @@ export class AdminDashboardComponent {
   getActiveTabForComponent(section: string): string {
     const mapping: { [key: string]: string } = {
       'registrar-usuario': 'crear-usuario',
-      'personal-activo': 'lista-usuarios', 
+      'personal-activo': 'lista-usuarios',
       'personal-veterinario': 'tabla-veterinarios',
       'especies-razas': 'especies-razas',
-      'servicios-veterinarios': 'servicios'
+      'servicios-veterinarios': 'servicios',
     };
     return mapping[section] || section;
   }

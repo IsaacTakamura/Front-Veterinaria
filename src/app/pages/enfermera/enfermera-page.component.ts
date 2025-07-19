@@ -42,7 +42,7 @@ export class EnfermeraPageComponent {
         this.citaSeleccionada.set(data);
         // Usamos data.mascotaId porque el modelo Cita no tiene un objeto mascota, solo el id
         this.historialService
-          .listarHistorialPorMascota(data.mascotaId)
+          .listarHistorialPorMascotaid(data.mascotaId)
           .subscribe(historial => this.historialClinico.set(historial));
       });
     }

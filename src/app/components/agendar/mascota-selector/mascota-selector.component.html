@@ -3,7 +3,10 @@
 <div *ngIf="mostrarModal" class="modal-backdrop">
   <div class="modal-card">
     <h3>Buscar Mascota</h3>
-    <input [formControl]="searchControl" placeholder="Nombre de la mascota" />
+    <div class="input-group">
+      <input [formControl]="searchControl" placeholder="Nombre de la mascota" />
+      <button class="btn" (click)="buscar()">Buscar</button>
+    </div>
 
     <ul *ngIf="resultados && resultados.length > 0">
       <li *ngFor="let m of resultados" class="mascota-item">
