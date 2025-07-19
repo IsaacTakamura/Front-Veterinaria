@@ -2,16 +2,8 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChange
 import { CommonModule } from '@angular/common';
 import { Cliente } from '../../shared/interfaces/cliente.model';
 import { Cita } from '../../shared/interfaces/cita.model';
+import { PacienteInfo } from '../../shared/interfaces/paciente-info.model';
 import { CitaService } from '../../../core/services/cita.service';
-
-export interface PacienteInfo {
-  nombreMascota: string;
-  edad: number;
-  raza: string;
-  especie: string;
-  propietario: string;
-  mascotaId?: number; // Agregamos el ID de la mascota
-}
 
 @Component({
   selector: 'app-info-paciente',

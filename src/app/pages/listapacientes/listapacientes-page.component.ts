@@ -24,6 +24,7 @@ import { Triaje } from 'src/app/components/shared/interfaces/triaje.model';
 import { Visita, TipoVisita, CasoClinico } from 'src/app/components/shared/interfaces/historial.model';
 import { TipoSignoVital } from 'src/app/components/shared/interfaces/tipoSignoVital';
 import { SignoVital } from 'src/app/components/shared/interfaces/SignoVital.model';
+import { PacienteInfo } from 'src/app/components/shared/interfaces/paciente-info.model';
 import { InfoPacienteComponent } from '../../components/listapacientes/info-paciente/info-paciente.component';
 import { TriajeActualComponent } from '../../components/listapacientes/triaje-actual/triaje-actual.component';
 import { VisitasCasosComponent } from '../../components/listapacientes/visitas-casos/visitas-casos.component';
@@ -84,6 +85,7 @@ export class ListapacientesPageComponent implements OnInit {
   tiposSignoVital: TipoSignoVital[] = [];
   signosVitalesNuevaConsulta: any[] = [];
   citaActual: Cita | null = null; // Agregamos la cita actual
+  pacienteInfo: PacienteInfo | null = null; // Paciente mapeado para info-paciente
 
   constructor(
     private citaService: CitaService,
@@ -187,9 +189,25 @@ export class ListapacientesPageComponent implements OnInit {
     this.cargarPacientesCitasHoy();
   }
 
+  // Mapear PacienteCitaHoy a PacienteInfo
+  mapearPacienteInfo(paciente: PacienteCitaHoy): PacienteInfo {
+    return {
+      nombreMascota: paciente.nombreMascota,
+      edad: paciente.edad,
+      raza: paciente.raza,
+      especie: paciente.especie,
+      propietario: paciente.propietario,
+      mascotaId: paciente.mascotaId,
+      clienteId: paciente.clienteId,
+      telefono: paciente.telefono,
+      fechaRegistro: paciente.fechaRegistro
+    };
+  }
+
   cambiarVista(v: 'pacientes' | 'consulta' | 'seguimiento') {
     this.selected = v;
     this.pacienteSeleccionado = null;
+    this.pacienteInfo = null; // Limpiar también el paciente mapeado
     this.subvista = 'info';
   }
 
@@ -199,6 +217,7 @@ export class ListapacientesPageComponent implements OnInit {
 
   seleccionarPaciente(p: PacienteCitaHoy) {
     this.pacienteSeleccionado = p;
+    this.pacienteInfo = this.mapearPacienteInfo(p); // Mapear para info-paciente
     this.subvista = 'info';
     this.propietarioSeleccionado = null;
     this.triajeMascota = null;
