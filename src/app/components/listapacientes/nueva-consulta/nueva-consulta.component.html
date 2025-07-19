@@ -79,6 +79,9 @@
 
         <!-- Nuevo Tipo de Signo Vital -->
         <div class="nuevo-tipo-section">
+          <div class="nuevo-tipo-info">
+            <p class="info-text-small">💡 ¿No encuentras el tipo que necesitas? Crea uno nuevo</p>
+          </div>
           <button
             type="button"
             class="btn-new-type"
@@ -101,14 +104,12 @@
               (click)="crearNuevoTipo()"
               [disabled]="!nombreNuevoTipo.trim()">
               <span class="btn-icon">✅</span>
-              <span class="btn-text">Crear</span>
             </button>
             <button
               type="button"
               class="btn-cancel"
               (click)="mostrarNuevoTipo = false">
               <span class="btn-icon">❌</span>
-              <span class="btn-text">Cancelar</span>
             </button>
           </div>
         </div>

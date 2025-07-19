@@ -348,6 +348,17 @@
   margin-top: 12px;
 }
 
+.nuevo-tipo-info {
+  margin-bottom: 8px;
+}
+
+.info-text-small {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #666;
+  font-style: italic;
+}
+
 .nuevo-tipo-form {
   background: rgba(255, 255, 255, 0.9);
   border-radius: 10px;

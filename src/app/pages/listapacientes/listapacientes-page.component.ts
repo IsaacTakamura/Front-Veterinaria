@@ -150,25 +150,51 @@ export class ListapacientesPageComponent implements OnInit {
   }
 
   cargarTiposSignoVital() {
+    console.log('🔄 Cargando tipos de signos vitales...');
+
     this.signosVitalesService.listarTiposSignosVitales().subscribe({
       next: (response) => {
-        this.tiposSignoVital = Array.isArray(response) ? response : (response as any)?.data || [];
+        console.log('📥 Respuesta del backend:', response);
+
+        // Manejar diferentes formatos de respuesta
+        if (Array.isArray(response)) {
+          this.tiposSignoVital = response;
+        } else if (response && (response as any)?.data) {
+          this.tiposSignoVital = (response as any).data;
+        } else {
+          this.tiposSignoVital = [];
+        }
+
+        console.log('✅ Tipos de signos vitales cargados:', this.tiposSignoVital);
       },
-      error: () => {
+      error: (error) => {
+        console.error('❌ Error al cargar tipos de signos vitales:', error);
         this.tiposSignoVital = [];
       }
     });
   }
 
-  onNuevoTipoSignoVital(nombre: string) {
-    const nuevoTipo: Partial<TipoSignoVital> = { nombre };
+    onNuevoTipoSignoVital(nombre: string) {
+    console.log('🔄 Creando nuevo tipo de signo vital:', nombre);
+
+    // Crear objeto simple como en crearTipoVisita
+    const nuevoTipo = {
+      nombre: nombre.trim()
+    };
+
+    console.log('📤 Enviando al backend:', nuevoTipo);
+
     this.signosVitalesService.crearTipoSignoVital(nuevoTipo as any).subscribe({
       next: (response) => {
+        console.log('✅ Tipo de signo vital creado exitosamente:', response);
         // Recargar la lista de tipos
         this.cargarTiposSignoVital();
+        alert('✅ Nuevo tipo de signo vital creado exitosamente');
       },
-      error: () => {
-        console.error('Error al crear nuevo tipo de signo vital');
+      error: (error) => {
+        console.error('❌ Error al crear nuevo tipo de signo vital:', error);
+        console.error('Detalles del error:', error);
+        alert('❌ Error al crear nuevo tipo de signo vital. Revisa la consola para más detalles.');
       }
     });
   }

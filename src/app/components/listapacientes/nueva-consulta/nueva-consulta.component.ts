@@ -100,10 +100,16 @@ export class NuevaConsultaComponent {
   }
 
   crearNuevoTipo() {
+    console.log('🔄 Creando nuevo tipo de signo vital desde componente:', this.nombreNuevoTipo);
+
     if (this.nombreNuevoTipo.trim()) {
-      this.nuevoTipoSignoVital.emit(this.nombreNuevoTipo.trim());
+      const nombreLimpio = this.nombreNuevoTipo.trim();
+      console.log('📤 Emitiendo evento con nombre:', nombreLimpio);
+      this.nuevoTipoSignoVital.emit(nombreLimpio);
       this.mostrarNuevoTipo = false;
       this.nombreNuevoTipo = '';
+    } else {
+      console.warn('⚠️ Nombre de tipo de signo vital vacío o solo espacios');
     }
   }
 }
