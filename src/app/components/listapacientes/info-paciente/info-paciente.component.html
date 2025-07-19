@@ -1,0 +1,171 @@
+<div class="info-paciente-container" *ngIf="paciente">
+  <!-- Header con icono -->
+  <div class="info-header">
+    <div class="header-icon">
+      <span class="icon">🐾</span>
+    </div>
+    <h3 class="header-title">Información del Paciente</h3>
+    <div class="header-badge">
+      <span class="badge-text">Activo</span>
+    </div>
+  </div>
+
+  <!-- Información de la mascota -->
+  <div class="mascota-section">
+    <div class="section-header">
+      <span class="section-icon">🐕</span>
+      <h4 class="section-title">Datos de la Mascota</h4>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-icon">📝</div>
+        <div class="info-content">
+          <span class="info-label">Nombre</span>
+          <span class="info-value">{{ paciente.nombreMascota }}</span>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icon">🎂</div>
+        <div class="info-content">
+          <span class="info-label">Edad</span>
+          <span class="info-value">{{ paciente.edad }} años</span>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icon">🏷️</div>
+        <div class="info-content">
+          <span class="info-label">Raza</span>
+          <span class="info-value">{{ paciente.raza }}</span>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icon">🐾</div>
+        <div class="info-content">
+          <span class="info-label">Especie</span>
+          <span class="info-value">{{ paciente.especie }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Información del propietario -->
+  <div *ngIf="propietario" class="propietario-section">
+    <div class="section-header">
+      <span class="section-icon">👤</span>
+      <h4 class="section-title">Información del Propietario</h4>
+    </div>
+
+    <div class="propietario-info">
+      <div class="propietario-main">
+        <div class="propietario-avatar">
+          <span class="avatar-icon">👤</span>
+        </div>
+        <div class="propietario-details">
+          <h5 class="propietario-name">{{ propietario.nombre }} {{ propietario.apellido }}</h5>
+          <span class="propietario-role">Propietario</span>
+        </div>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-item" *ngIf="propietario.telefono">
+          <div class="contact-icon">📞</div>
+          <div class="contact-info">
+            <span class="contact-label">Teléfono</span>
+            <span class="contact-value">{{ propietario.telefono }}</span>
+          </div>
+        </div>
+
+        <div class="contact-item" *ngIf="propietario.email">
+          <div class="contact-icon">📧</div>
+          <div class="contact-info">
+            <span class="contact-label">Email</span>
+            <span class="contact-value">{{ propietario.email }}</span>
+          </div>
+        </div>
+
+        <div class="contact-item" *ngIf="propietario.direccion">
+          <div class="contact-icon">📍</div>
+          <div class="contact-info">
+            <span class="contact-label">Dirección</span>
+            <span class="contact-value">{{ propietario.direccion }}</span>
+          </div>
+        </div>
+
+        <div class="contact-item" *ngIf="propietario.ciudad">
+          <div class="contact-icon">🏙️</div>
+          <div class="contact-info">
+            <span class="contact-label">Ciudad</span>
+            <span class="contact-value">{{ propietario.ciudad }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botón de cambio de estado -->
+  <div class="estado-cita-section">
+    <div class="section-header">
+      <span class="section-icon">🏥</span>
+      <h4 class="section-title">Estado de la Cita</h4>
+    </div>
+
+    <div class="estado-info">
+      <!-- Estado de carga -->
+      <div *ngIf="cargandoCita" class="loading-cita">
+        <div class="loading-spinner"></div>
+        <p>Buscando cita del paciente...</p>
+      </div>
+
+      <!-- Si hay cita, mostrar estado y botón -->
+      <div *ngIf="!cargandoCita && getCitaActual() && getCitaActual()!.estadoCita" class="estado-content">
+        <div class="estado-badge" [ngClass]="'estado-' + (getCitaActual()!.estadoCita || '').toLowerCase()">
+          <span class="estado-icon">
+            <span *ngIf="getCitaActual()!.estadoCita === 'PENDIENTE'">⏳</span>
+            <span *ngIf="getCitaActual()!.estadoCita === 'TRIAJE'">🩺</span>
+            <span *ngIf="getCitaActual()!.estadoCita === 'CONVETERINARIO'">👨‍⚕️</span>
+            <span *ngIf="getCitaActual()!.estadoCita === 'COMPLETADA'">✅</span>
+          </span>
+          <span class="estado-text">{{ getCitaActual()!.estadoCita || 'Sin Estado' }}</span>
+        </div>
+
+        <button
+          [class]="getClaseBoton()"
+          (click)="cambiarEstadoAConVeterinario()"
+          [disabled]="!puedeCambiarAConVeterinario()">
+          <span class="btn-icon">
+            <span *ngIf="puedeCambiarAConVeterinario()">👨‍⚕️</span>
+            <span *ngIf="!puedeCambiarAConVeterinario() && getCitaActual()!.estadoCita === 'CONVETERINARIO'">✅</span>
+            <span *ngIf="!puedeCambiarAConVeterinario() && getCitaActual()!.estadoCita === 'COMPLETADA'">🏁</span>
+          </span>
+          <span class="btn-text">{{ getTextoBoton() }}</span>
+        </button>
+      </div>
+
+      <!-- Si no hay cita, mostrar mensaje -->
+      <div *ngIf="!cargandoCita && !getCitaActual()" class="no-cita-message">
+        <div class="no-cita-icon">📋</div>
+        <div class="no-cita-text">
+          <h5>Sin Cita Asignada</h5>
+          <p>No hay una cita activa para este paciente hoy.</p>
+          <button class="btn-refresh" (click)="buscarCitaDeHoy()">
+            <span class="btn-icon">🔄</span>
+            <span class="btn-text">Buscar Cita</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado sin información -->
+  <div *ngIf="!paciente" class="no-info">
+    <div class="no-info-icon">📋</div>
+    <h4 class="no-info-title">Sin Información</h4>
+    <p class="no-info-description">
+      No hay información disponible para este paciente.
+    </p>
+  </div>
+</div>

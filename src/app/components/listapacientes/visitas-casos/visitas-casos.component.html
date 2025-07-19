@@ -1,0 +1,42 @@
+<h3 style="color:#00695c; font-weight:700; letter-spacing:1px; margin-bottom: 18px;">
+  <span style="font-size:1.5em; vertical-align:middle;">🩺</span> Visitas y Casos Clínicos
+</h3>
+
+<ng-container *ngIf="!cargandoVisitas; else cargandoVisitasTpl">
+  <div *ngIf="visitasMascota.length > 0; else sinVisitasTpl" class="cards-container-vertical">
+    <div *ngFor="let visita of visitasPaginaActual" class="visita-card-ios">
+      <div class="visita-card-header">
+        <span class="icon-med"><span style="font-size:1.3em;">🩺</span></span>
+        <span class="visita-id">ID: {{ visita.visitaId }}</span>
+      </div>
+      <div class="visita-info">
+        <div class="tipo-visita-ios">
+          <span class="icon-tipo"><span style="font-size:1.2em;">📋</span></span>
+          <span class="tipo-label">Tipo de Visita:</span>
+          <span class="tipo-nombre">{{ visita.nombreTipoVisita }}</span>
+          <span class="tipo-id">({{ visita.tipoVisitaId }})</span>
+        </div>
+        <div class="caso-clinico-ios">
+          <span class="icon-caso"><span style="font-size:1.2em;">📝</span></span>
+          <span class="caso-label">Caso Clínico:</span>
+          <span class="caso-desc">{{ visita.descripcionCasoClinico }}</span>
+          <span class="caso-id">({{ visita.casoClinicoId }})</span>
+        </div>
+      </div>
+    </div>
+    <!-- Paginación -->
+    <div class="paginacion-visitas">
+      <button (click)="cambiarPagina(-1)" [disabled]="paginaActual === 1">Anterior</button>
+      <ng-container *ngFor="let pagina of [].constructor(totalPaginas); let i = index">
+        <button (click)="irAPagina(i+1)" [class.activa]="paginaActual === (i+1)">{{ i+1 }}</button>
+      </ng-container>
+      <button (click)="cambiarPagina(1)" [disabled]="paginaActual === totalPaginas">Siguiente</button>
+    </div>
+  </div>
+  <ng-template #sinVisitasTpl>
+    <p class="sin-visitas">No hay visitas registradas para esta mascota.</p>
+  </ng-template>
+</ng-container>
+<ng-template #cargandoVisitasTpl>
+  <p>Cargando visitas...</p>
+</ng-template>

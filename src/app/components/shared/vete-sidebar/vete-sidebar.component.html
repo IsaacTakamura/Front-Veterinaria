@@ -1,0 +1,29 @@
+<aside class="sidebar-compact">
+  <div class="sidebar-header">
+    <div class="icon-container">
+      <app-icon-vet-dashboard [size]="24" color="#ffffff" />
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <button type="button"
+      class="nav-item"
+      [ngClass]="activeSection === 'dashboard' ? 'active' : ''"
+      title="Dashboard"
+      (click)="goTo('dashboard')">
+      <div class="icon-wrapper dashboard-icon">
+        <app-icon-vet-dashboard [size]="24" color="#ffffff" [strokeWidth]="2" />
+      </div>
+    </button>
+
+    <button type="button"
+      class="nav-item"
+      [ngClass]="activeSection === 'pacientes' ? 'active' : ''"
+      title="Pacientes"
+      (click)="goTo('pacientes')">
+      <div class="icon-wrapper pacientes-icon">
+        <app-icon-listapacientes [size]="24" color="#ffffff" [strokeWidth]="2" />
+      </div>
+    </button>
+  </nav>
+</aside>
