@@ -27,16 +27,16 @@ import { SidebarStateService } from './sidebar-state.service';
     .main-content {
       flex: 1;
       margin-left: 220px; /* ancho del admin-sidebar */
-      padding: 20px;
+      margin-top: 70px; /* Espacio suficiente para no ser tapado por el navbar */
+      padding: 16px;
       background: #f8fafc;
-      padding-top: 64px; /* altura del navbar fijo */
     }
     app-admin-sidebar {
       position: fixed;
-      top: 64px;
+      top: 70px; /* Comenzar después del navbar de 70px + espacio extra */
       left: 0;
-      height: calc(100vh - 64px);
-      z-index: 10;
+      height: calc(100vh - 110px); /* Altura total menos el espacio superior */
+      z-index: 20; /* Menor que el navbar (50) pero mayor que el contenido */
     }
   `],
   providers: [SidebarStateService]

@@ -2,8 +2,8 @@
 <app-navbar-public *ngIf="showNavbarPublic()"></app-navbar-public>
 <app-navbar-private *ngIf="!showNavbarPublic()"></app-navbar-private>
 
-<!-- Contenido principal con margen superior para evitar sobreposición -->
-<section [ngClass]="showNavbarPublic() ? 'mx-5 mt-2' : 'mt-0'">
+<!-- Contenido principal -->
+<section [ngClass]="showNavbarPublic() ? 'mx-5 mt-2' : ''">
   <router-outlet></router-outlet>
 </section>
 

@@ -29,16 +29,16 @@ import { filter } from 'rxjs/operators';
     .main-content {
       flex: 1;
       margin-left: 80px;
-      padding: 20px;
+      margin-top: 70px; /* Espacio solo para el contenido principal */
+      padding: 16px;
       background: #f8fafc;
-      padding-top: 64px;
     }
     app-vete-sidebar {
       position: fixed;
-      top: 64px;
+      top: 70px; /* Comenzar exactamente debajo del navbar */
       left: 0;
-      height: calc(100vh - 64px);
-      z-index: 10;
+      height: calc(100vh - 70px); /* Altura total menos el navbar */
+      z-index: 20; /* Menor que el navbar (50) pero mayor que el contenido */
     }
   `],
 })

@@ -1,7 +1,16 @@
-/* Navbar integrado en el layout - sin posicionamiento fijo */
+/* Navbar con altura fija para posicionamiento preciso */
 nav {
   background: #fff;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  z-index: 50; /* Asegurar que esté por encima de los sidebars */
+  position: fixed; /* Fijo en la parte superior */
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px; /* Altura reducida del navbar */
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
 }
 
-/* El navbar ahora es parte del layout flexbox y no necesita posicionamiento fijo */
+/* El navbar ahora es fijo y tiene altura definida */

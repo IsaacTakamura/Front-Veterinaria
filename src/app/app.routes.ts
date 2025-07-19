@@ -52,10 +52,16 @@ export const routes: Routes = [
   // Agrupar admin bajo su layout
   {
     path: 'admin',
+    component: AdminLayoutComponent,
     canActivate: [authGuard],
     data: { roles: ['ADMIN'] },
-    loadComponent: () =>
-      import('./pages/admin-dashboard/admin-dashboard.component').then((m) => m.AdminDashboardComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/admin-dashboard/admin-dashboard.component').then((m) => m.AdminDashboardComponent),
+      },
+    ],
   },
   // Agrupar asistente bajo su layout
   {
