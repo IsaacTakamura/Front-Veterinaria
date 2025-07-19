@@ -106,6 +106,60 @@
     </div>
   </div>
 
+  <!-- Botón de cambio de estado -->
+  <div class="estado-cita-section">
+    <div class="section-header">
+      <span class="section-icon">🏥</span>
+      <h4 class="section-title">Estado de la Cita</h4>
+    </div>
+
+    <div class="estado-info">
+      <!-- Estado de carga -->
+      <div *ngIf="cargandoCita" class="loading-cita">
+        <div class="loading-spinner"></div>
+        <p>Buscando cita del paciente...</p>
+      </div>
+
+      <!-- Si hay cita, mostrar estado y botón -->
+      <div *ngIf="!cargandoCita && getCitaActual() && getCitaActual()!.estadoCita" class="estado-content">
+        <div class="estado-badge" [ngClass]="'estado-' + (getCitaActual()!.estadoCita || '').toLowerCase()">
+          <span class="estado-icon">
+            <span *ngIf="getCitaActual()!.estadoCita === 'PENDIENTE'">⏳</span>
+            <span *ngIf="getCitaActual()!.estadoCita === 'TRIAJE'">🩺</span>
+            <span *ngIf="getCitaActual()!.estadoCita === 'CONVETERINARIO'">👨‍⚕️</span>
+            <span *ngIf="getCitaActual()!.estadoCita === 'COMPLETADA'">✅</span>
+          </span>
+          <span class="estado-text">{{ getCitaActual()!.estadoCita || 'Sin Estado' }}</span>
+        </div>
+
+        <button
+          [class]="getClaseBoton()"
+          (click)="cambiarEstadoAConVeterinario()"
+          [disabled]="!puedeCambiarAConVeterinario()">
+          <span class="btn-icon">
+            <span *ngIf="puedeCambiarAConVeterinario()">👨‍⚕️</span>
+            <span *ngIf="!puedeCambiarAConVeterinario() && getCitaActual()!.estadoCita === 'CONVETERINARIO'">✅</span>
+            <span *ngIf="!puedeCambiarAConVeterinario() && getCitaActual()!.estadoCita === 'COMPLETADA'">🏁</span>
+          </span>
+          <span class="btn-text">{{ getTextoBoton() }}</span>
+        </button>
+      </div>
+
+      <!-- Si no hay cita, mostrar mensaje -->
+      <div *ngIf="!cargandoCita && !getCitaActual()" class="no-cita-message">
+        <div class="no-cita-icon">📋</div>
+        <div class="no-cita-text">
+          <h5>Sin Cita Asignada</h5>
+          <p>No hay una cita activa para este paciente hoy.</p>
+          <button class="btn-refresh" (click)="buscarCitaDeHoy()">
+            <span class="btn-icon">🔄</span>
+            <span class="btn-text">Buscar Cita</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Estado sin información -->
   <div *ngIf="!paciente" class="no-info">
     <div class="no-info-icon">📋</div>
