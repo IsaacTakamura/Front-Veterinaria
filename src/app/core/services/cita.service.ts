@@ -111,9 +111,9 @@ export class CitaService {
 
    //? Listar citas para veterinario
   listarCitasVeterinario(clienteId: number): Observable<Cita[]> {
-    return this.http.get<Cita[]>(`${this.apiVet}/listarCitas`, {
+    return this.http.get<{ codigo: number; message: string; data: Cita[] }>(`${this.apiVet}/listarCitas`, {
       headers: this.getHeaders()
-    });
+    }).pipe(map(res => res.data));
   }
   /*
   Se espera algo como esto:

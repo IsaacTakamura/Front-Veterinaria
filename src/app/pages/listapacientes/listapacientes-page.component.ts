@@ -29,6 +29,7 @@ import { InfoPacienteComponent } from '../../components/listapacientes/info-paci
 import { TriajeActualComponent } from '../../components/listapacientes/triaje-actual/triaje-actual.component';
 import { VisitasCasosComponent } from '../../components/listapacientes/visitas-casos/visitas-casos.component';
 import { NuevaConsultaComponent } from '../../components/listapacientes/nueva-consulta/nueva-consulta.component';
+import { UltimaCitaComponent } from '../../components/listapacientes/ultima-cita/ultima-cita.component';
 
 export interface PacienteCitaHoy {
   clienteId: number;
@@ -58,7 +59,8 @@ export interface PacienteCitaHoy {
     InfoPacienteComponent,
     TriajeActualComponent,
     VisitasCasosComponent,
-    NuevaConsultaComponent
+    NuevaConsultaComponent,
+    UltimaCitaComponent
   ],
   templateUrl: './listapacientes-page.component.html',
   styleUrls: ['./listapacientes-page.component.css']
@@ -69,7 +71,7 @@ export class ListapacientesPageComponent implements OnInit {
   busqueda: string = '';
   selected: 'pacientes' | 'consulta' | 'seguimiento' = 'pacientes';
   pacienteSeleccionado: PacienteCitaHoy | null = null;
-  subvista: 'info' | 'triaje' | 'visitas' | 'nueva' = 'info';
+  subvista: 'info' | 'triaje' | 'visitas' | 'cita' | 'nueva' = 'info';
   propietarioSeleccionado: Cliente | null = null; // <--- NUEVO
   triajeMascota: Triaje | null = null;
   cargandoTriaje: boolean = false;
@@ -237,7 +239,7 @@ export class ListapacientesPageComponent implements OnInit {
     this.subvista = 'info';
   }
 
-  cambiarSubvista(v: 'info' | 'triaje' | 'visitas' | 'nueva') {
+  cambiarSubvista(v: 'info' | 'triaje' | 'visitas' | 'cita' | 'nueva') {
     this.subvista = v;
   }
 

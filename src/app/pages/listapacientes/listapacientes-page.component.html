@@ -88,6 +88,7 @@
               <li [class.active]="subvista === 'info'" (click)="cambiarSubvista('info')">📄 Info del Paciente</li>
               <li [class.active]="subvista === 'triaje'" (click)="cambiarSubvista('triaje')">🌡️ Triaje Actual</li>
               <li [class.active]="subvista === 'visitas'" (click)="cambiarSubvista('visitas')">🏥 Visitas y Casos Clínicos</li>
+              <li [class.active]="subvista === 'cita'" (click)="cambiarSubvista('cita')">📅 Última Cita</li>
               <li [class.active]="subvista === 'nueva'" (click)="cambiarSubvista('nueva')">📝 Nueva Consulta</li>
             </ul>
           </div>
@@ -114,6 +115,11 @@
               [mascotaId]="pacienteSeleccionado.mascotaId || 0"
               (seleccionarTipoVisita)="tipoVisitaSeleccionado = $event">
             </app-visitas-casos>
+
+            <app-ultima-cita
+              *ngIf="subvista === 'cita'"
+              [paciente]="pacienteSeleccionado">
+            </app-ultima-cita>
 
             <app-nueva-consulta
               *ngIf="subvista === 'nueva'"

@@ -1,0 +1,77 @@
+<div class="ultima-cita-container">
+  <div class="header">
+    <h3>📅 Última Cita de {{ paciente?.nombreMascota }}</h3>
+    <p class="subtitle">Información de la cita más reciente</p>
+  </div>
+
+  <!-- Estado de carga -->
+  <div *ngIf="cargando()" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando información de la cita...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error() && !cargando()" class="error">
+    <p>❌ {{ error() }}</p>
+  </div>
+
+  <!-- Sin citas -->
+  <div *ngIf="!ultimaCita() && !cargando() && !error()" class="no-citas">
+    <p>📋 No se encontraron citas para esta mascota</p>
+    <p class="info">Esta mascota aún no tiene citas registradas en el sistema.</p>
+  </div>
+
+  <!-- Información de la cita -->
+  <div *ngIf="ultimaCita() && !cargando()" class="cita-info">
+    <div class="cita-card">
+      <div class="cita-header">
+        <div class="estado-badge" [ngClass]="getEstadoCitaClass(ultimaCita()?.estadoCita || '')">
+          {{ getEstadoCitaEmoji(ultimaCita()?.estadoCita || '') }}
+          {{ ultimaCita()?.estadoCita || 'N/A' }}
+        </div>
+        <div class="fecha-cita">
+          <strong>Fecha de Registro:</strong><br>
+          {{ formatearFecha(ultimaCita()?.fechaRegistro || '') }}
+        </div>
+      </div>
+
+      <div class="cita-details">
+        <div class="detail-row">
+          <div class="detail-item">
+            <strong>🆔 ID de Cita:</strong>
+            <span>{{ ultimaCita()?.citaId || 'N/A' }}</span>
+          </div>
+          <div class="detail-item">
+            <strong>🐾 Mascota:</strong>
+            <span>{{ ultimaCita()?.mascotaNombre || 'Cargando...' }}</span>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <div class="detail-item">
+            <strong>👤 Cliente:</strong>
+            <span>{{ ultimaCita()?.clienteNombre || 'Cargando...' }}</span>
+          </div>
+          <div class="detail-item">
+            <strong>👨‍⚕️ Veterinario:</strong>
+            <span>{{ ultimaCita()?.veterinarioNombre || 'Cargando...' }}</span>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <div class="detail-item">
+            <strong>🏥 Tipo de Servicio:</strong>
+            <span>{{ ultimaCita()?.tipoServicioNombre || 'Cargando...' }}</span>
+          </div>
+        </div>
+
+        <div class="motivo-section">
+          <strong>📝 Motivo de la Cita:</strong>
+          <div class="motivo-content">
+            {{ ultimaCita()?.motivo || 'No se especificó motivo' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
