@@ -19,7 +19,7 @@ export class AdminSidebarComponent {
   @Input() activeSection!: string;
   @Output() sectionChange = new EventEmitter<string>();
 
-  expandedMenus: string[] = ['usuarios'];
+  expandedMenus: string[] = ['personal', 'veterinarios', 'clinica'];
 
   toggleMenu(menuId: string) {
     if (this.expandedMenus.includes(menuId)) {
@@ -31,51 +31,29 @@ export class AdminSidebarComponent {
 
   menuItems = [
     {
-      id: "usuarios",
-      title: "Gestión de Usuarios",
+      id: "personal",
+      title: "Gestión de Personal",
       icon: "users",
       items: [
-        { id: "crear-usuario", title: "Crear Usuario", icon: "userplus" },
-        { id: "lista-usuarios", title: "Lista de Usuarios", icon: "users" },
+        { id: "registrar-usuario", title: "Registrar Usuario", icon: "userplus" },
+        { id: "personal-activo", title: "Personal Activo", icon: "users" },
       ],
     },
     {
-      id: "catalogo",
-      title: "Catálogo Maestro",
+      id: "veterinarios",
+      title: "Gestión de Veterinarios",
+      icon: "shield",
+      items: [
+        { id: "personal-veterinario", title: "Personal Veterinario", icon: "shield" },
+      ],
+    },
+    {
+      id: "clinica",
+      title: "Configuración de Clínica",
       icon: "database",
       items: [
         { id: "especies-razas", title: "Especies y Razas", icon: "database" },
-        { id: "vacunas", title: "Vacunas", icon: "shield" },
-        { id: "servicios", title: "Servicios", icon: "settings" },
-      ],
-    },
-    {
-      id: "agenda",
-      title: "Supervisión de Agenda",
-      icon: "calendar",
-      items: [
-        { id: "todas-citas", title: "Todas las Citas", icon: "calendar" },
-        { id: "reprogramar", title: "Reprogramar Citas", icon: "clock" },
-      ],
-    },
-    {
-      id: "reportes",
-      title: "Reportes y Analítica",
-      icon: "barchart",
-      items: [
-        { id: "atencion-diaria", title: "Atención Diaria", icon: "filetext" },
-        { id: "reprogramaciones", title: "Reprogramaciones", icon: "barchart" },
-        { id: "facturacion", title: "Facturación", icon: "barchart" },
-      ],
-    },
-    {
-      id: "mantenimiento",
-      title: "Mantenimiento y Seguridad",
-      icon: "settings",
-      items: [
-        { id: "respaldos", title: "Respaldos", icon: "shield" },
-        { id: "logs-sistema", title: "Logs del Sistema", icon: "filetext" },
-        { id: "configuracion", title: "Configuración", icon: "settings" },
+        { id: "servicios-veterinarios", title: "Servicios Veterinarios", icon: "settings" },
       ],
     },
   ];

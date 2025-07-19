@@ -8,7 +8,6 @@ import { Especie } from '../../shared/interfaces/especie.model';
 import { Raza } from '../../shared/interfaces/Raza.model';
 import { CatalogoService } from '../../../core/services/catalogo.service';
 import { SessionService } from '../../../core/services/session.service';
-import { EmojiService } from '../../../core/services/emoji.service';
 
 @Component({
   selector: 'app-catalog-management',
@@ -24,11 +23,11 @@ export class CatalogManagementComponent implements OnInit {
   isLoading = false;
   mostrarTablasDetalladas = false;
   
-  // Variables para paginación fija (5 elementos por página)
+  // Variables para paginación
   especiesPagina = 1;
   serviciosPagina = 1;
   itemsPerPageEspecies = 5; // Estándar fijo: 5 elementos por página
-  itemsPerPageServicios = 5; // Estándar fijo: 5 elementos por página
+  itemsPerPageServicios = 10; // 10 elementos por página para servicios según solicitud
   Math = Math; // Exposición de Math para usar en el HTML
 
   // Servicios
@@ -79,8 +78,7 @@ export class CatalogManagementComponent implements OnInit {
     private tipoServicioService: TipoServicioService,
     private catalogoService: CatalogoService,
     private sessionService: SessionService,
-    private http: HttpClient,
-    private emojiService: EmojiService
+    private http: HttpClient
   ) { }
 
   // ========== MÉTODOS DE DESCRIPCIONES LOCALES ==========
@@ -516,9 +514,30 @@ export class CatalogManagementComponent implements OnInit {
     this.modalEspecieVisible = false;
   }
 
-  // Método para obtener emoji según la especie
+  // Método para obtener emoji según la especie (versión simplificada)
   obtenerEmojiEspecie(especieId: number | undefined, nombreEspecie?: string): string {
-    return this.emojiService.obtenerEmojiDeEspecie(especieId, nombreEspecie);
+    // Emojis por defecto simples según el nombre
+    const emojisBasicos: { [key: string]: string } = {
+      'perro': '🐕',
+      'gato': '🐱',
+      'ave': '🐦',
+      'pez': '🐟',
+      'reptil': '🦎',
+      'roedor': '🐹',
+      'conejo': '🐰',
+      'default': '🐾'
+    };
+    
+    if (nombreEspecie) {
+      const nombre = nombreEspecie.toLowerCase();
+      for (const [clave, emoji] of Object.entries(emojisBasicos)) {
+        if (nombre.includes(clave)) {
+          return emoji;
+        }
+      }
+    }
+    
+    return emojisBasicos['default'];
   }
 
   registrarEspecie(): void {
@@ -553,10 +572,6 @@ export class CatalogManagementComponent implements OnInit {
           this.mostrarNotificacionExito(`Especie "${nombreEspecie}" registrada correctamente`);
           return;
         }
-        
-        // El emoji se asigna automáticamente según el nombre de la especie
-        const emojiAsignado = this.emojiService.obtenerEmojiPorDefectoSegunNombre(nombreEspecie);
-        this.emojiService.asignarEmojiAEspecie(nuevaEspecieCreada.especieId!, emojiAsignado);
         
         // Agregamos la nueva especie a la lista local
         this.especies.push(nuevaEspecieCreada);
