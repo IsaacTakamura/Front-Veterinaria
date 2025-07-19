@@ -1,11 +1,7 @@
+/* Navbar integrado en el layout - sin posicionamiento fijo */
 nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  z-index: 100;
   background: #fff;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
-/* Si el contenido principal necesita padding-top, agrégalo en el layout o main-content */
+/* El navbar ahora es parte del layout flexbox y no necesita posicionamiento fijo */
