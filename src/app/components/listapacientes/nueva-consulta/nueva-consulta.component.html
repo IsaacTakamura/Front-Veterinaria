@@ -133,12 +133,15 @@
 
     <!-- Botón de Registro -->
     <div class="action-section">
+      <div class="action-info" *ngIf="cita">
+        <p class="info-text">⚠️ Al registrar la consulta, la cita se marcará como COMPLETADA</p>
+      </div>
       <button
         class="btn-register"
         (click)="onRegistrarConsulta()"
         [disabled]="!tipoVisitaSeleccionado || !descripcion">
         <span class="btn-icon">💾</span>
-        <span class="btn-text">Registrar Consulta</span>
+        <span class="btn-text">Registrar Consulta y Completar Cita</span>
       </button>
     </div>
   </div>

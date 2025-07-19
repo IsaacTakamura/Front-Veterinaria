@@ -83,6 +83,7 @@ export class ListapacientesPageComponent implements OnInit {
   tipoVisitaNuevaConsulta: TipoVisita | null = null;
   tiposSignoVital: TipoSignoVital[] = [];
   signosVitalesNuevaConsulta: any[] = [];
+  citaActual: Cita | null = null; // Agregamos la cita actual
 
   constructor(
     private citaService: CitaService,
@@ -174,6 +175,18 @@ export class ListapacientesPageComponent implements OnInit {
     this.signosVitalesNuevaConsulta = signosVitales;
   }
 
+  // Manejar cuando se complete la cita
+  onCitaCompletada(citaActualizada: Cita) {
+    console.log('✅ Cita completada exitosamente:', citaActualizada);
+    this.citaActual = citaActualizada;
+
+    // Mostrar mensaje de éxito (puedes implementar un toast o alert)
+    alert('✅ Consulta registrada y cita marcada como COMPLETADA');
+
+    // Opcional: recargar la lista de pacientes para reflejar el cambio
+    this.cargarPacientesCitasHoy();
+  }
+
   cambiarVista(v: 'pacientes' | 'consulta' | 'seguimiento') {
     this.selected = v;
     this.pacienteSeleccionado = null;
@@ -215,6 +228,7 @@ export class ListapacientesPageComponent implements OnInit {
       this.cargarHistorialVisitas(p.mascotaId);
       this.cargarTiposVisita();
       this.cargarCasosClinicos(p.mascotaId);
+      this.buscarCitaActual(p.mascotaId); // Buscar la cita actual
     }
   }
 
@@ -283,6 +297,22 @@ export class ListapacientesPageComponent implements OnInit {
       },
       error: () => {
         this.casosClinicos = [];
+      }
+    });
+  }
+
+  // Buscar la cita actual de la mascota
+  buscarCitaActual(mascotaId: number) {
+    this.citaService.listarCitasHoyVeterinario().subscribe({
+      next: (citas) => {
+        console.log('Citas de hoy:', citas);
+        // Buscar la cita que corresponda a esta mascota
+        this.citaActual = citas.find(cita => cita.mascotaId === mascotaId) || null;
+        console.log('Cita actual encontrada:', this.citaActual);
+      },
+      error: (error) => {
+        console.error('Error al buscar cita actual:', error);
+        this.citaActual = null;
       }
     });
   }

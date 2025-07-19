@@ -432,6 +432,21 @@
   border-top: 1px solid rgba(255, 255, 255, 0.4); /* Añadido para el borde superior */
 }
 
+.action-info {
+  margin-bottom: 15px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 235, 59, 0.1));
+  border-radius: 8px;
+  border-left: 4px solid #ff9800;
+}
+
+.info-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #424242;
+  font-weight: 500;
+}
+
 /* Responsive Design optimizado */
 @media (max-width: 768px) {
   .nueva-consulta-container {

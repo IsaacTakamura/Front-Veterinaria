@@ -121,11 +121,13 @@
               [tipoVisitaSeleccionado]="tipoVisitaNuevaConsulta"
               [descripcion]="descripcionNuevaConsulta"
               [tiposSignoVital]="tiposSignoVital"
+              [cita]="citaActual"
               (tipoVisitaChange)="tipoVisitaNuevaConsulta = $event"
               (descripcionChange)="descripcionNuevaConsulta = $event"
               (signosVitalesChange)="onSignosVitalesChange($event)"
               (nuevoTipoSignoVital)="onNuevoTipoSignoVital($event)"
-              (registrarConsulta)="registrarNuevaConsulta()">
+              (registrarConsulta)="registrarNuevaConsulta()"
+              (citaCompletada)="onCitaCompletada($event)">
             </app-nueva-consulta>
           </div>
         </div>

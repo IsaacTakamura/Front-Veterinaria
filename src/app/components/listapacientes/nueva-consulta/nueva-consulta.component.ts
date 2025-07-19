@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TipoVisita } from '../../shared/interfaces/historial.model';
 import { TipoSignoVital } from '../../shared/interfaces/tipoSignoVital';
+import { Cita } from '../../shared/interfaces/cita.model';
+import { CitaService } from '../../../core/services/cita.service';
 
 @Component({
   selector: 'app-nueva-consulta',
@@ -16,11 +18,13 @@ export class NuevaConsultaComponent {
   @Input() tipoVisitaSeleccionado: TipoVisita | null = null;
   @Input() descripcion: string = '';
   @Input() tiposSignoVital: TipoSignoVital[] = [];
+  @Input() cita: Cita | null = null; // Agregamos input para la cita
   @Output() registrarConsulta = new EventEmitter<void>();
   @Output() tipoVisitaChange = new EventEmitter<TipoVisita | null>();
   @Output() descripcionChange = new EventEmitter<string>();
   @Output() signosVitalesChange = new EventEmitter<any[]>();
   @Output() nuevoTipoSignoVital = new EventEmitter<string>();
+  @Output() citaCompletada = new EventEmitter<Cita>(); // Output para cuando se complete la cita
 
   // Signos vitales
   signoVitalSeleccionado: TipoSignoVital | null = null;
@@ -28,6 +32,8 @@ export class NuevaConsultaComponent {
   mostrarNuevoTipo: boolean = false;
   nombreNuevoTipo: string = '';
   signosVitales: { tipo: TipoSignoVital, valor: string }[] = [];
+
+  constructor(private citaService: CitaService) {}
 
   onTipoVisitaChange(tipo: TipoVisita | null) {
     this.tipoVisitaChange.emit(tipo);
@@ -37,8 +43,41 @@ export class NuevaConsultaComponent {
     this.descripcionChange.emit(descripcion);
   }
 
-  onRegistrarConsulta() {
+      onRegistrarConsulta() {
+    console.log('🔄 Iniciando registro de consulta...');
+    console.log('📋 Cita actual:', this.cita);
+
+    // Primero emitir el evento de registrar consulta
     this.registrarConsulta.emit();
+
+    // Esperar un momento para que se registre la consulta antes de cambiar el estado
+    setTimeout(() => {
+      this.cambiarEstadoCitaACompletada();
+    }, 1000);
+  }
+
+    // Cambiar estado de la cita a COMPLETADA
+  cambiarEstadoCitaACompletada() {
+    if (!this.cita || !this.cita.citaId) {
+      console.warn('⚠️ No hay cita válida para cambiar estado a COMPLETADA');
+      console.warn('Cita recibida:', this.cita);
+      return;
+    }
+
+    console.log('🔄 Cambiando estado de cita a COMPLETADA:', this.cita.citaId);
+    console.log('📞 Llamando endpoint:', `/api/v1/vet/estadoCita/${this.cita.citaId}/COMPLETADA`);
+
+    this.citaService.cambiarEstadoCitaVeterinario(this.cita.citaId, 'COMPLETADA')
+      .subscribe({
+        next: (citaActualizada) => {
+          console.log('✅ Cita marcada como COMPLETADA exitosamente:', citaActualizada);
+          this.citaCompletada.emit(citaActualizada);
+        },
+        error: (error) => {
+          console.error('❌ Error al cambiar estado de cita a COMPLETADA:', error);
+          console.error('Detalles del error:', error);
+        }
+      });
   }
 
   agregarSignoVital() {
