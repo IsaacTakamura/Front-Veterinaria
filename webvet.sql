@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-07-2025 a las 02:01:44
+-- Tiempo de generación: 18-07-2025 a las 08:21:36
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -41,7 +41,12 @@ INSERT INTO `caso_clinico` (`caso_clinico_id`, `descripcion`, `mascota_id`) VALU
 (1, 'Vacunación anual y control general', 1),
 (2, 'Seguimiento post-tratamiento dermatológico', 1),
 (3, 'Diagnóstico por pérdida de apetito', 2),
-(4, 'Control tras vacunación múltiple', 2);
+(4, 'Control tras vacunación múltiple', 2),
+(5, 'Vacunación anual y control general', 5),
+(6, 'Tratamiento dermatológico', 5),
+(7, 'Diagnóstico de pérdida de apetito', 5),
+(8, 'Consulta por dolor articular', 5),
+(9, 'Revisión de salud general', 5);
 
 -- --------------------------------------------------------
 
@@ -72,7 +77,12 @@ INSERT INTO `cita` (`cita_id`, `estado_cita`, `fecha_registro`, `motivo`, `clien
 (5, 'PENDIENTE', '2025-07-12 09:00:00.000000', 'Consulta por caída de pelo', 1, 1, 1, 2),
 (6, 'PENDIENTE', '2025-07-12 14:00:00.000000', 'Revisión por pérdida de apetito', 2, 2, 1, 1),
 (7, 'PENDIENTE', '2025-07-14 23:22:31.000000', 'Limpieza', 5, 1, 8, 1),
-(8, 'PENDIENTE', '2025-07-16 23:59:08.000000', 'Estética en cabello', 5, 5, 7, 1);
+(8, 'PENDIENTE', '2025-07-16 23:59:08.000000', 'Estética en cabello', 5, 5, 7, 1),
+(9, 'COMPLETADA', '2025-07-10 10:00:00.000000', 'Vacunación anual', 3, 5, 2, 2),
+(10, 'TRIAJE', '2025-07-18 11:00:00.000000', 'Diagnóstico por pérdida de apetito', 3, 5, 2, 1),
+(11, 'PENDIENTE', '2025-07-15 09:00:00.000000', 'Seguimiento post-tratamiento dermatológico', 3, 5, 2, 3),
+(12, 'PENDIENTE', '2025-07-18 02:05:48.000000', 'vacuna para la rabia', 5, 1, 2, 2),
+(13, 'TRIAJE', '2025-07-18 04:14:28.000000', 'Desparacitacion', 6, 6, 3, 2);
 
 -- --------------------------------------------------------
 
@@ -99,7 +109,8 @@ INSERT INTO `clientes` (`cliente_id`, `apellido`, `ciudad`, `direccion`, `email`
 (2, 'Pérez', 'Arequipa', 'Calle Sol 456', 'carlos.perez@mail.com', 'Carlos', '923456789'),
 (3, 'Takamura Rojas', 'Otro', 'Avenida Central', 'isaactakamura1503@hotmail.com', 'Isaac Ivanov', '942029405'),
 (4, 'Takamura Rojas', 'Otro', 'Avenida Central', 'isaactakamura1503@hotmail.com', 'Isaac Ivanov', '942029405'),
-(5, 'Takamura', 'Otro', 'Avenida Central', 'isaactakamura1503@hotmail.com', 'Isaac', '942029405');
+(5, 'Takamura', 'Otro', 'Avenida Central', 'isaactakamura1503@hotmail.com', 'Isaac', '942029405'),
+(6, 'Quiroz', 'Nuevo Chimbote', 'Santa Esperanza', 'axel4512@hotmail.com', 'Axel', '942888555');
 
 -- --------------------------------------------------------
 
@@ -146,8 +157,9 @@ INSERT INTO `mascota` (`mascota_id`, `edad`, `estado`, `nombre`, `cliente_id`, `
 (1, 4, 'VIVO', 'Max', 1, 1),
 (2, 3, 'VIVO', 'Misha', 2, 2),
 (3, 2, 'VIVO', 'Thomas', 3, 4),
-(4, 2, 'VIVO', 'Thomas', 4, 4),
-(5, 2, 'VIVO', 'Thomas', 5, 4);
+(4, 2, 'VIVO', 'Thomas2', 4, 4),
+(5, 2, 'VIVO', 'Thomas3', 5, 4),
+(6, 4, 'VIVO', 'Nieves', 6, 6);
 
 -- --------------------------------------------------------
 
@@ -239,8 +251,7 @@ INSERT INTO `tipo_servicio` (`tiposervicio_id`, `nombre`) VALUES
 (5, 'Control de Crecimiento'),
 (6, 'Emergencia'),
 (7, 'Estética'),
-(8, 'Ducha'),
-(9, 'Ducha 2');
+(8, 'Ducha');
 
 -- --------------------------------------------------------
 
@@ -271,7 +282,10 @@ CREATE TABLE `tipo_visita` (
 INSERT INTO `tipo_visita` (`tipo_visita_id`, `nombre`) VALUES
 (1, 'Vacunación'),
 (2, 'Diagnóstico'),
-(3, 'Seguimiento');
+(3, 'Seguimiento'),
+(4, 'Alergias'),
+(5, 'Cirugía'),
+(6, 'Tratamiento');
 
 -- --------------------------------------------------------
 
@@ -296,7 +310,9 @@ CREATE TABLE `triaje` (
 --
 
 INSERT INTO `triaje` (`triaje_id`, `fecha_actualizacion`, `fecha_registro`, `frecuencia_cardiaca`, `frecuencia_respiratoria`, `observaciones`, `peso`, `temperatura`, `mascota_id`) VALUES
-(1, NULL, '2025-07-11 15:17:50.000000', 122, 22, 'sobrepeso', 6, 38, 1);
+(1, NULL, '2025-07-11 15:17:50.000000', 122, 22, 'sobrepeso', 6, 38, 1),
+(4, '2025-07-16 20:31:25.000000', '2025-07-16 20:02:15.000000', 122, 22, 'Se encuentra muy mansito', 50, 40, 5),
+(9, NULL, '2025-07-17 23:14:50.000000', 120, 20, 'Desparacitacion xx', 5, 38, 6);
 
 -- --------------------------------------------------------
 
@@ -368,7 +384,10 @@ INSERT INTO `visita` (`visita_id`, `caso_clinico_id`, `tipo_visita_id`) VALUES
 (2, 2, 3),
 (3, 3, 2),
 (4, 4, 1),
-(5, 4, 3);
+(5, 4, 3),
+(6, 1, 1),
+(7, 3, 2),
+(8, 2, 3);
 
 --
 -- Índices para tablas volcadas
@@ -487,19 +506,19 @@ ALTER TABLE `visita`
 -- AUTO_INCREMENT de la tabla `caso_clinico`
 --
 ALTER TABLE `caso_clinico`
-  MODIFY `caso_clinico_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `caso_clinico_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `cita_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `cita_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `cliente_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `cliente_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `especies`
@@ -511,7 +530,7 @@ ALTER TABLE `especies`
 -- AUTO_INCREMENT de la tabla `mascota`
 --
 ALTER TABLE `mascota`
-  MODIFY `mascota_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `mascota_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `perfil_personal`
@@ -529,7 +548,7 @@ ALTER TABLE `razas`
 -- AUTO_INCREMENT de la tabla `signo_vital`
 --
 ALTER TABLE `signo_vital`
-  MODIFY `signo_vital_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `signo_vital_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_servicio`
@@ -541,19 +560,19 @@ ALTER TABLE `tipo_servicio`
 -- AUTO_INCREMENT de la tabla `tipo_signo_vital`
 --
 ALTER TABLE `tipo_signo_vital`
-  MODIFY `tipo_signo_vital_id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `tipo_signo_vital_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_visita`
 --
 ALTER TABLE `tipo_visita`
-  MODIFY `tipo_visita_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `tipo_visita_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `triaje`
 --
 ALTER TABLE `triaje`
-  MODIFY `triaje_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `triaje_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
@@ -571,7 +590,7 @@ ALTER TABLE `veterinario`
 -- AUTO_INCREMENT de la tabla `visita`
 --
 ALTER TABLE `visita`
-  MODIFY `visita_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `visita_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Restricciones para tablas volcadas

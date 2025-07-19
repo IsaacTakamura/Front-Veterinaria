@@ -19,8 +19,12 @@ import { IconShieldComponent } from 'src/app/components/icons/icon-shield.compon
 import { IconDocumentComponent } from 'src/app/components/icons/icon-document.component';
 import { TriajeService } from 'src/app/core/services/triaje.service';
 import { HistorialClinicoService } from 'src/app/core/services/historial-clinico.service';
+import { SignosVitalesService } from 'src/app/core/services/signosVitales.service';
 import { Triaje } from 'src/app/components/shared/interfaces/triaje.model';
 import { Visita, TipoVisita, CasoClinico } from 'src/app/components/shared/interfaces/historial.model';
+import { TipoSignoVital } from 'src/app/components/shared/interfaces/tipoSignoVital';
+import { SignoVital } from 'src/app/components/shared/interfaces/SignoVital.model';
+import { PacienteInfo } from 'src/app/components/shared/interfaces/paciente-info.model';
 import { InfoPacienteComponent } from '../../components/listapacientes/info-paciente/info-paciente.component';
 import { TriajeActualComponent } from '../../components/listapacientes/triaje-actual/triaje-actual.component';
 import { VisitasCasosComponent } from '../../components/listapacientes/visitas-casos/visitas-casos.component';
@@ -78,17 +82,23 @@ export class ListapacientesPageComponent implements OnInit {
   casoClinicoSeleccionado: CasoClinico | null = null;
   descripcionNuevaConsulta: string = '';
   tipoVisitaNuevaConsulta: TipoVisita | null = null;
+  tiposSignoVital: TipoSignoVital[] = [];
+  signosVitalesNuevaConsulta: any[] = [];
+  citaActual: Cita | null = null; // Agregamos la cita actual
+  pacienteInfo: PacienteInfo | null = null; // Paciente mapeado para info-paciente
 
   constructor(
     private citaService: CitaService,
     private mascotaService: MascotaService,
     private clienteService: ClienteService,
     private triajeService: TriajeService,
-    private historialClinicoService: HistorialClinicoService
+    private historialClinicoService: HistorialClinicoService,
+    private signosVitalesService: SignosVitalesService
   ) {}
 
   ngOnInit(): void {
     this.cargarPacientesCitasHoy();
+    this.cargarTiposSignoVital();
   }
 
   cargarPacientesCitasHoy() {
@@ -139,9 +149,91 @@ export class ListapacientesPageComponent implements OnInit {
     });
   }
 
+  cargarTiposSignoVital() {
+    console.log('🔄 Cargando tipos de signos vitales...');
+
+    this.signosVitalesService.listarTiposSignosVitales().subscribe({
+      next: (response) => {
+        console.log('📥 Respuesta del backend:', response);
+
+        // Manejar diferentes formatos de respuesta
+        if (Array.isArray(response)) {
+          this.tiposSignoVital = response;
+        } else if (response && (response as any)?.data) {
+          this.tiposSignoVital = (response as any).data;
+        } else {
+          this.tiposSignoVital = [];
+        }
+
+        console.log('✅ Tipos de signos vitales cargados:', this.tiposSignoVital);
+      },
+      error: (error) => {
+        console.error('❌ Error al cargar tipos de signos vitales:', error);
+        this.tiposSignoVital = [];
+      }
+    });
+  }
+
+    onNuevoTipoSignoVital(nombre: string) {
+    console.log('🔄 Creando nuevo tipo de signo vital:', nombre);
+
+    // Crear objeto simple como en crearTipoVisita
+    const nuevoTipo = {
+      nombre: nombre.trim()
+    };
+
+    console.log('📤 Enviando al backend:', nuevoTipo);
+
+    this.signosVitalesService.crearTipoSignoVital(nuevoTipo as any).subscribe({
+      next: (response) => {
+        console.log('✅ Tipo de signo vital creado exitosamente:', response);
+        // Recargar la lista de tipos
+        this.cargarTiposSignoVital();
+        alert('✅ Nuevo tipo de signo vital creado exitosamente');
+      },
+      error: (error) => {
+        console.error('❌ Error al crear nuevo tipo de signo vital:', error);
+        console.error('Detalles del error:', error);
+        alert('❌ Error al crear nuevo tipo de signo vital. Revisa la consola para más detalles.');
+      }
+    });
+  }
+
+  onSignosVitalesChange(signosVitales: any[]) {
+    this.signosVitalesNuevaConsulta = signosVitales;
+  }
+
+  // Manejar cuando se complete la cita
+  onCitaCompletada(citaActualizada: Cita) {
+    console.log('✅ Cita completada exitosamente:', citaActualizada);
+    this.citaActual = citaActualizada;
+
+    // Mostrar mensaje de éxito (puedes implementar un toast o alert)
+    alert('✅ Consulta registrada y cita marcada como COMPLETADA');
+
+    // Opcional: recargar la lista de pacientes para reflejar el cambio
+    this.cargarPacientesCitasHoy();
+  }
+
+  // Mapear PacienteCitaHoy a PacienteInfo
+  mapearPacienteInfo(paciente: PacienteCitaHoy): PacienteInfo {
+    return {
+      nombreMascota: paciente.nombreMascota,
+      edad: paciente.edad,
+      raza: paciente.raza,
+      especie: paciente.especie,
+      propietario: paciente.propietario,
+      mascotaId: paciente.mascotaId,
+      clienteId: paciente.clienteId,
+      telefono: paciente.telefono,
+      fechaRegistro: paciente.fechaRegistro
+    };
+  }
+
   cambiarVista(v: 'pacientes' | 'consulta' | 'seguimiento') {
     this.selected = v;
     this.pacienteSeleccionado = null;
+    this.pacienteInfo = null; // Limpiar también el paciente mapeado
     this.subvista = 'info';
   }
 
@@ -151,6 +243,7 @@ export class ListapacientesPageComponent implements OnInit {
 
   seleccionarPaciente(p: PacienteCitaHoy) {
     this.pacienteSeleccionado = p;
+    this.pacienteInfo = this.mapearPacienteInfo(p); // Mapear para info-paciente
     this.subvista = 'info';
     this.propietarioSeleccionado = null;
     this.triajeMascota = null;
@@ -162,6 +255,7 @@ export class ListapacientesPageComponent implements OnInit {
     this.casoClinicoSeleccionado = null;
     this.descripcionNuevaConsulta = '';
     this.tipoVisitaNuevaConsulta = null;
+    this.signosVitalesNuevaConsulta = [];
     // Buscar información completa del propietario
     if (p && p.clienteId) {
       this.clienteService.listarClientePorIdVeterinario(p.clienteId).subscribe({
@@ -179,6 +273,7 @@ export class ListapacientesPageComponent implements OnInit {
       this.cargarHistorialVisitas(p.mascotaId);
       this.cargarTiposVisita();
       this.cargarCasosClinicos(p.mascotaId);
+      this.buscarCitaActual(p.mascotaId); // Buscar la cita actual
     }
   }
 
@@ -251,31 +346,69 @@ export class ListapacientesPageComponent implements OnInit {
     });
   }
 
+  // Buscar la cita actual de la mascota
+  buscarCitaActual(mascotaId: number) {
+    this.citaService.listarCitasHoyVeterinario().subscribe({
+      next: (citas) => {
+        console.log('Citas de hoy:', citas);
+        // Buscar la cita que corresponda a esta mascota
+        this.citaActual = citas.find(cita => cita.mascotaId === mascotaId) || null;
+        console.log('Cita actual encontrada:', this.citaActual);
+      },
+      error: (error) => {
+        console.error('Error al buscar cita actual:', error);
+        this.citaActual = null;
+      }
+    });
+  }
+
   registrarNuevaConsulta() {
     if (!this.pacienteSeleccionado || !this.tipoVisitaNuevaConsulta || !this.descripcionNuevaConsulta) return;
+
     // Primero registrar el caso clínico
-    const nuevoCaso: CasoClinico = {
-      casoClinicoId: 0,
+    const nuevoCaso: Partial<CasoClinico> = {
       descripcion: this.descripcionNuevaConsulta,
       mascotaId: this.pacienteSeleccionado.mascotaId
     };
-    // Usar el método registrarCasoClinico que espera un CasoClinico
+
     (this.historialClinicoService as any).registrarCasoClinico(nuevoCaso).subscribe({
       next: (resp: any) => {
         const casoId = resp.data?.casoClinicoId;
         if (casoId) {
           // Luego registrar la visita
-          const nuevaVisita: Visita = {
-            visitaId: 0,
+          const nuevaVisita = {
             casoClinicoId: casoId,
             tipoVisitaId: this.tipoVisitaNuevaConsulta!.tipoVisitaId
           };
-          this.historialClinicoService.crearVisita(nuevaVisita).subscribe({
-            next: () => {
-              this.cargarHistorialVisitas(this.pacienteSeleccionado!.mascotaId);
-              this.cargarCasosClinicos(this.pacienteSeleccionado!.mascotaId);
-              this.descripcionNuevaConsulta = '';
-              this.tipoVisitaNuevaConsulta = null;
+
+          this.historialClinicoService.crearVisita(nuevaVisita as any).subscribe({
+            next: (respVisita: any) => {
+              const visitaId = respVisita.data?.visitaId;
+              if (visitaId && this.signosVitalesNuevaConsulta.length > 0) {
+                // Registrar los signos vitales
+                const signosPromises = this.signosVitalesNuevaConsulta.map(sv => {
+                  const nuevoSigno: any = {
+                    tipoSignoVitalId: sv.tipo.tipoSignoVitalId,
+                    valor: parseFloat(sv.valor),
+                    visitaId: visitaId
+                  };
+                  return this.signosVitalesService.crearSignoVital(nuevoSigno as any).toPromise();
+                });
+
+                Promise.all(signosPromises).then(() => {
+                  this.cargarHistorialVisitas(this.pacienteSeleccionado!.mascotaId);
+                  this.cargarCasosClinicos(this.pacienteSeleccionado!.mascotaId);
+                  this.descripcionNuevaConsulta = '';
+                  this.tipoVisitaNuevaConsulta = null;
+                  this.signosVitalesNuevaConsulta = [];
+                });
+              } else {
+                this.cargarHistorialVisitas(this.pacienteSeleccionado!.mascotaId);
+                this.cargarCasosClinicos(this.pacienteSeleccionado!.mascotaId);
+                this.descripcionNuevaConsulta = '';
+                this.tipoVisitaNuevaConsulta = null;
+                this.signosVitalesNuevaConsulta = [];
+              }
             }
           });
         }
