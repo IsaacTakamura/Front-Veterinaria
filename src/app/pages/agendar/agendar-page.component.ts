@@ -88,7 +88,7 @@ export class AgendarPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.veterinarioService.listarVeterinarios().subscribe(res => {
+    this.veterinarioService.listarVeterinariosAsistente().subscribe(res => {
       // Asegurar que res.data sea siempre un array
       this.veterinarios = Array.isArray(res.data) ? res.data : [res.data];
     });

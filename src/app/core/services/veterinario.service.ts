@@ -20,27 +20,28 @@ export interface VeterinarioResponse {
 
 @Injectable({ providedIn: 'root' })
 export class VeterinarioService {
-  private baseUrl = 'http://localhost:8080/api/v1';
+  private ApiAdmin = 'http://localhost:8080/api/v1/admin';
+  private ApiRecep = 'http://localhost:8080/api/v1/asistente';
 
   constructor(private http: HttpClient) { }
 
-  // Listar todos los veterinarios
+  // Listar todos los veterinarios para administrador
   listarVeterinarios(): Observable<VeterinarioResponse> {
-    return this.http.get<VeterinarioResponse>(`${this.baseUrl}/admin/listarVeterinarios`);
+    return this.http.get<VeterinarioResponse>(`${this.ApiAdmin}/listarVeterinarios`);
   }
 
-  // Crear un nuevo veterinario
+  // Crear un nuevo veterinario para administrador
   crearVeterinario(veterinario: CrearVeterinarioRequest): Observable<VeterinarioResponse> {
-    return this.http.post<VeterinarioResponse>(`${this.baseUrl}/admin/crearVeterinario`, veterinario);
+    return this.http.post<VeterinarioResponse>(`${this.ApiAdmin}/crearVeterinario`, veterinario);
   }
 
-  // Obtener un veterinario por apellido
+  // Obtener un veterinario por apellido para administrador
   obtenerVeterinarioPorApellido(apellido: string): Observable<VeterinarioResponse> {
-    return this.http.get<VeterinarioResponse>(`${this.baseUrl}/admin/veterinario/${apellido}`);
+    return this.http.get<VeterinarioResponse>(`${this.ApiAdmin}/veterinario/${apellido}`);
   }
 
-  // Método heredado del servicio anterior para compatibilidad
+  // listar veterinarios para asistente
   listarVeterinariosAsistente(): Observable<{ data: Veterinario[] }> {
-    return this.http.get<{ data: Veterinario[] }>(`${this.baseUrl}/asistente/listarVeterinarios`);
+    return this.http.get<{ data: Veterinario[] }>(`${this.ApiRecep}/listarVeterinarios`);
   }
 }
